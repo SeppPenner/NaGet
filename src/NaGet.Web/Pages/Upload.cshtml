@@ -37,7 +37,7 @@
                         data-tottle="popover"
                         data-placement="bottom"
                         data-content="Copied"
-                        @@click="window.baget.copyTextToClipboard(active.content.join('\n'), $el)">
+                        @@click="window.naget.copyTextToClipboard(active.content.join('\n'), $el)">
                     <i class="ms-Icon ms-Icon--Copy"></i>
                 </button>
             </div>
@@ -78,9 +78,9 @@
         {
             name: "PowerShellGet",
             content: [
-                "Register-PSRepository -Name \"BaGet\" -SourceLocation \"@serviceIndexUrl\" "
+                "Register-PSRepository -Name \"NaGet\" -SourceLocation \"@serviceIndexUrl\" "
                   + "-PublishLocation \"@publishUrl\" -InstallationPolicy \"Trusted\"",
-                "Publish-Module -Name PS-Module -Repository BaGet"
+                "Publish-Module -Name PS-Module -Repository NaGet"
             ],
             documentation: "https://docs.microsoft.com/en-us/powershell/module/powershellget/publish-module",
         },

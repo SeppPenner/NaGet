@@ -34,23 +34,23 @@ Several packages are included within this project:
 These folders contain the core components of NaGet:
 
 * `NaGet` - The app's entry point that glues everything together.
-* `NaGet.Core` - BaGet's core logic and services.
+* `NaGet.Core` - NaGet's core logic and services.
 * `NaGet.Web` - The [NuGet server APIs](https://docs.microsoft.com/en-us/nuget/api/overview) and web UI.
 * `NaGet.Protocol` - Libraries to interact with [NuGet servers' APIs](https://docs.microsoft.com/en-us/nuget/api/overview).
 
 These folders contain database-specific components of NaGet:
 
-* `NaGet.Database.MySql` - BaGet's MySQL database provider.
-* `NaGet.Database.PostgreSql` - BaGet's PostgreSql database provider.
-* `NaGet.Database.Sqlite` - BaGet's SQLite database provider.
-* `NaGet.Database.SqlServer` - BaGet's Microsoft SQL Server database provider.
+* `NaGet.Database.MySql` - NaGet's MySQL database provider.
+* `NaGet.Database.PostgreSql` - NaGet's PostgreSql database provider.
+* `NaGet.Database.Sqlite` - NaGet's SQLite database provider.
+* `NaGet.Database.SqlServer` - NaGet's Microsoft SQL Server database provider.
 
 These folders contain cloud-specific components of NaGet:
 
-* `NaGet.Aliyun` - BaGet's Alibaba Cloud(Aliyun) provider.
-* `NaGet.Aws` - BaGet's Amazon Web Services provider.
-* `NaGet.Azure` - BaGet's Azure provider.
-* `NaGet.GoogleCloud` - BaGet's Google Cloud Platform provider.
+* `NaGet.Aliyun` - NaGet's Alibaba Cloud(Aliyun) provider.
+* `NaGet.Aws` - NaGet's Amazon Web Services provider.
+* `NaGet.Azure` - NaGet's Azure provider.
+* `NaGet.GoogleCloud` - NaGet's Google Cloud Platform provider.
 
 ## Features
 Todo: Add all features from BaGet, add new features and highlight them

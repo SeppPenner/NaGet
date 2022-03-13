@@ -5,8 +5,8 @@
 (function () {
     'use strict';
 
-    var baget = {};
-    window.baget = baget;
+    var naget = {};
+    window.naget = naget;
 
     function detectIE() {
         var ua = window.navigator.userAgent;
@@ -29,7 +29,7 @@
 
     // source: http://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
     // enhancement with special case for IEs, otherwise the temp textarea will be visible
-    baget.copyTextToClipboard = function (text, elementToFocus) {
+    naget.copyTextToClipboard = function (text, elementToFocus) {
         if (detectIE()) {
             try {
                 window.clipboardData.setData('Text', text);
