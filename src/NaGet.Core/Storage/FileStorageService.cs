@@ -1,118 +1,117 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+namespace NaGet.Core;
 
-namespace NaGet.Core
+/// <summary>
+/// Stores content on disk.
+/// </summary>
+public class FileStorageService : IStorageService
 {
-    /// <summary>
-    /// Stores content on disk.
-    /// </summary>
-    public class FileStorageService : IStorageService
+    // See: https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/IO/Stream.cs#L35
+    private const int DefaultCopyBufferSize = 81920;
+
+    private readonly string storePath;
+
+    public FileStorageService(IOptionsSnapshot<FileSystemStorageOptions> options)
     {
-        // See: https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/IO/Stream.cs#L35
-        private const int DefaultCopyBufferSize = 81920;
+        if (options == null) throw new ArgumentNullException(nameof(options));
 
-        private readonly string _storePath;
+        // Resolve relative path components ('.'/'..') and ensure there is a trailing slash.
+        storePath = Path.GetFullPath(options.Value.Path);
 
-        public FileStorageService(IOptionsSnapshot<FileSystemStorageOptions> options)
+        if (!storePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            storePath += Path.DirectorySeparatorChar;
+        }
+    }
 
-            // Resolve relative path components ('.'/'..') and ensure there is a trailing slash.
-            _storePath = Path.GetFullPath(options.Value.Path);
-            if (!_storePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                _storePath += Path.DirectorySeparatorChar;
+    public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        path = GetFullPath(path);
+        var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+        return Task.FromResult<Stream>(content);
+    }
+
+    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var result = new Uri(GetFullPath(path));
+
+        return Task.FromResult(result);
+    }
+
+    public async Task<StoragePutResult> PutAsync(
+        string path,
+        Stream content,
+        string contentType,
+        CancellationToken cancellationToken = default)
+    {
+        if (content is null)
+        {
+            throw new ArgumentNullException(nameof(content));
         }
 
-        public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+        if (string.IsNullOrEmpty(contentType))
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            path = GetFullPath(path);
-            var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            return Task.FromResult<Stream>(content);
+            throw new ArgumentException("Content type is required", nameof(contentType));
         }
 
-        public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+        cancellationToken.ThrowIfCancellationRequested();
+
+        path = GetFullPath(path);
+
+        // Ensure that the path exists.
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            using var fileStream = File.Open(path, FileMode.CreateNew);
+            await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
+            return StoragePutResult.Success;
+        }
+        catch (IOException) when (File.Exists(path))
+        {
+            using var targetStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            content.Position = 0;
+            return content.Matches(targetStream)
+                ? StoragePutResult.AlreadyExists
+                : StoragePutResult.Conflict;
+        }
+    }
 
-            var result = new Uri(GetFullPath(path));
+    public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(result);
+        try
+        {
+            File.Delete(GetFullPath(path));
+        }
+        catch (DirectoryNotFoundException)
+        {
         }
 
-        public async Task<StoragePutResult> PutAsync(
-            string path,
-            Stream content,
-            string contentType,
-            CancellationToken cancellationToken = default)
+        return Task.CompletedTask;
+    }
+
+    private string GetFullPath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
         {
-            if (content == null) throw new ArgumentNullException(nameof(content));
-            if (string.IsNullOrEmpty(contentType)) throw new ArgumentException("Content type is required", nameof(contentType));
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            path = GetFullPath(path);
-
-            // Ensure that the path exists.
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-            try
-            {
-                using (var fileStream = File.Open(path, FileMode.CreateNew))
-                {
-                    await content.CopyToAsync(fileStream, DefaultCopyBufferSize, cancellationToken);
-                    return StoragePutResult.Success;
-                }
-            }
-            catch (IOException) when (File.Exists(path))
-            {
-                using (var targetStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    content.Position = 0;
-                    return content.Matches(targetStream)
-                        ? StoragePutResult.AlreadyExists
-                        : StoragePutResult.Conflict;
-                }
-            }
+            throw new ArgumentException("Path is required", nameof(path));
         }
 
-        public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+        var fullPath = Path.GetFullPath(Path.Combine(storePath, path));
+
+        // Verify path is under the _storePath.
+        if (!fullPath.StartsWith(storePath, StringComparison.Ordinal) ||
+            fullPath.Length == storePath.Length)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            try
-            {
-                File.Delete(GetFullPath(path));
-            }
-            catch (DirectoryNotFoundException)
-            {
-            }
-
-            return Task.CompletedTask;
+            throw new ArgumentException("Path resolves outside store path", nameof(path));
         }
 
-        private string GetFullPath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException("Path is required", nameof(path));
-            }
-
-            var fullPath = Path.GetFullPath(Path.Combine(_storePath, path));
-
-            // Verify path is under the _storePath.
-            if (!fullPath.StartsWith(_storePath, StringComparison.Ordinal) ||
-                fullPath.Length == _storePath.Length)
-            {
-                throw new ArgumentException("Path resolves outside store path", nameof(path));
-            }
-
-            return fullPath;
-        }
+        return fullPath;
     }
 }

@@ -1,33 +1,25 @@
-using System;
-using NaGet.Core;
-using NaGet.Database.SqlServer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+namespace NaGet;
 
-namespace NaGet
+public static class SqlServerApplicationExtensions
 {
-    public static class SqlServerApplicationExtensions
+    public static NaGetApplication AddSqlServerDatabase(this NaGetApplication app)
     {
-        public static NaGetApplication AddSqlServerDatabase(this NaGetApplication app)
+        app.Services.AddNaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
         {
-            app.Services.AddNaGetDbContextProvider<SqlServerContext>("SqlServer", (provider, options) =>
-            {
-                var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
+            var databaseOptions = provider.GetRequiredService<IOptionsSnapshot<DatabaseOptions>>();
 
-                options.UseSqlServer(databaseOptions.Value.ConnectionString);
-            });
+            options.UseSqlServer(databaseOptions.Value.ConnectionString);
+        });
 
-            return app;
-        }
+        return app;
+    }
 
-        public static NaGetApplication AddSqlServerDatabase(
-            this NaGetApplication app,
-            Action<DatabaseOptions> configure)
-        {
-            app.AddSqlServerDatabase();
-            app.Services.Configure(configure);
-            return app;
-        }
+    public static NaGetApplication AddSqlServerDatabase(
+        this NaGetApplication app,
+        Action<DatabaseOptions> configure)
+    {
+        app.AddSqlServerDatabase();
+        app.Services.Configure(configure);
+        return app;
     }
 }

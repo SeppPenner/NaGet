@@ -1,57 +1,52 @@
-using System;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+namespace NaGet.Core;
 
-namespace NaGet.Core
+/// <summary>
+/// Validates NaGet's options, used at startup.
+/// </summary>
+public class ValidateStartupOptions
 {
-    /// <summary>
-    /// Validates NaGet's options, used at startup.
-    /// </summary>
-    public class ValidateStartupOptions
+    private readonly IOptions<NaGetOptions> root;
+    private readonly IOptions<DatabaseOptions> database;
+    private readonly IOptions<StorageOptions> storage;
+    private readonly IOptions<MirrorOptions> mirror;
+    private readonly ILogger<ValidateStartupOptions> logger;
+
+    public ValidateStartupOptions(
+        IOptions<NaGetOptions> root,
+        IOptions<DatabaseOptions> database,
+        IOptions<StorageOptions> storage,
+        IOptions<MirrorOptions> mirror,
+        ILogger<ValidateStartupOptions> logger)
     {
-        private readonly IOptions<NaGetOptions> _root;
-        private readonly IOptions<DatabaseOptions> _database;
-        private readonly IOptions<StorageOptions> _storage;
-        private readonly IOptions<MirrorOptions> _mirror;
-        private readonly ILogger<ValidateStartupOptions> _logger;
+        this.root = root ?? throw new ArgumentNullException(nameof(root));
+        this.database = database ?? throw new ArgumentNullException(nameof(database));
+        this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        this.mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public ValidateStartupOptions(
-            IOptions<NaGetOptions> root,
-            IOptions<DatabaseOptions> database,
-            IOptions<StorageOptions> storage,
-            IOptions<MirrorOptions> mirror,
-            ILogger<ValidateStartupOptions> logger)
+    public bool Validate()
+    {
+        try
         {
-            _root = root ?? throw new ArgumentNullException(nameof(root));
-            _database = database ?? throw new ArgumentNullException(nameof(database));
-            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
-            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            // Access each option to force validations to run.
+            // Invalid options will trigger an "OptionsValidationException" exception.
+            _ = root.Value;
+            _ = database.Value;
+            _ = storage.Value;
+            _ = mirror.Value;
+
+            return true;
         }
-
-        public bool Validate()
+        catch (OptionsValidationException e)
         {
-            try
+            foreach (var failure in e.Failures)
             {
-                // Access each option to force validations to run.
-                // Invalid options will trigger an "OptionsValidationException" exception.
-                _ = _root.Value;
-                _ = _database.Value;
-                _ = _storage.Value;
-                _ = _mirror.Value;
-
-                return true;
+                logger.LogError("{OptionsFailure}", failure);
             }
-            catch (OptionsValidationException e)
-            {
-                foreach (var failure in e.Failures)
-                {
-                    _logger.LogError("{OptionsFailure}", failure);
-                }
 
-                _logger.LogError(e, "NaGet configuration is invalid.");
-                return false;
-            }
+            logger.LogError(e, "NaGet configuration is invalid.");
+            return false;
         }
     }
 }

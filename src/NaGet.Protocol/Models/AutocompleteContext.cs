@@ -1,15 +1,12 @@
-using System.Text.Json.Serialization;
+namespace NaGet.Protocol.Models;
 
-namespace NaGet.Protocol.Models
+public class AutocompleteContext
 {
-    public class AutocompleteContext
+    public static readonly AutocompleteContext Default = new AutocompleteContext
     {
-        public static readonly AutocompleteContext Default = new AutocompleteContext
-        {
-            Vocab = "http://schema.nuget.org/schema#"
-        };
+        Vocab = "http://schema.nuget.org/schema#"
+    };
 
-        [JsonPropertyName("@vocab")]
-        public string Vocab { get; set; }
-    }
+    [JsonPropertyName("@vocab")]
+    public string Vocab { get; set; } = string.Empty;
 }

@@ -1,7 +1,6 @@
-namespace NaGet.Core
+namespace NaGet.Core;
+
+public class StorageOptions
 {
-    public class StorageOptions
-    {
-        public string Type { get; set; }
-    }
+    public string Type { get; set; } = string.Empty;
 }

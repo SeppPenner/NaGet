@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using NaGet.PackageMetadata;
 using NaGet.Protocol.Internal;
 
 namespace NaGet.Protocol.Tests

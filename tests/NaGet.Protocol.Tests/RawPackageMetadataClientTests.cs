@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using NaGet.Protocol.Internal;
+using NaGet.PackageMetadata;
 using NuGet.Versioning;
 using Xunit;
 

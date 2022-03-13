@@ -1,40 +1,33 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using NaGet.Core;
-using Microsoft.Extensions.Logging;
+namespace NaGet.Azure;
 
-namespace NaGet.Azure
+public class AzureSearchIndexer : ISearchIndexer
 {
-    public class AzureSearchIndexer : ISearchIndexer
+    private readonly IPackageDatabase packages;
+    private readonly IndexActionBuilder actionBuilder;
+    private readonly AzureSearchBatchIndexer batchIndexer;
+    private readonly ILogger<AzureSearchIndexer> logger;
+
+    public AzureSearchIndexer(
+        IPackageDatabase packages,
+        IndexActionBuilder actionBuilder,
+        AzureSearchBatchIndexer batchIndexer,
+        ILogger<AzureSearchIndexer> logger)
     {
-        private readonly IPackageDatabase _packages;
-        private readonly IndexActionBuilder _actionBuilder;
-        private readonly AzureSearchBatchIndexer _batchIndexer;
-        private readonly ILogger<AzureSearchIndexer> _logger;
+        this.packages = packages ?? throw new ArgumentNullException(nameof(packages));
+        this.actionBuilder = actionBuilder ?? throw new ArgumentNullException(nameof(actionBuilder));
+        this.batchIndexer = batchIndexer ?? throw new ArgumentNullException(nameof(batchIndexer));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public AzureSearchIndexer(
-            IPackageDatabase packages,
-            IndexActionBuilder actionBuilder,
-            AzureSearchBatchIndexer batchIndexer,
-            ILogger<AzureSearchIndexer> logger)
-        {
-            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
-            _actionBuilder = actionBuilder ?? throw new ArgumentNullException(nameof(actionBuilder));
-            _batchIndexer = batchIndexer ?? throw new ArgumentNullException(nameof(batchIndexer));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+    public async Task IndexAsync(Package package, CancellationToken cancellationToken)
+    {
+        var packages = await this.packages.FindAsync(package.Id, includeUnlisted: false, cancellationToken);
 
-        public async Task IndexAsync(Package package, CancellationToken cancellationToken)
-        {
-            var packages = await _packages.FindAsync(package.Id, includeUnlisted: false, cancellationToken);
+        var actions = actionBuilder.UpdatePackage(
+            new PackageRegistration(
+                package.Id,
+                packages));
 
-            var actions = _actionBuilder.UpdatePackage(
-                new PackageRegistration(
-                    package.Id,
-                    packages));
-
-            await _batchIndexer.IndexAsync(actions, cancellationToken);
-        }
+        await batchIndexer.IndexAsync(actions, cancellationToken);
     }
 }

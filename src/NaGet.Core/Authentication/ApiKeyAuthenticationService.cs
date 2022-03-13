@@ -1,30 +1,30 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+namespace NaGet.Core;
 
-namespace NaGet.Core
+public class ApiKeyAuthenticationService : IAuthenticationService
 {
-    public class ApiKeyAuthenticationService : IAuthenticationService
+    private readonly string apiKey;
+
+    public ApiKeyAuthenticationService(IOptionsSnapshot<NaGetOptions> options)
     {
-        private readonly string _apiKey;
-
-        public ApiKeyAuthenticationService(IOptionsSnapshot<NaGetOptions> options)
+        if (options is null)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-
-            _apiKey = string.IsNullOrEmpty(options.Value.ApiKey) ? null : options.Value.ApiKey;
+            throw new ArgumentNullException(nameof(options));
         }
 
-        public Task<bool> AuthenticateAsync(string apiKey, CancellationToken cancellationToken)
-            => Task.FromResult(Authenticate(apiKey));
+        apiKey = string.IsNullOrEmpty(options.Value.ApiKey) ? null : options.Value.ApiKey;
+    }
 
-        private bool Authenticate(string apiKey)
+    public Task<bool> AuthenticateAsync(string apiKey, CancellationToken cancellationToken)
+        => Task.FromResult(Authenticate(apiKey));
+
+    private bool Authenticate(string apiKey)
+    {
+        // No authentication is necessary if there is no required API key.
+        if (this.apiKey is null)
         {
-            // No authentication is necessary if there is no required API key.
-            if (_apiKey == null) return true;
-
-            return _apiKey == apiKey;
+            return true;
         }
+
+        return this.apiKey == apiKey;
     }
 }

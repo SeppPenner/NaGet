@@ -1,12 +1,9 @@
-using System;
+namespace NaGet.Core;
 
-namespace NaGet.Core
+/// <summary>
+/// A wrapper that allows for unit tests related to system time.
+/// </summary>
+public class SystemTime
 {
-    /// <summary>
-    /// A wrapper that allows for unit tests related to system time.
-    /// </summary>
-    public class SystemTime
-    {
-        public virtual DateTime UtcNow => DateTime.UtcNow;
-    }
+    public virtual DateTime UtcNow => DateTime.UtcNow;
 }

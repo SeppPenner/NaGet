@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+namespace NaGet.Core;
 
-namespace NaGet.Core
+public class DatabaseOptions
 {
-    public class DatabaseOptions
-    {
-        public string Type { get; set; }
+    public string Type { get; set; } = string.Empty;
 
-        [Required]
-        public string ConnectionString { get; set; }
-    }
+    [Required]
+    public string ConnectionString { get; set; } = string.Empty;
 }

@@ -1,25 +1,19 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using NaGet.Protocol.Models;
+namespace NaGet.Protocol;
 
-namespace NaGet.Protocol
+public partial class NuGetClientFactory
 {
-    public partial class NuGetClientFactory
+    private class ServiceIndexClient : IServiceIndexClient
     {
-        private class ServiceIndexClient : IServiceIndexClient
+        private readonly NuGetClientFactory clientFactory;
+
+        public ServiceIndexClient(NuGetClientFactory clientFactory)
         {
-            private readonly NuGetClientFactory _clientFactory;
+            this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+        }
 
-            public ServiceIndexClient(NuGetClientFactory clientFactory)
-            {
-                _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
-            }
-
-            public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
-            {
-                return await _clientFactory.GetServiceIndexAsync(cancellationToken);
-            }
+        public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+        {
+            return await clientFactory.GetServiceIndexAsync(cancellationToken);
         }
     }
 }
