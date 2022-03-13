@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NaGet.Database.Sqlite\NaGet.Database.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\NaGet.Web\NaGet.Web.csproj" />
+  </ItemGroup>
+
+</Project>

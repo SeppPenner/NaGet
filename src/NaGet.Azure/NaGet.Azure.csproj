@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <AssemblyName>NaGet.Azure</AssemblyName>
+    <RootNamespace>NaGet</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>NaGet.Azure</PackageId>
+    <Authors>SeppPenner</Authors>
+    <Company>SeppPenner</Company>
+    <Copyright>Copyright © SeppPenner</Copyright>
+    <Description>Todo</Description>
+    <PackageTags>c# csharp Todo</PackageTags>
+    <PackageProjectUrl>https://www.nuget.org/packages/NaGet.Azure/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SeppPenner/NaGet</RepositoryUrl>
+    <PackageIcon>Icon.png</PackageIcon>
+    <RepositoryType>Github</RepositoryType>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="5.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Azure.Search" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="9.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.18" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NaGet.Core\NaGet.Core.csproj" />
+  </ItemGroup>
+
+</Project>
