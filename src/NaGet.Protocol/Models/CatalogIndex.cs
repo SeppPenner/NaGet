@@ -26,5 +26,5 @@ public class CatalogIndex
     /// The items used to discover <see cref="CatalogPage"/>s.
     /// </summary>
     [JsonPropertyName("items")]
-    public List<CatalogPageItem> Items { get; set; }
+    public List<CatalogPageItem> Items { get; set; } = new();
 }

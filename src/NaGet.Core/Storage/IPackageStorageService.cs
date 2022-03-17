@@ -21,8 +21,8 @@ public interface IPackageStorageService
         Package package,
         Stream packageStream,
         Stream nuspecStream,
-        Stream readmeStream,
-        Stream iconStream,
+        Stream? readmeStream,
+        Stream? iconStream,
         CancellationToken cancellationToken);
 
     /// <summary>

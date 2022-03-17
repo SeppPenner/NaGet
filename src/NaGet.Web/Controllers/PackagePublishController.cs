@@ -45,7 +45,7 @@ namespace NaGet.Web
             {
                 using var uploadStream = await Request.GetUploadStreamOrNullAsync(cancellationToken);
 
-                if (uploadStream == null)
+                if (uploadStream is null)
                 {
                     HttpContext.Response.StatusCode = 400;
                     return;

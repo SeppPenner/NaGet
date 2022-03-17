@@ -61,9 +61,9 @@ public class IndexActionBuilder
             var dependencies = latest
                 .Dependencies
                 .Select(d => d.Id?.ToLowerInvariant())
-                .Where(d => d != null)
+                .Where(d => d is not null)
                 .Distinct()
-                .ToArray();
+                .ToArray() ?? Array.Empty<string>();
 
             var document = new PackageDocument();
 

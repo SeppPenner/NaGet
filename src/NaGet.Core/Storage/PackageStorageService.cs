@@ -22,11 +22,11 @@ public class PackageStorageService : IPackageStorageService
     }
 
     public async Task SavePackageContentAsync(
-        Package package,
-        Stream packageStream,
-        Stream nuspecStream,
-        Stream readmeStream,
-        Stream iconStream,
+        Package? package,
+        Stream? packageStream,
+        Stream? nuspecStream,
+        Stream? readmeStream,
+        Stream? iconStream,
         CancellationToken cancellationToken = default)
     {
         package = package ?? throw new ArgumentNullException(nameof(package));
@@ -82,7 +82,7 @@ public class PackageStorageService : IPackageStorageService
         }
 
         // Store the package's readme, if one exists.
-        if (readmeStream != null)
+        if (readmeStream is not null)
         {
             _logger.LogInformation(
                 "Storing package {PackageId} {PackageVersion} readme at {Path}...",
@@ -105,7 +105,7 @@ public class PackageStorageService : IPackageStorageService
         }
 
         // Store the package's icon, if one exists.
-        if (iconStream != null)
+        if (iconStream is not null)
         {
             _logger.LogInformation(
                 "Storing package {PackageId} {PackageVersion} icon at {Path}...",

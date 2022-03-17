@@ -11,7 +11,7 @@ public class MirrorOptions : IValidatableObject
     /// <summary>
     /// The v3 index that will be mirrored.
     /// </summary>
-    public Uri PackageSource { get; set; }
+    public Uri? PackageSource { get; set; }
 
     /// <summary>
     /// Whether or not the package source is a v2 package source feed.
@@ -26,7 +26,7 @@ public class MirrorOptions : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (Enabled && PackageSource == null)
+        if (Enabled && PackageSource is null)
         {
             yield return new ValidationResult(
                 $"The {nameof(PackageSource)} configuration is required if mirroring is enabled",

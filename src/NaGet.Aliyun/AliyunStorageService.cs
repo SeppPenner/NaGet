@@ -18,7 +18,7 @@ public class AliyunStorageService : IStorageService
         prefix = options.Value.Prefix;
         this.client = client ?? throw new ArgumentNullException(nameof(client));
 
-        if (!string.IsNullOrEmpty(prefix) && !prefix.EndsWith(Separator))
+        if (!string.IsNullOrWhiteSpace(prefix) && !prefix.EndsWith(Separator))
         {
             prefix += Separator;
         }
@@ -29,7 +29,7 @@ public class AliyunStorageService : IStorageService
         return prefix + path.Replace("\\", Separator);
     }
 
-    public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -44,11 +44,11 @@ public class AliyunStorageService : IStorageService
         }
     }
 
-    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
     {
         var uri = client.GeneratePresignedUri(bucket, PrepareKey(path));
 
-        return Task.FromResult(uri);
+        return Task.FromResult<Uri?>(uri);
     }
 
     public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)

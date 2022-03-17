@@ -12,7 +12,7 @@ public class FileSystemStorageOptions : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         // Convert an empty storage path to the current working directory.
-        if (string.IsNullOrEmpty(Path))
+        if (string.IsNullOrWhiteSpace(Path))
         {
             Path = Directory.GetCurrentDirectory();
         }

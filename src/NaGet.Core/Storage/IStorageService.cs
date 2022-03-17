@@ -20,7 +20,7 @@ public interface IStorageService
     /// <param name="path">The content's path.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The path's content or null if the content does not exist.</returns>
-    Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default);
+    Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a URI that can be used to download the content.
@@ -31,7 +31,7 @@ public interface IStorageService
     /// The content's URI. This may be a local file. Returns null if the content
     /// does not exist or if a URI could not be created.
     /// </returns>
-    Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
+    Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Store content into storage.

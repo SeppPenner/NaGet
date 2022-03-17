@@ -26,7 +26,7 @@ namespace NaGet.Web
             {
                 using var scope = host.Services.CreateScope();
                 var ctx = scope.ServiceProvider.GetService<IContext>();
-                if (ctx != null)
+                if (ctx is not null)
                 {
                     await ctx.RunMigrationsAsync(cancellationToken);
                 }

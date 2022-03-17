@@ -14,7 +14,7 @@ public class AzureSearchBatchIndexer
         SearchServiceClient searchClient,
         ILogger<AzureSearchBatchIndexer> logger)
     {
-        if (searchClient == null) throw new ArgumentNullException(nameof(searchClient));
+        if (searchClient is null) throw new ArgumentNullException(nameof(searchClient));
 
         indexClient = searchClient.Indexes.GetClient(PackageDocument.IndexName);
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -68,7 +68,7 @@ public class AzureSearchBatchIndexer
             await IndexAsync(halfB, cancellationToken);
         }
 
-        if (indexingResults != null && indexingResults.Any(result => !result.Succeeded))
+        if (indexingResults is not null && indexingResults.Any(result => !result.Succeeded))
         {
             throw new InvalidOperationException("Failed to pushed batch of documents documents");
         }

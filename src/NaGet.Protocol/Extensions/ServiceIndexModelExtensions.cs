@@ -65,7 +65,7 @@ public static class ServiceIndexModelExtensions
         // see: https://docs.microsoft.com/en-us/nuget/api/overview#resources-and-schema
         var resourceUrl = serviceIndex.GetResourceUrl(types);
 
-        if (string.IsNullOrEmpty(resourceUrl))
+        if (string.IsNullOrWhiteSpace(resourceUrl))
         {
             throw new InvalidOperationException(
                 $"The service index does not have a resource named '{resourceName}'");

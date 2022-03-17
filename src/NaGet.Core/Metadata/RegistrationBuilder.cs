@@ -99,7 +99,7 @@ public class RegistrationBuilder
                     // that target framework is represented by a fake dependency with a null "Id" and "VersionRange".
                     // This fake dependency should not be included in the output.
                     Dependencies = group
-                    .Where(d => d.Id != null && d.VersionRange != null)
+                    .Where(d => d.Id is not null && d.VersionRange is not null)
                     .Select(d => new DependencyItem
                     {
                         Id = d.Id,

@@ -18,7 +18,7 @@ public class S3StorageService : IStorageService
         prefix = options.Value.Prefix;
         this.client = client ?? throw new ArgumentNullException(nameof(client));
 
-        if (!string.IsNullOrEmpty(prefix) && !prefix.EndsWith(Separator))
+        if (!string.IsNullOrWhiteSpace(prefix) && !prefix.EndsWith(Separator))
         {
             prefix += Separator;
         }
@@ -29,7 +29,7 @@ public class S3StorageService : IStorageService
         return prefix + path.Replace("\\", Separator);
     }
 
-    public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
     {
         var stream = new MemoryStream();
 
@@ -53,7 +53,7 @@ public class S3StorageService : IStorageService
         return stream;
     }
 
-    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
     {
         var url = client.GetPreSignedURL(new GetPreSignedUrlRequest
         {
@@ -61,7 +61,7 @@ public class S3StorageService : IStorageService
             Key = PrepareKey(path)
         });
 
-        return Task.FromResult(new Uri(url));
+        return Task.FromResult<Uri?>(new Uri(url));
     }
 
     public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)

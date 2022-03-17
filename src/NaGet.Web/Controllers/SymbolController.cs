@@ -43,7 +43,7 @@ namespace NaGet.Web
             {
                 using (var uploadStream = await Request.GetUploadStreamOrNullAsync(cancellationToken))
                 {
-                    if (uploadStream == null)
+                    if (uploadStream is null)
                     {
                         HttpContext.Response.StatusCode = 400;
                         return;
@@ -78,7 +78,7 @@ namespace NaGet.Web
         public async Task<IActionResult> Get(string file, string key)
         {
             var pdbStream = await _storage.GetPortablePdbContentStreamOrNullAsync(file, key);
-            if (pdbStream == null)
+            if (pdbStream is null)
             {
                 return NotFound();
             }

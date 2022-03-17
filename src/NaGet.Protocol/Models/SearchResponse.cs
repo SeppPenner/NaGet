@@ -8,7 +8,7 @@ namespace NaGet.Protocol.Models;
 public class SearchResponse
 {
     [JsonPropertyName("@context")]
-    public SearchContext Context { get; set; }
+    public SearchContext? Context { get; set; }
 
     /// <summary>
     /// The total number of matches, disregarding skip and take.

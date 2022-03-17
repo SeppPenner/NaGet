@@ -27,7 +27,7 @@ public class SymbolStorageService : ISymbolStorageService
         }
     }
 
-    public async Task<Stream> GetPortablePdbContentStreamOrNullAsync(string filename, string key)
+    public async Task<Stream?> GetPortablePdbContentStreamOrNullAsync(string filename, string key)
     {
         var path = GetPathForKey(filename, key);
 
@@ -45,7 +45,7 @@ public class SymbolStorageService : ISymbolStorageService
     {
         // Ensure the filename doesn't try to escape out of the current directory.
         var tempPath = Path.GetDirectoryName(Path.GetTempPath());
-        var expandedPath = Path.GetDirectoryName(Path.Combine(tempPath, filename));
+        var expandedPath = Path.GetDirectoryName(Path.Combine(tempPath, filename) ?? string.Empty);
 
         if (expandedPath != tempPath)
         {

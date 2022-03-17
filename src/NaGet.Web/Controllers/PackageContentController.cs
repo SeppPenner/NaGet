@@ -21,7 +21,7 @@ namespace NaGet.Web
         public async Task<ActionResult<PackageVersionsResponse>> GetPackageVersionsAsync(string id, CancellationToken cancellationToken)
         {
             var versions = await _content.GetPackageVersionsOrNullAsync(id, cancellationToken);
-            if (versions == null)
+            if (versions is null)
             {
                 return NotFound();
             }
@@ -37,7 +37,7 @@ namespace NaGet.Web
             }
 
             var packageStream = await _content.GetPackageContentStreamOrNullAsync(id, nugetVersion, cancellationToken);
-            if (packageStream == null)
+            if (packageStream is null)
             {
                 return NotFound();
             }
@@ -53,7 +53,7 @@ namespace NaGet.Web
             }
 
             var nuspecStream = await _content.GetPackageManifestStreamOrNullAsync(id, nugetVersion, cancellationToken);
-            if (nuspecStream == null)
+            if (nuspecStream is null)
             {
                 return NotFound();
             }
@@ -69,7 +69,7 @@ namespace NaGet.Web
             }
 
             var readmeStream = await _content.GetPackageReadmeStreamOrNullAsync(id, nugetVersion, cancellationToken);
-            if (readmeStream == null)
+            if (readmeStream is null)
             {
                 return NotFound();
             }
@@ -85,7 +85,7 @@ namespace NaGet.Web
             }
 
             var iconStream = await _content.GetPackageIconStreamOrNullAsync(id, nugetVersion, cancellationToken);
-            if (iconStream == null)
+            if (iconStream is null)
             {
                 return NotFound();
             }

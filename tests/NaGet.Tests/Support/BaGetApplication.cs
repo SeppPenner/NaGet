@@ -20,13 +20,13 @@ namespace NaGet.Tests
 {
     public class NaGetApplication : WebApplicationFactory<Startup>
     {
-        private readonly ITestOutputHelper _output;
-        private readonly HttpClient _upstreamClient;
+        private readonly ITestOutputHelper output;
+        private readonly HttpClient? upstreamClient;
 
-        public NaGetApplication(ITestOutputHelper output, HttpClient upstreamClient = null)
+        public NaGetApplication(ITestOutputHelper output, HttpClient? upstreamClient = null)
         {
-            _output = output ?? throw new ArgumentNullException(nameof(output));
-            _upstreamClient = upstreamClient;
+            this.output = output ?? throw new ArgumentNullException(nameof(output));
+            this.upstreamClient = upstreamClient;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -52,7 +52,7 @@ namespace NaGet.Tests
                     logging.ClearProviders();
 
                     // Pipe logs to the xunit output.
-                    logging.AddProvider(new XunitLoggerProvider(_output));
+                    logging.AddProvider(new XunitLoggerProvider(output));
                 })
                 .ConfigureAppConfiguration(config =>
                 {
@@ -64,7 +64,7 @@ namespace NaGet.Tests
                         { "Storage:Type", "FileSystem" },
                         { "Storage:Path", storagePath },
                         { "Search:Type", "Database" },
-                        { "Mirror:Enabled", _upstreamClient != null ? "true": "false" },
+                        { "Mirror:Enabled", upstreamClient != null ? "true": "false" },
                         { "Mirror:PackageSource", "http://localhost/v3/index.json" },
                     });
                 })
@@ -77,9 +77,9 @@ namespace NaGet.Tests
                         .Returns(DateTime.Parse("2020-01-01T00:00:00.000Z"));
 
                     services.AddSingleton(time.Object);
-                    if (_upstreamClient != null)
+                    if (upstreamClient != null)
                     {
-                        services.AddSingleton(_upstreamClient);
+                        services.AddSingleton(upstreamClient);
                     }
 
                     // Setup the integration test database.

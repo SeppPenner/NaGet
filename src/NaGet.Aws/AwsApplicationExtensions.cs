@@ -34,7 +34,7 @@ public static class AwsApplicationExtensions
                 return new AmazonS3Client(credentials, config);
             }
 
-            if (!string.IsNullOrEmpty(options.AssumeRoleArn))
+            if (!string.IsNullOrWhiteSpace(options.AssumeRoleArn))
             {
                 var credentials = FallbackCredentialsFactory.GetCredentials();
                 var assumedCredentials = AssumeRoleAsync(
@@ -47,7 +47,7 @@ public static class AwsApplicationExtensions
                 return new AmazonS3Client(assumedCredentials, config);
             }
 
-            if (!string.IsNullOrEmpty(options.AccessKey))
+            if (!string.IsNullOrWhiteSpace(options.AccessKey))
             {
                 return new AmazonS3Client(
                     new BasicAWSCredentials(

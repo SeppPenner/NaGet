@@ -35,7 +35,7 @@ namespace NaGet.Protocol.Tests
         private static HttpResponseMessage Send(HttpRequestMessage request)
         {
             if (request.Method != HttpMethod.Get
-                || !UrlToGetContent.TryGetValue(request.RequestUri.AbsoluteUri, out var getContent))
+                || !UrlToGetContent.TryGetValue(request.RequestUri?.AbsoluteUri ?? string.Empty, out var getContent))
             {
                 return new HttpResponseMessage
                 {

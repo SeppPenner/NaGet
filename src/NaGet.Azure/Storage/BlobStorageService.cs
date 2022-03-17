@@ -13,14 +13,14 @@ public class BlobStorageService : IStorageService
         this.container = container ?? throw new ArgumentNullException(nameof(container));
     }
 
-    public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken)
+    public async Task<Stream?> GetAsync(string path, CancellationToken cancellationToken)
     {
         return await container
             .GetBlockBlobReference(path)
             .OpenReadAsync(cancellationToken);
     }
 
-    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
+    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
     {
         // TODO: Make expiry time configurable.
         var blob = container.GetBlockBlobReference(path);
@@ -33,7 +33,7 @@ public class BlobStorageService : IStorageService
         var signature = blob.GetSharedAccessSignature(accessPolicy);
         var result = new Uri(blob.Uri, signature);
 
-        return Task.FromResult(result);
+        return Task.FromResult<Uri?>(result);
     }
 
     public async Task<StoragePutResult> PutAsync(

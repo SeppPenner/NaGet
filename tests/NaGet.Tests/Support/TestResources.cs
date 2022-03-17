@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace NaGet.Tests
 {
     public static class TestResources
@@ -21,13 +19,13 @@ namespace NaGet.Tests
         /// <summary>
         /// Buffer the resource stream into memory so the caller doesn't have to dispose.
         /// </summary>
-        public static MemoryStream GetResourceStream(string resourceName)
+        public static MemoryStream? GetResourceStream(string resourceName)
         {
             using var resourceStream = typeof(TestResources)
                 .Assembly
                 .GetManifestResourceStream(ResourcePrefix + resourceName);
 
-            if (resourceStream == null)
+            if (resourceStream is null)
             {
                 return null;
             }

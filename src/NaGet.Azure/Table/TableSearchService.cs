@@ -66,7 +66,7 @@ public class TableSearchService : ISearchService
     }
 
     private async Task<List<PackageRegistration>> SearchAsync(
-        string searchText,
+        string? searchText,
         int skip,
         int take,
         bool includePrerelease,
@@ -95,8 +95,9 @@ public class TableSearchService : ISearchService
         var results = new List<Package>();
 
         var partitions = 0;
-        string lastPartitionKey = null;
-        TableContinuationToken token = null;
+        string? lastPartitionKey = null;
+        TableContinuationToken? token = null;
+
         do
         {
             var segment = await table.ExecuteQuerySegmentedAsync(query, token, cancellationToken);
@@ -119,12 +120,12 @@ public class TableSearchService : ISearchService
                 results.Add(result.AsPackage());
             }
         }
-        while (token != null);
+        while (token is not null);
 
         return results;
     }
 
-    private string GenerateSearchFilter(string searchText, bool includePrerelease, bool includeSemVer2)
+    private string GenerateSearchFilter(string? searchText, bool includePrerelease, bool includeSemVer2)
     {
         var result = "";
 
@@ -175,7 +176,7 @@ public class TableSearchService : ISearchService
 
         string GenerateAnd(string left, string right)
         {
-            if (string.IsNullOrEmpty(left)) return right;
+            if (string.IsNullOrWhiteSpace(left)) return right;
 
             return TableQuery.CombineFilters(left, TableOperators.And, right);
         }

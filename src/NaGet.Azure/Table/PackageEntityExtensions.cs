@@ -38,7 +38,7 @@ public static class PackageEntityExtensions
         };
     }
 
-    private static Uri ParseUri(string? input)
+    private static Uri? ParseUri(string? input)
     {
         return string.IsNullOrWhiteSpace(input) ? null : new Uri(input);
     }

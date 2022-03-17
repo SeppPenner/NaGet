@@ -41,7 +41,7 @@ public class PackageMetadata
     /// The deprecation associated with the package, if any.
     /// </summary>
     [JsonPropertyName("deprecation")]
-    public PackageDeprecation Deprecation { get; set; }
+    public PackageDeprecation? Deprecation { get; set; }
 
     /// <summary>
     /// The package's description.

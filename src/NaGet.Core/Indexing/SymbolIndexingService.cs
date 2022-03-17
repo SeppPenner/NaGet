@@ -94,7 +94,7 @@ public class SymbolIndexingService : ISymbolIndexingService
             // Ensure there are no unexpected file extensions within the symbol package.
             if (!AreSymbolFilesValid(files))
             {
-                return null;
+                return new List<string>();
             }
 
             return files.Where(p => Path.GetExtension(p) == ".pdb").ToList();
@@ -103,7 +103,7 @@ public class SymbolIndexingService : ISymbolIndexingService
         {
             // TODO: ValidatePackageEntries throws PackagingException.
             // Add better logging.
-            return null;
+            return new List<string>();
         }
     }
 
@@ -112,12 +112,12 @@ public class SymbolIndexingService : ISymbolIndexingService
         // TODO: Validate that all PDBs are portable. See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery/Services/SymbolPackageService.cs#L174
         bool IsValidSymbolFileInfo(FileInfo file)
         {
-            if (string.IsNullOrEmpty(file.Name))
+            if (string.IsNullOrWhiteSpace(file.Name))
             {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(file.Extension))
+            if (string.IsNullOrWhiteSpace(file.Extension))
             {
                 return false;
             }
@@ -140,30 +140,28 @@ public class SymbolIndexingService : ISymbolIndexingService
     {
         // TODO: Validate that the PDB has a corresponding DLL
         // See: https://github.com/NuGet/NuGet.Jobs/blob/master/src/Validation.Symbols/SymbolsValidatorService.cs#L170
-        Stream pdbStream = null;
-        PortablePdb result = null;
+        Stream? pdbStream = null;
+        PortablePdb? result = null;
 
         try
         {
-            using (var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken))
+            using var rawPdbStream = await symbolPackage.GetStreamAsync(pdbPath, cancellationToken);
+            pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+
+            string signature;
+            using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
             {
-                pdbStream = await rawPdbStream.AsTemporaryFileStreamAsync();
+                var reader = pdbReaderProvider.GetMetadataReader();
+                var id = new BlobContentId(reader.DebugMetadataHeader.Id);
 
-                string signature;
-                using (var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen))
-                {
-                    var reader = pdbReaderProvider.GetMetadataReader();
-                    var id = new BlobContentId(reader.DebugMetadataHeader.Id);
-
-                    signature = id.Guid.ToString("N").ToUpperInvariant();
-                }
-
-                var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
-                var key = $"{signature}ffffffff";
-
-                pdbStream.Position = 0;
-                result = new PortablePdb(fileName, key, pdbStream);
+                signature = id.Guid.ToString("N").ToUpperInvariant();
             }
+
+            var fileName = Path.GetFileName(pdbPath).ToLowerInvariant();
+            var key = $"{signature}ffffffff";
+
+            pdbStream.Position = 0;
+            result = new PortablePdb(fileName, key, pdbStream);
         }
         finally
         {

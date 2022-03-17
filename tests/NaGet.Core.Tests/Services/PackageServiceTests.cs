@@ -91,8 +91,8 @@ namespace NaGet.Core.Tests
             }
 
             private void Setup(
-                IReadOnlyList<Package> localPackages = null,
-                IReadOnlyList<NuGetVersion> upstreamPackages = null)
+                IReadOnlyList<Package>? localPackages = null,
+                IReadOnlyList<NuGetVersion>? upstreamPackages = null)
             {
                 localPackages = localPackages ?? new List<Package>();
                 upstreamPackages = upstreamPackages ?? new List<NuGetVersion>();
@@ -181,8 +181,8 @@ namespace NaGet.Core.Tests
             }
 
             private void Setup(
-                IReadOnlyList<Package> localPackages = null,
-                IReadOnlyList<Package> upstreamPackages = null)
+                IReadOnlyList<Package>? localPackages = null,
+                IReadOnlyList<Package>? upstreamPackages = null)
             {
                 localPackages = localPackages ?? new List<Package>();
                 upstreamPackages = upstreamPackages ?? new List<Package>();
@@ -296,7 +296,7 @@ namespace NaGet.Core.Tests
 
                 _upstream
                     .Setup(u => u.DownloadPackageOrNullAsync(_id, _version, _cancellationToken))
-                    .ReturnsAsync((Stream)null);
+                    .ReturnsAsync((Stream?)null);
 
                 await TargetAsync();
 

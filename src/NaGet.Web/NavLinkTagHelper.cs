@@ -31,8 +31,8 @@ namespace NaGet.Web
             var endpoint = _accessor.HttpContext?.GetEndpoint();
             var pageDescriptor = endpoint?.Metadata.GetMetadata<PageActionDescriptor>();
 
-            if (pageDescriptor == null) return false;
-            if (pageDescriptor.AreaName != null) return false;
+            if (pageDescriptor is null) return false;
+            if (pageDescriptor.AreaName is not null) return false;
             if (pageDescriptor.ViewEnginePath != Page) return false;
 
             return true;

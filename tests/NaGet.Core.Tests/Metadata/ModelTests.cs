@@ -212,25 +212,24 @@ namespace NaGet.Core.Tests.Metadata
             /// <summary>
             /// The model's type in the "NaGet.Protocol" project that was extended.
             /// </summary>
-            public Type OriginalType { get; set; }
+            public Type? OriginalType { get; set; }
 
             /// <summary>
             /// The model's type in the "NaGet.Core" project that extends a
             /// type from the "NaGet.Protocol" project.
             /// </summary>
-            public Type DerivedType { get; set; }
+            public Type? DerivedType { get; set; }
 
             /// <summary>
             /// The properties added by the model type in the "NaGet.Core" project.
             /// </summary>
-            public Dictionary<string, Type> AddedProperties { get; set; } = new Dictionary<string, Type>();
+            public Dictionary<string, Type> AddedProperties { get; set; } = new();
 
             /// <summary>
             /// The properties whose types were modified by the model type in the
             /// "NaGet.Core" project.
             /// </summary>
-            public Dictionary<string, (Type From, Type To)> ModifiedProperties { get; set; }
-                = new Dictionary<string, (Type From, Type To)>();
+            public Dictionary<string, (Type From, Type To)> ModifiedProperties { get; set; } = new();
         }
     }
 }

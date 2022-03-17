@@ -12,7 +12,10 @@ public class FileStorageService : IStorageService
 
     public FileStorageService(IOptionsSnapshot<FileSystemStorageOptions> options)
     {
-        if (options == null) throw new ArgumentNullException(nameof(options));
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
 
         // Resolve relative path components ('.'/'..') and ensure there is a trailing slash.
         storePath = Path.GetFullPath(options.Value.Path);
@@ -23,23 +26,23 @@ public class FileStorageService : IStorageService
         }
     }
 
-    public Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         path = GetFullPath(path);
         var content = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-        return Task.FromResult<Stream>(content);
+        return Task.FromResult<Stream?>(content);
     }
 
-    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var result = new Uri(GetFullPath(path));
 
-        return Task.FromResult(result);
+        return Task.FromResult<Uri?>(result);
     }
 
     public async Task<StoragePutResult> PutAsync(
@@ -53,7 +56,7 @@ public class FileStorageService : IStorageService
             throw new ArgumentNullException(nameof(content));
         }
 
-        if (string.IsNullOrEmpty(contentType))
+        if (string.IsNullOrWhiteSpace(contentType))
         {
             throw new ArgumentException("Content type is required", nameof(contentType));
         }
@@ -63,7 +66,7 @@ public class FileStorageService : IStorageService
         path = GetFullPath(path);
 
         // Ensure that the path exists.
-        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? string.Empty);
 
         try
         {
@@ -98,7 +101,7 @@ public class FileStorageService : IStorageService
 
     private string GetFullPath(string path)
     {
-        if (string.IsNullOrEmpty(path))
+        if (string.IsNullOrWhiteSpace(path))
         {
             throw new ArgumentException("Path is required", nameof(path));
         }

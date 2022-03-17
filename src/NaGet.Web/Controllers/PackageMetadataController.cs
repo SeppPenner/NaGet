@@ -26,7 +26,7 @@ namespace NaGet.Web
         public async Task<ActionResult<NaGetRegistrationIndexResponse>> RegistrationIndexAsync(string id, CancellationToken cancellationToken)
         {
             var index = await _metadata.GetRegistrationIndexOrNullAsync(id, cancellationToken);
-            if (index == null)
+            if (index is null)
             {
                 return NotFound();
             }
@@ -44,7 +44,7 @@ namespace NaGet.Web
             }
 
             var leaf = await _metadata.GetRegistrationLeafOrNullAsync(id, nugetVersion, cancellationToken);
-            if (leaf == null)
+            if (leaf is null)
             {
                 return NotFound();
             }

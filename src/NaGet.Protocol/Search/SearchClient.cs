@@ -11,7 +11,7 @@ public partial class NuGetClientFactory
             clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public async Task<SearchResponse> SearchAsync(
+        public async Task<SearchResponse?> SearchAsync(
             string? query = null,
             int skip = 0,
             int take = 20,

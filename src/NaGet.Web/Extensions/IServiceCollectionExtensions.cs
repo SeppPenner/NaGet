@@ -1,4 +1,3 @@
-using System;
 using NaGet.Core;
 using NaGet.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace NaGet
                 .AddRouting(options => options.LowercaseUrls = true)
                 .AddControllers()
                 .AddApplicationPart(typeof(PackageContentController).Assembly)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;

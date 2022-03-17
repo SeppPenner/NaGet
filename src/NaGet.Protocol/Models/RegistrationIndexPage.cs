@@ -24,7 +24,7 @@ public class RegistrationIndexPage
     /// by following the page's <see cref="RegistrationPageUrl"/>.
     /// </summary>
     [JsonPropertyName("items")]
-    public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; set; }
+    public IReadOnlyList<RegistrationIndexPageItem> ItemsOrNull { get; set; } = new List<RegistrationIndexPageItem>();
 
     /// <summary>
     /// This page's lowest package version. The version should be lowercased, normalized,

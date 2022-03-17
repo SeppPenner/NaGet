@@ -18,7 +18,7 @@ public interface IAutocompleteClient
     /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The autocomplete response.</returns>
-    Task<AutocompleteResponse> AutocompleteAsync(
+    Task<AutocompleteResponse?> AutocompleteAsync(
         string? query = null,
         int skip = 0,
         int take = 20,
@@ -35,7 +35,7 @@ public interface IAutocompleteClient
     /// <param name="includeSemVer2">Whether packages that require SemVer 2.0.0 compatibility should be returned.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The package versions that matched the request.</returns>
-    Task<AutocompleteResponse> ListPackageVersionsAsync(
+    Task<AutocompleteResponse?> ListPackageVersionsAsync(
         string packageId,
         bool includePrerelease = true,
         bool includeSemVer2 = true,

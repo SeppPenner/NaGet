@@ -17,7 +17,7 @@ public class RegistrationIndexPageItem
     /// The catalog entry containing the package metadata.
     /// </summary>
     [JsonPropertyName("catalogEntry")]
-    public PackageMetadata PackageMetadata { get; set; }
+    public PackageMetadata? PackageMetadata { get; set; }
 
     /// <summary>
     /// The URL to the package content (.nupkg)

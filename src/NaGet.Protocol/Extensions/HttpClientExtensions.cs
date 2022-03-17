@@ -10,7 +10,7 @@ internal static class HttpClientExtensions
     /// <param name="requestUri">The request URI.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The deserialized JSON content</returns>
-    public static async Task<TResult> GetFromJsonAsync<TResult>(
+    public static async Task<TResult?> GetFromJsonAsync<TResult>(
         this HttpClient httpClient,
         string requestUri,
         CancellationToken cancellationToken = default)
@@ -25,7 +25,7 @@ internal static class HttpClientExtensions
         response.EnsureSuccessStatusCode();
 
         using var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
+        return await JsonSerializer.DeserializeAsync<TResult?>(stream, cancellationToken: cancellationToken);
     }
 
     /// <summary>

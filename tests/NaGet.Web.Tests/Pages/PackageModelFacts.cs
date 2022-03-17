@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using Moq;
 using NuGet.Versioning;
@@ -340,8 +334,8 @@ namespace NaGet.Web.Tests
             bool hasReadme = false,
             bool listed = true,
             DateTime? published = null,
-            IEnumerable<PackageDependency> dependencies = null,
-            IEnumerable<string> packageTypes = null)
+            IEnumerable<PackageDependency>? dependencies = null,
+            IEnumerable<string>? packageTypes = null)
         {
             published = published ?? DateTime.Now;
             dependencies = dependencies ?? Array.Empty<PackageDependency>();

@@ -63,7 +63,7 @@ namespace NaGet
                 {
                     var root = Environment.GetEnvironmentVariable("NAGET_CONFIG_ROOT");
 
-                    if (!string.IsNullOrEmpty(root))
+                    if (!string.IsNullOrWhiteSpace(root))
                     {
                         config.SetBasePath(root);
                     }

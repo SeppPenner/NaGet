@@ -35,7 +35,7 @@ public class FrameworkCompatibilityService : IFrameworkCompatibilityService
         KnownFrameworks["net471"] = new NuGetFramework(FrameworkIdentifiers.Net, new Version(4, 7, 1, 0));
     }
 
-    public IReadOnlyList<string> FindAllCompatibleFrameworks(string name)
+    public IReadOnlyList<string> FindAllCompatibleFrameworks(string? name)
     {
         if (!KnownFrameworks.TryGetValue(name, out var framework))
         {

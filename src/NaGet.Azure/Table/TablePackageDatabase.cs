@@ -123,7 +123,7 @@ public class TablePackageDatabase : IPackageDatabase
         var results = new List<Package>();
 
         // Request 500 results at a time from the server.
-        TableContinuationToken token = null;
+        TableContinuationToken? token = null;
         query.TakeCount = 500;
 
         do
@@ -135,12 +135,12 @@ public class TablePackageDatabase : IPackageDatabase
             // Write out the properties for each entity returned.
             results.AddRange(segment.Results.Select(r => r.AsPackage()));
         }
-        while (token != null);
+        while (token is not null);
 
         return results.OrderBy(p => p.Version).ToList();
     }
 
-    public async Task<Package> FindOrNullAsync(
+    public async Task<Package?> FindOrNullAsync(
         string id,
         NuGetVersion version,
         bool includeUnlisted,

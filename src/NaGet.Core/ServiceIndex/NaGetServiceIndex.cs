@@ -13,7 +13,7 @@ public class NaGetServiceIndex : IServiceIndexService
     {
         foreach (var version in versions)
         {
-            var type = string.IsNullOrEmpty(version) ? name : $"{name}/{version}";
+            var type = string.IsNullOrWhiteSpace(version) ? name : $"{name}/{version}";
 
             yield return new ServiceIndexItem
             {

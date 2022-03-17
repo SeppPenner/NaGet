@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using NaGet.Protocol.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +52,7 @@ namespace NaGet.Web
             CancellationToken cancellationToken = default)
         {
             // If only "id" is provided, find package versions. Otherwise, find package IDs.
-            if (versionsQuery != null && autocompleteQuery == null)
+            if (versionsQuery is not null && autocompleteQuery is null)
             {
                 var request = new VersionsRequest
                 {

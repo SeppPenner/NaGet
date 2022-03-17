@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using NaGet.Protocol.Internal;
 using Xunit;
 
@@ -6,19 +5,19 @@ namespace NaGet.Protocol.Tests
 {
     public class RawSearchClientTests : IClassFixture<ProtocolFixture>
     {
-        private readonly RawSearchClient _target;
+        private readonly RawSearchClient target;
 
         public RawSearchClientTests(ProtocolFixture fixture)
         {
-            _target = fixture.SearchClient;
+            target = fixture.SearchClient;
         }
 
         [Fact]
         public async Task GetDefaultSearchResults()
         {
-            var response = await _target.SearchAsync();
+            var response = await target.SearchAsync();
 
-            Assert.NotNull(response);
+            Assert.NotNull(response?.TotalHits);
             Assert.Equal(1, response.TotalHits);
 
             var result = Assert.Single(response.Data);

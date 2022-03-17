@@ -30,8 +30,8 @@ public class PackageIndexingService : IPackageIndexingService
         // Try to extract all the necessary information from the package.
         Package package;
         Stream nuspecStream;
-        Stream readmeStream;
-        Stream iconStream;
+        Stream? readmeStream;
+        Stream? iconStream;
 
         try
         {

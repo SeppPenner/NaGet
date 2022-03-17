@@ -21,7 +21,7 @@ public class RawSearchClient : ISearchClient
         this.searchUrl = searchUrl ?? throw new ArgumentNullException(nameof(searchUrl));
     }
 
-    public async Task<SearchResponse> SearchAsync(
+    public async Task<SearchResponse?> SearchAsync(
         string? query = null,
         int skip = 0,
         int take = 20,
@@ -31,7 +31,7 @@ public class RawSearchClient : ISearchClient
     {
         var url = AddSearchQueryString(searchUrl, query, skip, take, includePrerelease, includeSemVer2, "q");
 
-        return await httpClient.GetFromJsonAsync<SearchResponse>(url, cancellationToken);
+        return await httpClient.GetFromJsonAsync<SearchResponse?>(url, cancellationToken);
     }
 
     internal static string AddSearchQueryString(

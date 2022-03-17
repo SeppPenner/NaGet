@@ -2,25 +2,25 @@ namespace NaGet.Core;
 
 public class DatabaseSearchService : ISearchService
 {
-    private readonly IContext _context;
-    private readonly IFrameworkCompatibilityService _frameworks;
-    private readonly ISearchResponseBuilder _searchBuilder;
+    private readonly IContext context;
+    private readonly IFrameworkCompatibilityService frameworks;
+    private readonly ISearchResponseBuilder searchBuilder;
 
     public DatabaseSearchService(
         IContext context,
         IFrameworkCompatibilityService frameworks,
         ISearchResponseBuilder searchBuilder)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
-        _searchBuilder = searchBuilder ?? throw new ArgumentNullException(nameof(searchBuilder));
+        this.context = context ?? throw new ArgumentNullException(nameof(context));
+        this.frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
+        this.searchBuilder = searchBuilder ?? throw new ArgumentNullException(nameof(searchBuilder));
     }
 
     public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken)
     {
         var frameworks = GetCompatibleFrameworksOrNull(request.Framework);
 
-        IQueryable<Package> search = _context.Packages;
+        IQueryable<Package> search = context.Packages;
         search = ApplySearchQuery(search, request.Query);
         search = ApplySearchFilters(
             search,
@@ -42,15 +42,15 @@ public class DatabaseSearchService : ISearchService
         // the package IDs in a subquery. Otherwise, run two queries:
         //   1. Find the package IDs that match the search
         //   2. Find all package versions for these package IDs
-        if (_context.SupportsLimitInSubqueries)
+        if (context.SupportsLimitInSubqueries)
         {
-            search = _context.Packages.Where(p => packageIds.Contains(p.Id));
+            search = context.Packages.Where(p => packageIds.Contains(p.Id));
         }
         else
         {
             var packageIdResults = await packageIds.ToListAsync(cancellationToken);
 
-            search = _context.Packages.Where(p => packageIdResults.Contains(p.Id));
+            search = context.Packages.Where(p => packageIdResults.Contains(p.Id));
         }
 
         search = ApplySearchFilters(
@@ -66,14 +66,14 @@ public class DatabaseSearchService : ISearchService
             .Select(group => new PackageRegistration(group.Key, group.ToList()))
             .ToList();
 
-        return _searchBuilder.BuildSearch(groupedResults);
+        return searchBuilder.BuildSearch(groupedResults);
     }
 
     public async Task<AutocompleteResponse> AutocompleteAsync(
         AutocompleteRequest request,
         CancellationToken cancellationToken)
     {
-        IQueryable<Package> search = _context.Packages;
+        IQueryable<Package> search = context.Packages;
 
         search = ApplySearchQuery(search, request.Query);
         search = ApplySearchFilters(
@@ -81,7 +81,7 @@ public class DatabaseSearchService : ISearchService
             request.IncludePrerelease,
             request.IncludeSemVer2,
             request.PackageType,
-            frameworks: null);
+            frameworks: new List<string>());
 
         var packageIds = await search
             .OrderByDescending(p => p.Downloads)
@@ -91,7 +91,7 @@ public class DatabaseSearchService : ISearchService
             .Take(request.Take)
             .ToListAsync(cancellationToken);
 
-        return _searchBuilder.BuildAutocomplete(packageIds);
+        return searchBuilder.BuildAutocomplete(packageIds);
     }
 
     public async Task<AutocompleteResponse> ListPackageVersionsAsync(
@@ -99,7 +99,7 @@ public class DatabaseSearchService : ISearchService
         CancellationToken cancellationToken)
     {
         var packageId = request.PackageId.ToLower();
-        var search = _context
+        var search = context
             .Packages
             .Where(p => p.Id.ToLower().Equals(packageId));
 
@@ -108,18 +108,18 @@ public class DatabaseSearchService : ISearchService
             request.IncludePrerelease,
             request.IncludeSemVer2,
             packageType: null,
-            frameworks: null);
+            frameworks: new List<string>());
 
         var packageVersions = await search
             .Select(p => p.NormalizedVersionString)
             .ToListAsync(cancellationToken);
 
-        return _searchBuilder.BuildAutocomplete(packageVersions);
+        return searchBuilder.BuildAutocomplete(packageVersions);
     }
 
     public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
     {
-        var dependents = await _context
+        var dependents = await context
             .Packages
             .Where(p => p.Listed)
             .OrderByDescending(p => p.Downloads)
@@ -134,12 +134,12 @@ public class DatabaseSearchService : ISearchService
             .Distinct()
             .ToListAsync(cancellationToken);
 
-        return _searchBuilder.BuildDependents(dependents);
+        return searchBuilder.BuildDependents(dependents);
     }
 
-    private IQueryable<Package> ApplySearchQuery(IQueryable<Package> query, string search)
+    private IQueryable<Package> ApplySearchQuery(IQueryable<Package> query, string? search)
     {
-        if (string.IsNullOrEmpty(search))
+        if (string.IsNullOrWhiteSpace(search))
         {
             return query;
         }
@@ -153,7 +153,7 @@ public class DatabaseSearchService : ISearchService
         IQueryable<Package> query,
         bool includePrerelease,
         bool includeSemVer2,
-        string packageType,
+        string? packageType,
         IReadOnlyList<string> frameworks)
     {
         if (!includePrerelease)
@@ -166,12 +166,12 @@ public class DatabaseSearchService : ISearchService
             query = query.Where(p => p.SemVerLevel != SemVerLevel.SemVer2);
         }
 
-        if (!string.IsNullOrEmpty(packageType))
+        if (!string.IsNullOrWhiteSpace(packageType))
         {
             query = query.Where(p => p.PackageTypes.Any(t => t.Name == packageType));
         }
 
-        if (frameworks != null)
+        if (frameworks is not null)
         {
             query = query.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
         }
@@ -179,10 +179,13 @@ public class DatabaseSearchService : ISearchService
         return query.Where(p => p.Listed);
     }
 
-    private IReadOnlyList<string> GetCompatibleFrameworksOrNull(string framework)
+    private IReadOnlyList<string> GetCompatibleFrameworksOrNull(string? framework)
     {
-        if (framework == null) return null;
+        if (string.IsNullOrWhiteSpace(framework))
+        {
+            return new List<string>();
+        }
 
-        return _frameworks.FindAllCompatibleFrameworks(framework);
+        return frameworks.FindAllCompatibleFrameworks(framework);
     }
 }

@@ -1,6 +1,3 @@
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using Microsoft.AspNetCore.Http;
 
@@ -10,11 +7,12 @@ namespace NaGet.Web
     {
         public const string ApiKeyHeader = "X-NuGet-ApiKey";
 
-        public static async Task<Stream> GetUploadStreamOrNullAsync(this HttpRequest request, CancellationToken cancellationToken)
+        public static async Task<Stream?> GetUploadStreamOrNullAsync(this HttpRequest request, CancellationToken cancellationToken)
         {
             // Try to get the nupkg from the multipart/form-data. If that's empty,
             // fallback to the request's body.
-            Stream rawUploadStream = null;
+            Stream? rawUploadStream = null;
+
             try
             {
                 if (request.HasFormContentType && request.Form.Files.Count > 0)

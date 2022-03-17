@@ -71,7 +71,7 @@ public class NuGetClient
         CancellationToken cancellationToken = default)
     {
         var versions = await contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
-        return (versions != null && versions.Versions.Any());
+        return (versions is not null && versions.Versions.Any());
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public class NuGetClient
         CancellationToken cancellationToken = default)
     {
         var response = await searchClient.SearchAsync(query, cancellationToken: cancellationToken);
-        return response.Data;
+        return response?.Data ?? new List<SearchResult>();
     }
 
     /// <summary>
@@ -350,7 +350,7 @@ public class NuGetClient
             includeSemVer2: true,
             cancellationToken: cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<SearchResult>();
     }
 
     /// <summary>
@@ -372,7 +372,7 @@ public class NuGetClient
             includePrerelease: includePrerelease,
             cancellationToken: cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<SearchResult>();
     }
 
     /// <summary>
@@ -401,7 +401,7 @@ public class NuGetClient
             includeSemVer2: true,
             cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<SearchResult>();
     }
 
     /// <summary>
@@ -417,7 +417,7 @@ public class NuGetClient
         CancellationToken cancellationToken = default)
     {
         var response = await autocompleteClient.AutocompleteAsync(query, cancellationToken: cancellationToken);
-        return response.Data;
+        return response?.Data ?? new List<string>();
     }
 
     /// <summary>
@@ -444,7 +444,7 @@ public class NuGetClient
             includeSemVer2: true,
             cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<string>();
     }
 
     /// <summary>
@@ -466,7 +466,7 @@ public class NuGetClient
             includePrerelease: includePrerelease,
             cancellationToken: cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<string>();
     }
 
     /// <summary>
@@ -495,6 +495,6 @@ public class NuGetClient
             includeSemVer2: true,
             cancellationToken);
 
-        return response.Data;
+        return response?.Data ?? new List<string>();
     }
 }

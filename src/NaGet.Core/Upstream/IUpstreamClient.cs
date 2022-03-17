@@ -39,5 +39,5 @@ public interface IUpstreamClient
     /// The package stream or null if the package cannot be found.
     /// The stream is guaranteed to be seekable if not not null.
     /// </returns>
-    Task<Stream> DownloadPackageOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
+    Task<Stream?> DownloadPackageOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken);
 }

@@ -16,7 +16,7 @@ public class V3UpstreamClient : IUpstreamClient
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Stream> DownloadPackageOrNullAsync(
+    public async Task<Stream?> DownloadPackageOrNullAsync(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
@@ -97,15 +97,14 @@ public class V3UpstreamClient : IUpstreamClient
             ProjectUrl = ParseUri(metadata.ProjectUrl),
             PackageTypes = new List<PackageType>(),
             RepositoryUrl = null,
-            RepositoryType = null,
+            RepositoryType = string.Empty,
             SemVerLevel = version.IsSemVer2 ? SemVerLevel.SemVer2 : SemVerLevel.Unknown,
             Tags = metadata.Tags?.ToArray() ?? Array.Empty<string>(),
-
             Dependencies = ToDependencies(metadata)
         };
     }
 
-    private Uri ParseUri(string uriString)
+    private Uri? ParseUri(string uriString)
     {
         if (uriString is null)
         {
@@ -122,7 +121,7 @@ public class V3UpstreamClient : IUpstreamClient
 
     private string[] ParseAuthors(string authors)
     {
-        if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
+        if (string.IsNullOrWhiteSpace(authors)) return Array.Empty<string>();
 
         return authors
             .Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
@@ -150,13 +149,13 @@ public class V3UpstreamClient : IUpstreamClient
         {
             return new[]
             {
-                    new PackageDependency
-                    {
-                        Id = null,
-                        VersionRange = null,
-                        TargetFramework = group.TargetFramework,
-                    }
-                };
+                new PackageDependency
+                {
+                    Id = string.Empty,
+                    VersionRange = string.Empty,
+                    TargetFramework = group.TargetFramework,
+                }
+            };
         }
 
         return group.Dependencies.Select(d => new PackageDependency

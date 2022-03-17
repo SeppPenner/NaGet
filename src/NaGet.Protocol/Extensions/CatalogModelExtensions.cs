@@ -102,7 +102,7 @@ public static class CatalogModelExtensions
     /// <returns>The framework.</returns>
     public static NuGetFramework ParseTargetFramework(this DependencyGroupItem packageDependencyGroup)
     {
-        if (string.IsNullOrEmpty(packageDependencyGroup.TargetFramework))
+        if (string.IsNullOrWhiteSpace(packageDependencyGroup.TargetFramework))
         {
             return NuGetFramework.AnyFramework;
         }
@@ -218,7 +218,7 @@ public static class CatalogModelExtensions
             foreach (var dependencyGroup in leaf.DependencyGroups)
             {
                 // Example: https://api.nuget.org/v3/catalog0/data/2018.10.28.07.42.42/mvcsitemapprovider.3.3.0-pre1.json
-                if (dependencyGroup.Dependencies == null)
+                if (dependencyGroup.Dependencies is null)
                 {
                     continue;
                 }
@@ -227,8 +227,8 @@ public static class CatalogModelExtensions
                 {
                     var versionRange = dependency.ParseRange();
 
-                    if ((versionRange.MaxVersion != null && versionRange.MaxVersion.IsSemVer2)
-                        || (versionRange.MinVersion != null && versionRange.MinVersion.IsSemVer2))
+                    if ((versionRange.MaxVersion is not null && versionRange.MaxVersion.IsSemVer2)
+                        || (versionRange.MinVersion is not null && versionRange.MinVersion.IsSemVer2))
                     {
                         return true;
                     }

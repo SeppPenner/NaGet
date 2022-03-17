@@ -22,7 +22,7 @@ public interface IPackageDatabase
     /// <param name="includeUnlisted">Whether unlisted results should be included.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The package found, or null.</returns>
-    Task<Package> FindOrNullAsync(
+    Task<Package?> FindOrNullAsync(
         string id,
         NuGetVersion version,
         bool includeUnlisted,

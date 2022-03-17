@@ -11,7 +11,7 @@ public partial class NuGetClientFactory
             clientfactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public async Task<AutocompleteResponse> AutocompleteAsync(
+        public async Task<AutocompleteResponse?> AutocompleteAsync(
             string? query = null,
             int skip = 0,
             int take = 20,
@@ -25,7 +25,7 @@ public partial class NuGetClientFactory
             return await client.AutocompleteAsync(query, skip, take, includePrerelease, includeSemVer2, cancellationToken);
         }
 
-        public async Task<AutocompleteResponse> ListPackageVersionsAsync(
+        public async Task<AutocompleteResponse?> ListPackageVersionsAsync(
             string packageId,
             bool includePrerelease = true,
             bool includeSemVer2 = true,

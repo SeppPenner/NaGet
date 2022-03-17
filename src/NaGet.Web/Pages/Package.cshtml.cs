@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using Markdig;
 using Microsoft.AspNetCore.Html;
@@ -17,10 +11,10 @@ namespace NaGet.Web
     {
         private static readonly MarkdownPipeline MarkdownPipeline;
 
-        private readonly IPackageService _packages;
-        private readonly IPackageContentService _content;
-        private readonly ISearchService _search;
-        private readonly IUrlGenerator _url;
+        private readonly IPackageService packages;
+        private readonly IPackageContentService content;
+        private readonly ISearchService search;
+        private readonly IUrlGenerator url;
 
         static PackageModel()
         {
@@ -35,15 +29,15 @@ namespace NaGet.Web
             ISearchService search,
             IUrlGenerator url)
         {
-            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
-            _content = content ?? throw new ArgumentNullException(nameof(content));
-            _search = search ?? throw new ArgumentNullException(nameof(search));
-            _url = url ?? throw new ArgumentNullException(nameof(url));
+            this.packages = packages ?? throw new ArgumentNullException(nameof(packages));
+            this.content = content ?? throw new ArgumentNullException(nameof(content));
+            this.search = search ?? throw new ArgumentNullException(nameof(search));
+            this.url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
         public bool Found { get; private set; }
 
-        public Package Package { get; private set; }
+        public Package? Package { get; private set; }
 
         public bool IsDotnetTemplate { get; private set; }
         public bool IsDotnetTool { get; private set; }
@@ -54,7 +48,7 @@ namespace NaGet.Web
         public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
         public IReadOnlyList<VersionModel> Versions { get; private set; }
 
-        public HtmlString Readme { get; private set; }
+        public HtmlString? Readme { get; private set; }
 
         public string IconUrl { get; private set; }
         public string LicenseUrl { get; private set; }
@@ -62,7 +56,7 @@ namespace NaGet.Web
 
         public async Task OnGetAsync(string id, string version, CancellationToken cancellationToken)
         {
-            var packages = await _packages.FindPackagesAsync(id, cancellationToken);
+            var packages = await this.packages.FindPackagesAsync(id, cancellationToken);
             var listedPackages = packages.Where(p => p.Listed).ToList();
 
             // Try to find the requested version.
@@ -72,12 +66,12 @@ namespace NaGet.Web
             }
 
             // Otherwise try to display the latest version.
-            if (Package == null)
+            if (Package is null)
             {
                 Package = listedPackages.OrderByDescending(p => p.Version).FirstOrDefault();
             }
 
-            if (Package == null)
+            if (Package is null)
             {
                 Package = new Package { Id = id };
                 Found = false;
@@ -92,7 +86,7 @@ namespace NaGet.Web
             LastUpdated = packages.Max(p => p.Published);
             TotalDownloads = packages.Sum(p => p.Downloads);
 
-            var dependents = await _search.FindDependentsAsync(Package.Id, cancellationToken);
+            var dependents = await search.FindDependentsAsync(Package.Id, cancellationToken);
 
             UsedBy = dependents.Data;
             DependencyGroups = ToDependencyGroups(Package);
@@ -104,10 +98,10 @@ namespace NaGet.Web
             }
 
             IconUrl = Package.HasEmbeddedIcon
-                ? _url.GetPackageIconDownloadUrl(Package.Id, packageVersion)
+                ? url.GetPackageIconDownloadUrl(Package.Id, packageVersion)
                 : Package.IconUrlString;
             LicenseUrl = Package.LicenseUrlString;
-            PackageDownloadUrl = _url.GetPackageDownloadUrl(Package.Id, packageVersion);
+            PackageDownloadUrl = url.GetPackageDownloadUrl(Package.Id, packageVersion);
         }
 
         private IReadOnlyList<DependencyGroupModel> ToDependencyGroups(Package package)
@@ -121,11 +115,11 @@ namespace NaGet.Web
                     {
                         Name = PrettifyTargetFramework(group.Key),
                         Dependencies = group
-                            .Where(d => d.Id != null)
+                            .Where(d => d.Id is not null)
                             .Select(d => new DependencyModel
                             {
                                 PackageId = d.Id,
-                                VersionSpec = (d.VersionRange != null)
+                                VersionSpec = (d.VersionRange is not null)
                                     ? VersionRange.Parse(d.VersionRange).PrettyPrint()
                                     : string.Empty
                             })
@@ -137,9 +131,13 @@ namespace NaGet.Web
 
         private string PrettifyTargetFramework(string targetFramework)
         {
-            if (targetFramework == null) return "All Frameworks";
+            if (targetFramework is null)
+            {
+                return "All Frameworks";
+            }
 
             NuGetFramework framework;
+
             try
             {
                 framework = NuGetFramework.Parse(targetFramework);
@@ -150,6 +148,7 @@ namespace NaGet.Web
             }
 
             string frameworkName;
+
             if (framework.Framework.Equals(FrameworkConstants.FrameworkIdentifiers.NetCoreApp,
                 StringComparison.OrdinalIgnoreCase))
             {
@@ -193,20 +192,21 @@ namespace NaGet.Web
                 .ToList();
         }
 
-        private async Task<HtmlString> GetReadmeHtmlStringOrNullAsync(
+        private async Task<HtmlString?> GetReadmeHtmlStringOrNullAsync(
             string packageId,
             NuGetVersion packageVersion,
             CancellationToken cancellationToken)
         {
             string readme;
-            using (var readmeStream = await _content.GetPackageReadmeStreamOrNullAsync(packageId, packageVersion, cancellationToken))
+            using (var readmeStream = await content.GetPackageReadmeStreamOrNullAsync(packageId, packageVersion, cancellationToken))
             {
-                if (readmeStream == null) return null;
-
-                using (var reader = new StreamReader(readmeStream))
+                if (readmeStream is null)
                 {
-                    readme = await reader.ReadToEndAsync();
+                    return null;
                 }
+
+                using var reader = new StreamReader(readmeStream);
+                readme = await reader.ReadToEndAsync();
             }
 
             var readmeHtml = Markdown.ToHtml(readme, MarkdownPipeline);
@@ -215,21 +215,21 @@ namespace NaGet.Web
 
         public class DependencyGroupModel
         {
-            public string Name { get; set; }
-            public IReadOnlyList<DependencyModel> Dependencies { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public IReadOnlyList<DependencyModel> Dependencies { get; set; } = new List<DependencyModel>();
         }
 
         // TODO: Convert this to records.
         public class DependencyModel
         {
-            public string PackageId { get; set; }
-            public string VersionSpec { get; set; }
+            public string PackageId { get; set; } = string.Empty;
+            public string VersionSpec { get; set; } = string.Empty;
         }
 
         // TODO: Convert this to records.
         public class VersionModel
         {
-            public NuGetVersion Version { get; set; }
+            public NuGetVersion? Version { get; set; }
             public long Downloads { get; set; }
             public bool Selected { get; set; }
             public DateTime LastUpdated { get; set; }

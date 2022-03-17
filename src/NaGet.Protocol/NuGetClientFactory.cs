@@ -10,7 +10,7 @@ public partial class NuGetClientFactory
     private readonly string serviceIndexUrl;
 
     private readonly SemaphoreSlim mutex;
-    private NuGetClients clients;
+    private NuGetClients? clients;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NuGetClientFactory"/> class
@@ -137,13 +137,13 @@ public partial class NuGetClientFactory
 
     private async Task<T> GetAsync<T>(Func<NuGetClients, T> clientFactory, CancellationToken cancellationToken)
     {
-        if (clients == null)
+        if (clients is null)
         {
             await mutex.WaitAsync(cancellationToken);
 
             try
             {
-                if (clients == null)
+                if (clients is null)
                 {
                     var serviceIndexClient = new RawServiceIndexClient(httpClient, serviceIndexUrl);
 
@@ -161,10 +161,10 @@ public partial class NuGetClientFactory
                     var searchClient = new RawSearchClient(httpClient, searchResourceUrl);
 
                     // Create clients for optional resources.
-                    var catalogClient = catalogResourceUrl == null
+                    var catalogClient = catalogResourceUrl is null
                         ? new NullCatalogClient() as ICatalogClient
                         : new RawCatalogClient(httpClient, catalogResourceUrl);
-                    var autocompleteClient = autocompleteResourceUrl == null
+                    var autocompleteClient = autocompleteResourceUrl is null
                         ? new NullAutocompleteClient() as IAutocompleteClient
                         : new RawAutocompleteClient(httpClient, autocompleteResourceUrl);
 
@@ -192,12 +192,12 @@ public partial class NuGetClientFactory
 
     private class NuGetClients
     {
-        public ServiceIndexResponse ServiceIndex { get; set; }
+        public ServiceIndexResponse? ServiceIndex { get; set; }
 
-        public IPackageContentClient PackageContentClient { get; set; }
-        public IPackageMetadataClient PackageMetadataClient { get; set; }
-        public ISearchClient SearchClient { get; set; }
-        public IAutocompleteClient AutocompleteClient { get; set; }
-        public ICatalogClient CatalogClient { get; set; }
+        public IPackageContentClient? PackageContentClient { get; set; }
+        public IPackageMetadataClient? PackageMetadataClient { get; set; }
+        public ISearchClient? SearchClient { get; set; }
+        public IAutocompleteClient? AutocompleteClient { get; set; }
+        public ICatalogClient? CatalogClient { get; set; }
     }
 }

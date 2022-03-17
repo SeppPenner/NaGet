@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using NaGet.Core;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -24,7 +20,7 @@ namespace NaGet
         public const string CorsPolicy = "AllowAll";
 
         private static readonly HashSet<string> ValidDatabaseTypes
-            = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            = new(StringComparer.OrdinalIgnoreCase)
             {
                 "AzureTable",
                 "MySql",
@@ -34,7 +30,7 @@ namespace NaGet
             };
 
         private static readonly HashSet<string> ValidStorageTypes
-            = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            = new(StringComparer.OrdinalIgnoreCase)
             {
                 "AliyunOss",
                 "AwsS3",
@@ -45,7 +41,7 @@ namespace NaGet
             };
 
         private static readonly HashSet<string> ValidSearchTypes
-            = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            = new(StringComparer.OrdinalIgnoreCase)
             {
                 "AzureSearch",
                 "Database",
@@ -85,26 +81,30 @@ namespace NaGet
         {
             var failures = new List<string>();
 
-            if (options.Database == null) failures.Add($"The '{nameof(NaGetOptions.Database)}' config is required");
-            if (options.Mirror == null) failures.Add($"The '{nameof(NaGetOptions.Mirror)}' config is required");
-            if (options.Search == null) failures.Add($"The '{nameof(NaGetOptions.Search)}' config is required");
-            if (options.Storage == null) failures.Add($"The '{nameof(NaGetOptions.Storage)}' config is required");
+            if (options.Database is null) failures.Add($"The '{nameof(NaGetOptions.Database)}' config is required");
+            if (options.Mirror is null) failures.Add($"The '{nameof(NaGetOptions.Mirror)}' config is required");
+            if (options.Search is null) failures.Add($"The '{nameof(NaGetOptions.Search)}' config is required");
+            if (options.Storage is null) failures.Add($"The '{nameof(NaGetOptions.Storage)}' config is required");
 
-            if (!ValidDatabaseTypes.Contains(options.Database?.Type))
+            var databaseType = options.Database?.Type ?? string.Empty;
+            var storageType = options.Storage?.Type ?? string.Empty;
+            var searchType = options.Search?.Type ?? string.Empty;
+
+            if (!ValidDatabaseTypes.Contains(databaseType))
             {
                 failures.Add(
                     $"The '{nameof(NaGetOptions.Database)}:{nameof(DatabaseOptions.Type)}' config is invalid. " +
                     $"Allowed values: {string.Join(", ", ValidDatabaseTypes)}");
             }
 
-            if (!ValidStorageTypes.Contains(options.Storage?.Type))
+            if (!ValidStorageTypes.Contains(storageType))
             {
                 failures.Add(
                     $"The '{nameof(NaGetOptions.Storage)}:{nameof(StorageOptions.Type)}' config is invalid. " +
                     $"Allowed values: {string.Join(", ", ValidStorageTypes)}");
             }
 
-            if (!ValidSearchTypes.Contains(options.Search?.Type))
+            if (!ValidSearchTypes.Contains(searchType))
             {
                 failures.Add(
                     $"The '{nameof(NaGetOptions.Search)}:{nameof(SearchOptions.Type)}' config is invalid. " +

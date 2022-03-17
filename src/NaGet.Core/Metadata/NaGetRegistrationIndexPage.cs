@@ -30,5 +30,5 @@ public class NaGetRegistrationIndexPage
     /// This was modified to use NaGet's extended registration index page item model.
     /// </summary>
     [JsonPropertyName("items")]
-    public IReadOnlyList<NaGetRegistrationIndexPageItem> ItemsOrNull { get; set; }
+    public IReadOnlyList<NaGetRegistrationIndexPageItem>? ItemsOrNull { get; set; }
 }

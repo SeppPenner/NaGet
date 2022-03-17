@@ -5,17 +5,17 @@ using NuGetPackageType = NuGet.Packaging.Core.PackageType;
 public static class PackageArchiveReaderExtensions
 {
     public static bool HasReadme(this PackageArchiveReader package)
-        => !string.IsNullOrEmpty(package.NuspecReader.GetReadme());
+        => !string.IsNullOrWhiteSpace(package.NuspecReader.GetReadme());
 
     public static bool HasEmbeddedIcon(this PackageArchiveReader package)
-        => !string.IsNullOrEmpty(package.NuspecReader.GetIcon());
+        => !string.IsNullOrWhiteSpace(package.NuspecReader.GetIcon());
 
     public async static Task<Stream> GetReadmeAsync(
         this PackageArchiveReader package,
         CancellationToken cancellationToken)
     {
         var readmePath = package.NuspecReader.GetReadme();
-        if (readmePath == null)
+        if (readmePath is null)
         {
             throw new InvalidOperationException("Package does not have a readme!");
         }
@@ -80,8 +80,8 @@ public static class PackageArchiveReaderExtensions
         {
             foreach (var dependency in dependencyGroup.Packages)
             {
-                if ((dependency.VersionRange.MinVersion != null && dependency.VersionRange.MinVersion.IsSemVer2)
-                    || (dependency.VersionRange.MaxVersion != null && dependency.VersionRange.MaxVersion.IsSemVer2))
+                if ((dependency.VersionRange.MinVersion is not null && dependency.VersionRange.MinVersion.IsSemVer2)
+                    || (dependency.VersionRange.MaxVersion is not null && dependency.VersionRange.MaxVersion.IsSemVer2))
                 {
                     return SemVerLevel.SemVer2;
                 }
@@ -91,9 +91,9 @@ public static class PackageArchiveReaderExtensions
         return SemVerLevel.Unknown;
     }
 
-    private static Uri ParseUri(string uriString)
+    private static Uri? ParseUri(string uriString)
     {
-        if (string.IsNullOrEmpty(uriString))
+        if (string.IsNullOrWhiteSpace(uriString))
         {
             return null;
         }
@@ -103,7 +103,7 @@ public static class PackageArchiveReaderExtensions
 
     private static string[] ParseAuthors(string authors)
     {
-        if (string.IsNullOrEmpty(authors))
+        if (string.IsNullOrWhiteSpace(authors))
         {
             return Array.Empty<string>();
         }
@@ -113,7 +113,7 @@ public static class PackageArchiveReaderExtensions
 
     private static string[] ParseTags(string tags)
     {
-        if (string.IsNullOrEmpty(tags))
+        if (string.IsNullOrWhiteSpace(tags))
         {
             return Array.Empty<string>();
         }
@@ -125,7 +125,7 @@ public static class PackageArchiveReaderExtensions
     {
         var repository = nuspec.GetRepositoryMetadata();
 
-        if (string.IsNullOrEmpty(repository?.Url) ||
+        if (string.IsNullOrWhiteSpace(repository?.Url) ||
             !Uri.TryCreate(repository.Url, UriKind.Absolute, out var repositoryUri))
         {
             return (null, null);
@@ -156,8 +156,8 @@ public static class PackageArchiveReaderExtensions
             {
                 dependencies.Add(new PackageDependency
                 {
-                    Id = null,
-                    VersionRange = null,
+                    Id = string.Empty,
+                    VersionRange = string.Empty,
                     TargetFramework = targetFramework,
                 });
             }
@@ -167,7 +167,7 @@ public static class PackageArchiveReaderExtensions
                 dependencies.Add(new PackageDependency
                 {
                     Id = dependency.Id,
-                    VersionRange = dependency.VersionRange?.ToString(),
+                    VersionRange = dependency.VersionRange?.ToString() ?? string.Empty,
                     TargetFramework = targetFramework,
                 });
             }

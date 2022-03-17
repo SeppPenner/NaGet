@@ -21,18 +21,18 @@ public class RawPackageContentClient : IPackageContentClient
     }
 
     /// <inheritdoc />
-    public async Task<PackageVersionsResponse> GetPackageVersionsOrNullAsync(
+    public async Task<PackageVersionsResponse?> GetPackageVersionsOrNullAsync(
         string packageId,
         CancellationToken cancellationToken = default)
     {
         var id = packageId.ToLowerInvariant();
         var url = $"{packageContentUrl}/{id}/index.json";
 
-        return await httpClient.GetFromJsonOrDefaultAsync<PackageVersionsResponse>(url, cancellationToken);
+        return await httpClient.GetFromJsonOrDefaultAsync<PackageVersionsResponse?>(url, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<Stream> DownloadPackageOrNullAsync(
+    public async Task<Stream?> DownloadPackageOrNullAsync(
         string packageId,
         NuGetVersion packageVersion,
         CancellationToken cancellationToken = default)
@@ -53,7 +53,7 @@ public class RawPackageContentClient : IPackageContentClient
     }
 
     /// <inheritdoc />
-    public async Task<Stream> DownloadPackageManifestOrNullAsync(
+    public async Task<Stream?> DownloadPackageManifestOrNullAsync(
         string packageId,
         NuGetVersion packageVersion,
         CancellationToken cancellationToken = default)

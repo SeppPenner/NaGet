@@ -11,7 +11,7 @@ public partial class NuGetClientFactory
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+        public async Task<ServiceIndexResponse?> GetAsync(CancellationToken cancellationToken = default)
         {
             return await clientFactory.GetServiceIndexAsync(cancellationToken);
         }

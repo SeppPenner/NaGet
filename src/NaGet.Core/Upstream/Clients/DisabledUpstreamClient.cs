@@ -5,24 +5,24 @@ namespace NaGet.Core;
 /// </summary>
 public class DisabledUpstreamClient : IUpstreamClient
 {
-    private readonly IReadOnlyList<NuGetVersion> _emptyVersionList = new List<NuGetVersion>();
-    private readonly IReadOnlyList<Package> _emptyPackageList = new List<Package>();
+    private readonly IReadOnlyList<NuGetVersion> emptyVersionList = new List<NuGetVersion>();
+    private readonly IReadOnlyList<Package> emptyPackageList = new List<Package>();
 
     public Task<IReadOnlyList<NuGetVersion>> ListPackageVersionsAsync(string id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_emptyVersionList);
+        return Task.FromResult(emptyVersionList);
     }
 
     public Task<IReadOnlyList<Package>> ListPackagesAsync(string id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_emptyPackageList);
+        return Task.FromResult(emptyPackageList);
     }
 
-    public Task<Stream> DownloadPackageOrNullAsync(
+    public Task<Stream?> DownloadPackageOrNullAsync(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
     {
-        return Task.FromResult<Stream>(null);
+        return Task.FromResult<Stream?>(null);
     }
 }

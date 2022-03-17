@@ -39,11 +39,11 @@ public class Package
     public string Summary { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
 
-    public Uri IconUrl { get; set; }
-    public Uri LicenseUrl { get; set; }
-    public Uri ProjectUrl { get; set; }
+    public Uri? IconUrl { get; set; }
+    public Uri? LicenseUrl { get; set; }
+    public Uri? ProjectUrl { get; set; }
 
-    public Uri RepositoryUrl { get; set; }
+    public Uri? RepositoryUrl { get; set; }
     public string RepositoryType { get; set; } = string.Empty;
 
     public string[] Tags { get; set; } = Array.Empty<string>();

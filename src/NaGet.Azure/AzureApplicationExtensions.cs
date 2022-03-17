@@ -20,7 +20,6 @@ public static class AzureApplicationExtensions
         app.Services.AddSingleton(provider =>
         {
             var options = provider.GetRequiredService<IOptions<AzureTableOptions>>().Value;
-
             return TableStorageAccount.Parse(options.ConnectionString);
         });
 
@@ -93,7 +92,7 @@ public static class AzureApplicationExtensions
         {
             var options = provider.GetRequiredService<IOptions<AzureBlobStorageOptions>>().Value;
 
-            if (!string.IsNullOrEmpty(options.ConnectionString))
+            if (!string.IsNullOrWhiteSpace(options.ConnectionString))
             {
                 return CloudStorageAccount.Parse(options.ConnectionString);
             }
@@ -117,7 +116,10 @@ public static class AzureApplicationExtensions
 
         app.Services.AddProvider<IStorageService>((provider, config) =>
         {
-            if (!config.HasStorageType("AzureBlobStorage")) return null;
+            if (!config.HasStorageType("AzureBlobStorage"))
+            {
+                return null;
+            }
 
             return provider.GetRequiredService<BlobStorageService>();
         });

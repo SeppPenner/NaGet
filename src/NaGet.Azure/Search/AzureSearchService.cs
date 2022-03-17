@@ -6,18 +6,18 @@ using SearchResult = Protocol.Models.SearchResult;
 
 public class AzureSearchService : ISearchService
 {
-    private readonly SearchIndexClient _searchClient;
-    private readonly IUrlGenerator _url;
-    private readonly IFrameworkCompatibilityService _frameworks;
+    private readonly SearchIndexClient searchClient;
+    private readonly IUrlGenerator url;
+    private readonly IFrameworkCompatibilityService frameworks;
 
     public AzureSearchService(
         SearchIndexClient searchClient,
         IUrlGenerator url,
         IFrameworkCompatibilityService frameworks)
     {
-        _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
-        _url = url ?? throw new ArgumentNullException(nameof(url));
-        _frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
+        this.searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
+        this.url = url ?? throw new ArgumentNullException(nameof(url));
+        this.frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
     }
 
     public async Task<SearchResponse> SearchAsync(
@@ -35,7 +35,7 @@ public class AzureSearchService : ISearchService
             Filter = filter
         };
 
-        var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+        var response = await searchClient.Documents.SearchAsync<PackageDocument>(
             searchText,
             parameters,
             cancellationToken: cancellationToken);
@@ -58,14 +58,14 @@ public class AzureSearchService : ISearchService
 
                 versions.Add(new SearchResultVersion
                 {
-                    RegistrationLeafUrl = _url.GetRegistrationLeafUrl(document.Id, version),
+                    RegistrationLeafUrl = url.GetRegistrationLeafUrl(document.Id, version) ?? string.Empty,
                     Version = document.Versions[i],
                     Downloads = long.Parse(document.VersionDownloads[i]),
                 });
             }
 
             var iconUrl = document.HasEmbeddedIcon
-                ? _url.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
+                ? url.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
                 : document.IconUrl;
 
             results.Add(new SearchResult
@@ -74,10 +74,10 @@ public class AzureSearchService : ISearchService
                 Version = document.Version,
                 Description = document.Description,
                 Authors = document.Authors,
-                IconUrl = iconUrl,
+                IconUrl = iconUrl ?? string.Empty,
                 LicenseUrl = document.LicenseUrl,
                 ProjectUrl = document.ProjectUrl,
-                RegistrationIndexUrl = _url.GetRegistrationIndexUrl(document.Id),
+                RegistrationIndexUrl = url.GetRegistrationIndexUrl(document.Id) ?? string.Empty,
                 Summary = document.Summary,
                 Tags = document.Tags,
                 Title = document.Title,
@@ -90,7 +90,7 @@ public class AzureSearchService : ISearchService
         {
             TotalHits = response.Count.Value,
             Data = results,
-            Context = SearchContext.Default(_url.GetPackageMetadataResourceUrl())
+            Context = SearchContext.Default(url.GetPackageMetadataResourceUrl() ?? string.Empty)
         };
     }
 
@@ -108,7 +108,7 @@ public class AzureSearchService : ISearchService
             Top = request.Take,
         };
 
-        var response = await _searchClient.Documents.SearchAsync<PackageDocument>(
+        var response = await searchClient.Documents.SearchAsync<PackageDocument>(
             request.Query,
             parameters,
             cancellationToken: cancellationToken);
@@ -149,7 +149,7 @@ public class AzureSearchService : ISearchService
             Top = 20,
         };
 
-        var response = await _searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
+        var response = await searchClient.Documents.SearchAsync<PackageDocument>(query, parameters, cancellationToken: cancellationToken);
         var results = response.Results
             .Select(r => new PackageDependent
             {
@@ -167,25 +167,25 @@ public class AzureSearchService : ISearchService
         };
     }
 
-    private string BuildSeachQuery(string query, string packageType, string framework)
+    private string BuildSeachQuery(string? query, string? packageType, string? framework)
     {
         var queryBuilder = new StringBuilder();
 
-        if (!string.IsNullOrEmpty(query))
+        if (!string.IsNullOrWhiteSpace(query))
         {
             queryBuilder.Append(query.TrimEnd().TrimEnd('*'));
             queryBuilder.Append('*');
         }
 
-        if (!string.IsNullOrEmpty(packageType))
+        if (!string.IsNullOrWhiteSpace(packageType))
         {
             queryBuilder.Append(" +packageTypes:");
             queryBuilder.Append(packageType);
         }
 
-        if (!string.IsNullOrEmpty(framework))
+        if (!string.IsNullOrWhiteSpace(framework))
         {
-            var frameworks = _frameworks.FindAllCompatibleFrameworks(framework);
+            var frameworks = this.frameworks.FindAllCompatibleFrameworks(framework);
 
             queryBuilder.Append(" +frameworks:(");
             queryBuilder.Append(string.Join(" ", frameworks));

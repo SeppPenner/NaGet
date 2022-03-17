@@ -31,16 +31,16 @@ public class AzureBlobStorageOptions : IValidatableObject
     {
         const string helpUrl = "https://loic-sharma.github.io/NaGet/quickstart/azure/#azure-blob-storage";
 
-        if (string.IsNullOrEmpty(ConnectionString))
+        if (string.IsNullOrWhiteSpace(ConnectionString))
         {
-            if (string.IsNullOrEmpty(AccountName))
+            if (string.IsNullOrWhiteSpace(AccountName))
             {
                 yield return new ValidationResult(
                     $"The {nameof(AccountName)} configuration is required. See {helpUrl}",
                     new[] { nameof(AccountName) });
             }
 
-            if (string.IsNullOrEmpty(AccessKey))
+            if (string.IsNullOrWhiteSpace(AccessKey))
             {
                 yield return new ValidationResult(
                     $"The {nameof(AccessKey)} configuration is required. See {helpUrl}",
@@ -48,7 +48,7 @@ public class AzureBlobStorageOptions : IValidatableObject
             }
         }
 
-        if (string.IsNullOrEmpty(Container))
+        if (string.IsNullOrWhiteSpace(Container))
         {
             yield return new ValidationResult(
                 $"The {nameof(Container)} configuration is required. See {helpUrl}",

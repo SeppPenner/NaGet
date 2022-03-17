@@ -69,7 +69,7 @@ public class PackageService : IPackageService
         return result.Values.ToList();
     }
 
-    public async Task<Package> FindPackageOrNullAsync(
+    public async Task<Package?> FindPackageOrNullAsync(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)

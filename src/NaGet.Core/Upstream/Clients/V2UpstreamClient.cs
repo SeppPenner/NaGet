@@ -1,6 +1,6 @@
 namespace NaGet.Core;
 
-using ILogger = Microsoft.Extensions.Logging.ILogger<V2UpstreamClient>;
+using ILogger = ILogger<V2UpstreamClient>;
 using INuGetLogger = NuGet.Common.ILogger;
 
 /// <summary>
@@ -22,7 +22,7 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (options.Value?.PackageSource?.AbsolutePath == null)
+        if (options.Value?.PackageSource?.AbsolutePath is null)
         {
             throw new ArgumentException("No mirror package source has been set.");
         }
@@ -74,7 +74,7 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
         }
     }
 
-    public async Task<Stream> DownloadPackageOrNullAsync(
+    public async Task<Stream?> DownloadPackageOrNullAsync(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
@@ -123,9 +123,9 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
             Description = package.Description,
             Downloads = 0,
             HasReadme = false,
-            Language = null,
+            Language = string.Empty,
             Listed = package.IsListed,
-            MinClientVersion = null,
+            MinClientVersion = string.Empty,
             Published = package.Published?.UtcDateTime ?? DateTime.MinValue,
             RequireLicenseAcceptance = package.RequireLicenseAcceptance,
             Summary = package.Summary,
@@ -135,16 +135,15 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
             ProjectUrl = package.ProjectUrl,
             PackageTypes = new List<PackageType>(),
             RepositoryUrl = null,
-            RepositoryType = null,
-            Tags = package.Tags?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
-
+            RepositoryType = string.Empty,
+            Tags = package.Tags?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>(),
             Dependencies = ToDependencies(package)
         };
     }
 
     private string[] ParseAuthors(string authors)
     {
-        if (string.IsNullOrEmpty(authors)) return Array.Empty<string>();
+        if (string.IsNullOrWhiteSpace(authors)) return Array.Empty<string>();
 
         return authors
             .Split(new[] { ',', ';', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
@@ -170,19 +169,19 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
         {
             return new[]
             {
-                    new PackageDependency
-                    {
-                        Id = null,
-                        VersionRange = null,
-                        TargetFramework = framework,
-                    }
-                };
+                new PackageDependency
+                {
+                    Id = string.Empty,
+                    VersionRange = string.Empty,
+                    TargetFramework = framework,
+                }
+            };
         }
 
         return group.Packages.Select(d => new PackageDependency
         {
             Id = d.Id,
-            VersionRange = d.VersionRange?.ToString(),
+            VersionRange = d.VersionRange?.ToString() ?? string.Empty,
             TargetFramework = framework,
         });
     }

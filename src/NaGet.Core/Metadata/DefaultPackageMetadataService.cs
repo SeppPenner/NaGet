@@ -37,7 +37,7 @@ public class DefaultPackageMetadataService : IPackageMetadataService
         CancellationToken cancellationToken = default)
     {
         var package = await packages.FindPackageOrNullAsync(id, version, cancellationToken);
-        if (package == null)
+        if (package is null)
         {
             return null;
         }

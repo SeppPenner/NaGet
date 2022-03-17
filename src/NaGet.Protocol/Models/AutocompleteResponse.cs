@@ -8,7 +8,7 @@ namespace NaGet.Protocol.Models;
 public class AutocompleteResponse
 {
     [JsonPropertyName("@context")]
-    public AutocompleteContext Context { get; set; }
+    public AutocompleteContext? Context { get; set; }
 
     /// <summary>
     /// The total number of matches, disregarding skip and take.

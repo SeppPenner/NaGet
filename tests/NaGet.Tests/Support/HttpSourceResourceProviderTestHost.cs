@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
@@ -16,29 +12,29 @@ namespace NaGet.Tests
     public class HttpSourceResourceProviderTestHost : ResourceProvider
     {
         // Only one HttpSource per source should exist. This is to reduce the number of TCP connections.
-        private readonly ConcurrentDictionary<PackageSource, HttpSourceResource> _cache
+        private readonly ConcurrentDictionary<PackageSource, HttpSourceResource> cache
             = new ConcurrentDictionary<PackageSource, HttpSourceResource>();
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient httpClient;
 
         public HttpSourceResourceProviderTestHost(HttpClient httpClient)
             : base(typeof(HttpSourceResource),
                   nameof(HttpSourceResource),
                   NuGetResourceProviderPositions.Last)
         {
-            _httpClient = httpClient;
+            this.httpClient = httpClient;
         }
 
         public override Task<Tuple<bool, INuGetResource>> TryCreate(SourceRepository source, CancellationToken token)
         {
             Debug.Assert(source.PackageSource.IsHttp, "HTTP source requested for a non-http source.");
 
-            HttpSourceResource curResource = null;
+            HttpSourceResource? curResource = null;
 
             if (source.PackageSource.IsHttp)
             {
-                curResource = _cache.GetOrAdd(
+                curResource = cache.GetOrAdd(
                     source.PackageSource, 
-                    packageSource => new HttpSourceResource(TestableHttpSource.Create(source, _httpClient)));
+                    packageSource => new HttpSourceResource(TestableHttpSource.Create(source, httpClient)));
             }
 
             return Task.FromResult(new Tuple<bool, INuGetResource>(curResource != null, curResource));
