@@ -159,7 +159,7 @@ public class V3UpstreamClient : IUpstreamClient
                 {
                     Id = string.Empty,
                     VersionRange = string.Empty,
-                    TargetFramework = group.TargetFramework,
+                    TargetFramework = group.TargetFramework
                 }
             };
         }
@@ -168,7 +168,7 @@ public class V3UpstreamClient : IUpstreamClient
         {
             Id = d.Id,
             VersionRange = d.Range,
-            TargetFramework = group.TargetFramework,
+            TargetFramework = group.TargetFramework
         });
     }
 }

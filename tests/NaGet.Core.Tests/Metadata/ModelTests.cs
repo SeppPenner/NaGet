@@ -203,7 +203,7 @@ namespace NaGet.Core.Tests.Metadata
         {
             return property
                 .CustomAttributes
-                ?.SingleOrDefault(x => x.AttributeType == typeof(TAttribute))
+                .SingleOrDefault(x => x.AttributeType == typeof(TAttribute))
                 ?.ConstructorArguments;
         }
 

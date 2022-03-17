@@ -25,7 +25,7 @@ public class StringOrStringArrayJsonConverter : JsonConverter<IReadOnlyList<stri
         {
             if (reader.TokenType == JsonTokenType.String)
             {
-                result.Add(reader.GetString());
+                result.Add(reader.GetString() ?? string.Empty);
             }
             else if (reader.TokenType == JsonTokenType.EndArray)
             {

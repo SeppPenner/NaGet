@@ -39,15 +39,15 @@ namespace NaGet.Tests
 
             Assert.NotNull(index);
 
-            Assert.Equal("3.0.0", index.Version);
-            Assert.Equal(12, index.Resources.Count);
+            Assert.Equal("3.0.0", index!.Version);
+            Assert.Equal(12, index!.Resources.Count);
 
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "PackageBaseAddress/3.0.0" }));
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "PackagePublish/2.0.0" }));
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "RegistrationsBaseUrl" }));
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "SearchAutocompleteService" }));
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "SearchQueryService" }));
-            Assert.NotEmpty(index.GetResourceUrl(new[] { "SymbolPackagePublish/4.9.0" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "PackageBaseAddress/3.0.0" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "PackagePublish/2.0.0" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "RegistrationsBaseUrl" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "SearchAutocompleteService" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "SearchQueryService" }));
+            Assert.NotEmpty(index!.GetResourceUrl(new[] { "SymbolPackagePublish/4.9.0" }));
         }
 
         [Fact]
@@ -107,9 +107,11 @@ namespace NaGet.Tests
             var client = clientFactory.CreateAutocompleteClient();
             var results = await client.ListPackageVersionsAsync("TestData");
 
-            var result = Assert.Single(results.Data);
+            Assert.NotNull(results);
 
-            Assert.Equal(1, results.TotalHits);
+            var result = Assert.Single(results!.Data);
+
+            Assert.Equal(1, results!.TotalHits);
             Assert.Equal("1.2.3", result);
         }
 
@@ -119,8 +121,8 @@ namespace NaGet.Tests
             var client = clientFactory.CreateAutocompleteClient();
             var results = await client.ListPackageVersionsAsync("PackageDoesNotExist");
 
-            Assert.Empty(results.Data);
-            Assert.Equal(0, results.TotalHits);
+            Assert.Empty(results?.Data ?? new List<string>());
+            Assert.Equal(0, results!.TotalHits);
         }
 
         [Fact]
@@ -160,7 +162,7 @@ namespace NaGet.Tests
 
                 Assert.NotNull(packageStream);
 
-                await packageStream.CopyToAsync(memoryStream);
+                await packageStream!.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
 
                 Assert.True(exists);
@@ -189,7 +191,7 @@ namespace NaGet.Tests
 
                 Assert.NotNull(packageStream);
 
-                await packageStream.CopyToAsync(memoryStream);
+                await packageStream!.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
 
                 Assert.True(exists);

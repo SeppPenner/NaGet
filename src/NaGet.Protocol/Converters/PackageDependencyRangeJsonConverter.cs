@@ -42,7 +42,7 @@ public class PackageDependencyRangeJsonConverter : JsonConverter<string>
             }
         }
 
-        return result;
+        return result ?? string.Empty;
     }
 
     public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)

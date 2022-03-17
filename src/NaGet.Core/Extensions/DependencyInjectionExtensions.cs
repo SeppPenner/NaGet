@@ -34,7 +34,7 @@ public static partial class DependencyInjectionExtensions
         string? key = null)
         where TOptions : class
     {
-        services.AddSingleton<IValidateOptions<TOptions>>(new ValidateNaGetOptions<TOptions>(key));
+        services.AddSingleton<IValidateOptions<TOptions>>(new ValidateNaGetOptions<TOptions>(key ?? string.Empty));
         services.AddSingleton<IConfigureOptions<TOptions>>(provider =>
         {
             var config = provider.GetRequiredService<IConfiguration>();
