@@ -14,7 +14,7 @@ public interface IPackageMetadataClient
     /// <param name="packageId">The package's ID.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The package's registration index, or null if the package does not exist</returns>
-    Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(string packageId, CancellationToken cancellationToken = default);
+    Task<RegistrationIndexResponse?> GetRegistrationIndexOrNullAsync(string packageId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a page that was linked from the package's registration index.
@@ -23,7 +23,7 @@ public interface IPackageMetadataClient
     /// <param name="pageUrl">The URL of the page, from the <see cref="RegistrationIndexResponse"/>.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The registration index page.</returns>
-    Task<RegistrationPageResponse> GetRegistrationPageAsync(
+    Task<RegistrationPageResponse?> GetRegistrationPageAsync(
         string pageUrl,
         CancellationToken cancellationToken = default);
 
@@ -33,7 +33,7 @@ public interface IPackageMetadataClient
     /// <param name="leafUrl">The URL of the leaf, from the <see cref="RegistrationIndexPageItem"/>.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The registration leaf.</returns>
-    Task<RegistrationLeafResponse> GetRegistrationLeafAsync(
+    Task<RegistrationLeafResponse?> GetRegistrationLeafAsync(
         string leafUrl,
         CancellationToken cancellationToken = default);
 }

@@ -165,7 +165,7 @@ public class V2UpstreamClient : IUpstreamClient, IDisposable
 
         // NaGet stores a dependency group with no dependencies as a package dependency
         // with no package id nor package version.
-        if ((group.Packages?.Count() ?? 0) == 0)
+        if (group.Packages.Count() == 0)
         {
             return new[]
             {

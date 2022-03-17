@@ -11,17 +11,17 @@ public class RawCatalogClient : ICatalogClient
         this.catalogUrl = catalogUrl ?? throw new ArgumentNullException(nameof(catalogUrl));
     }
 
-    public async Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default)
+    public async Task<CatalogIndex?> GetIndexAsync(CancellationToken cancellationToken = default)
     {
-        return await httpClient.GetFromJsonAsync<CatalogIndex>(catalogUrl, cancellationToken);
+        return await httpClient.GetFromJsonAsync<CatalogIndex?>(catalogUrl, cancellationToken);
     }
 
-    public async Task<CatalogPage> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
+    public async Task<CatalogPage?> GetPageAsync(string pageUrl, CancellationToken cancellationToken = default)
     {
-        return await httpClient.GetFromJsonAsync<CatalogPage>(pageUrl, cancellationToken);
+        return await httpClient.GetFromJsonAsync<CatalogPage?>(pageUrl, cancellationToken);
     }
 
-    public async Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
+    public async Task<PackageDeleteCatalogLeaf?> GetPackageDeleteLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
     {
         return await GetAndValidateLeafAsync<PackageDeleteCatalogLeaf>(
             "PackageDelete",
@@ -29,7 +29,7 @@ public class RawCatalogClient : ICatalogClient
             cancellationToken);
     }
 
-    public async Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
+    public async Task<PackageDetailsCatalogLeaf?> GetPackageDetailsLeafAsync(string leafUrl, CancellationToken cancellationToken = default)
     {
         return await GetAndValidateLeafAsync<PackageDetailsCatalogLeaf>(
             "PackageDetails",

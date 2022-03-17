@@ -68,7 +68,7 @@ namespace NaGet.Protocol.Tests
             var options = new JsonSerializerOptions();
             options.Converters.Add(new StringOrStringArrayJsonConverter());
 
-            var json = JsonSerializer.Serialize<string>(null, options);
+            var json = JsonSerializer.Serialize<string>(null!, options);
 
             Assert.Equal("null", json);
         }

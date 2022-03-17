@@ -10,14 +10,14 @@ public class PackageStorageService : IPackageStorageService
     private const string ReadmeContentType = "text/markdown";
     private const string IconContentType = "image/xyz";
 
-    private readonly IStorageService _storage;
+    private readonly IStorageService storage;
     private readonly ILogger<PackageStorageService> _logger;
 
     public PackageStorageService(
         IStorageService storage,
         ILogger<PackageStorageService> logger)
     {
-        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -48,7 +48,7 @@ public class PackageStorageService : IPackageStorageService
             packagePath);
 
         // Store the package.
-        var result = await _storage.PutAsync(packagePath, packageStream, PackageContentType, cancellationToken);
+        var result = await storage.PutAsync(packagePath, packageStream, PackageContentType, cancellationToken);
         if (result == StoragePutResult.Conflict)
         {
             // TODO: This should be returned gracefully with an enum.
@@ -68,7 +68,7 @@ public class PackageStorageService : IPackageStorageService
             lowercasedNormalizedVersion,
             nuspecPath);
 
-        result = await _storage.PutAsync(nuspecPath, nuspecStream, NuspecContentType, cancellationToken);
+        result = await storage.PutAsync(nuspecPath, nuspecStream, NuspecContentType, cancellationToken);
         if (result == StoragePutResult.Conflict)
         {
             // TODO: This should be returned gracefully with an enum.
@@ -90,7 +90,7 @@ public class PackageStorageService : IPackageStorageService
                 lowercasedNormalizedVersion,
                 readmePath);
 
-            result = await _storage.PutAsync(readmePath, readmeStream, ReadmeContentType, cancellationToken);
+            result = await storage.PutAsync(readmePath, readmeStream, ReadmeContentType, cancellationToken);
             if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
@@ -113,7 +113,7 @@ public class PackageStorageService : IPackageStorageService
                 lowercasedNormalizedVersion,
                 iconPath);
 
-            result = await _storage.PutAsync(iconPath, iconStream, IconContentType, cancellationToken);
+            result = await storage.PutAsync(iconPath, iconStream, IconContentType, cancellationToken);
             if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
@@ -133,22 +133,22 @@ public class PackageStorageService : IPackageStorageService
             lowercasedNormalizedVersion);
     }
 
-    public async Task<Stream> GetPackageStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task<Stream?> GetPackageStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
         return await GetStreamAsync(id, version, PackagePath, cancellationToken);
     }
 
-    public async Task<Stream> GetNuspecStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task<Stream?> GetNuspecStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
         return await GetStreamAsync(id, version, NuspecPath, cancellationToken);
     }
 
-    public async Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task<Stream?> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
         return await GetStreamAsync(id, version, ReadmePath, cancellationToken);
     }
 
-    public async Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task<Stream?> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
         return await GetStreamAsync(id, version, IconPath, cancellationToken);
     }
@@ -163,13 +163,13 @@ public class PackageStorageService : IPackageStorageService
         var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
         var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
 
-        await _storage.DeleteAsync(packagePath, cancellationToken);
-        await _storage.DeleteAsync(nuspecPath, cancellationToken);
-        await _storage.DeleteAsync(readmePath, cancellationToken);
-        await _storage.DeleteAsync(iconPath, cancellationToken);
+        await storage.DeleteAsync(packagePath, cancellationToken);
+        await storage.DeleteAsync(nuspecPath, cancellationToken);
+        await storage.DeleteAsync(readmePath, cancellationToken);
+        await storage.DeleteAsync(iconPath, cancellationToken);
     }
 
-    private async Task<Stream> GetStreamAsync(
+    private async Task<Stream?> GetStreamAsync(
         string id,
         NuGetVersion version,
         Func<string, string, string> pathFunc,
@@ -181,7 +181,7 @@ public class PackageStorageService : IPackageStorageService
 
         try
         {
-            return await _storage.GetAsync(path, cancellationToken);
+            return await storage.GetAsync(path, cancellationToken);
         }
         catch (DirectoryNotFoundException)
         {

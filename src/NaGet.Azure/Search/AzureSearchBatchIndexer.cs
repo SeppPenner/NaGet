@@ -31,8 +31,8 @@ public class AzureSearchBatchIndexer
                 nameof(batch));
         }
 
-        IList<IndexingResult> indexingResults = null;
-        Exception innerException = null;
+        IList<IndexingResult>? indexingResults = null;
+        Exception? innerException = null;
 
         try
         {

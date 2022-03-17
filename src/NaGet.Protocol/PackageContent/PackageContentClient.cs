@@ -17,6 +17,12 @@ public partial class NuGetClientFactory
             CancellationToken cancellationToken = default)
         {
             var client = await clientfactory.GetPackageContentClientAsync(cancellationToken);
+
+            if (client is null)
+            {
+                return null;
+            }
+
             return await client.DownloadPackageOrNullAsync(packageId, packageVersion, cancellationToken);
         }
 
@@ -26,6 +32,12 @@ public partial class NuGetClientFactory
             CancellationToken cancellationToken = default)
         {
             var client = await clientfactory.GetPackageContentClientAsync(cancellationToken);
+
+            if (client is null)
+            {
+                return null;
+            }
+
             return await client.DownloadPackageManifestOrNullAsync(packageId, packageVersion, cancellationToken);
         }
 
@@ -34,6 +46,12 @@ public partial class NuGetClientFactory
             CancellationToken cancellationToken = default)
         {
             var client = await clientfactory.GetPackageContentClientAsync(cancellationToken);
+
+            if (client is null)
+            {
+                return null;
+            }
+
             return await client.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
         }
     }

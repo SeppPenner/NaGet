@@ -44,15 +44,15 @@ namespace NaGet.Web
         public DateTime LastUpdated { get; private set; }
         public long TotalDownloads { get; private set; }
 
-        public IReadOnlyList<PackageDependent> UsedBy { get; set; }
-        public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; }
-        public IReadOnlyList<VersionModel> Versions { get; private set; }
+        public IReadOnlyList<PackageDependent> UsedBy { get; set; } = new List<PackageDependent>();
+        public IReadOnlyList<DependencyGroupModel> DependencyGroups { get; private set; } = new List<DependencyGroupModel>();
+        public IReadOnlyList<VersionModel> Versions { get; private set; } = new List<VersionModel>();
 
         public HtmlString? Readme { get; private set; }
 
-        public string IconUrl { get; private set; }
-        public string LicenseUrl { get; private set; }
-        public string PackageDownloadUrl { get; private set; }
+        public string IconUrl { get; private set; } = string.Empty;
+        public string LicenseUrl { get; private set; } = string.Empty;
+        public string PackageDownloadUrl { get; private set; } = string.Empty;
 
         public async Task OnGetAsync(string id, string version, CancellationToken cancellationToken)
         {

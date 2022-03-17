@@ -17,7 +17,7 @@ public class NaGetRegistrationIndexResponse
     public string RegistrationIndexUrl { get; set; } = string.Empty;
 
     [JsonPropertyName("@type")]
-    public IReadOnlyList<string> Type { get; set; }
+    public IReadOnlyList<string> Type { get; set; } = new List<string>();
 
     [JsonPropertyName("count")]
     public int Count { get; set; }
@@ -29,7 +29,7 @@ public class NaGetRegistrationIndexResponse
     /// registration index page model.
     /// </summary>
     [JsonPropertyName("items")]
-    public IReadOnlyList<NaGetRegistrationIndexPage> Pages { get; set; }
+    public IReadOnlyList<NaGetRegistrationIndexPage> Pages { get; set; } = new List<NaGetRegistrationIndexPage>();
 
     /// <summary>
     /// The package's total downloads across all versions.

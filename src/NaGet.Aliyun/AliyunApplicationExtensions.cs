@@ -20,7 +20,7 @@ public static class AliyunApplicationExtensions
         {
             if (!config.HasStorageType("AliyunOss"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<AliyunStorageService>();

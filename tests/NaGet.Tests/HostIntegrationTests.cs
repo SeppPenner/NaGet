@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using NaGet.Core;
 using NaGet.Database.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -52,20 +50,20 @@ namespace NaGet.Tests
         [Fact]
         public void DefaultsToSqlite()
         {
-            var provider = BuildServiceProvider();
+            var provider = BuildServiceProvider(new Dictionary<string, string>());
 
             var context = provider.GetRequiredService<IContext>();
 
             Assert.IsType<SqliteContext>(context);
         }
 
-        private IServiceProvider BuildServiceProvider(Dictionary<string, string> configs = null)
+        private IServiceProvider BuildServiceProvider(Dictionary<string, string> configs)
         {
             var host = Program
-                .CreateHostBuilder(new string[0])
+                .CreateHostBuilder(Array.Empty<string>())
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
-                    config.AddInMemoryCollection(configs ?? new Dictionary<string, string>());
+                    config.AddInMemoryCollection(configs);
                 })
                 .Build();
 

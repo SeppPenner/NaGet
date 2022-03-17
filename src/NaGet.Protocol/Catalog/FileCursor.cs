@@ -21,7 +21,13 @@ public class FileCursor : ICursor
         try
         {
             using var file = File.OpenRead(path);
-            var data = await JsonSerializer.DeserializeAsync<Data>(file, options: null, cancellationToken);
+            var data = await JsonSerializer.DeserializeAsync<Data?>(file, options: null, cancellationToken);
+
+            if (data is null)
+            {
+                return null;
+            }
+
             logger.LogDebug("Read cursor value {cursor:O} from {path}.", data.Value, path);
             return data.Value;
         }

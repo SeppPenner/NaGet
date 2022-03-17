@@ -13,7 +13,7 @@ public static class AwsApplicationExtensions
         {
             if (!config.HasStorageType("AwsS3"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<S3StorageService>();

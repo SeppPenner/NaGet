@@ -88,7 +88,7 @@ public class AzureSearchService : ISearchService
 
         return new SearchResponse
         {
-            TotalHits = response.Count.Value,
+            TotalHits = response?.Count ?? 0L,
             Data = results,
             Context = SearchContext.Default(url.GetPackageMetadataResourceUrl() ?? string.Empty)
         };
@@ -120,7 +120,7 @@ public class AzureSearchService : ISearchService
 
         return new AutocompleteResponse
         {
-            TotalHits = response.Count.Value,
+            TotalHits = response?.Count ?? 0L,
             Data = results,
             Context = AutocompleteContext.Default
         };
@@ -162,7 +162,7 @@ public class AzureSearchService : ISearchService
 
         return new DependentsResponse
         {
-            TotalHits = response.Count.Value,
+            TotalHits = response?.Count ?? 0L,
             Data = results
         };
     }

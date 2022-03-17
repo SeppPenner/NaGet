@@ -47,12 +47,12 @@ public class RawSearchClient : ISearchClient
 
         if (skip.HasValue && skip.Value > 0)
         {
-            queryString["skip"] = skip.ToString();
+            queryString["skip"] = skip.Value.ToString();
         }
 
         if (take.HasValue)
         {
-            queryString["take"] = take.ToString();
+            queryString["take"] = take.Value.ToString();
         }
 
         if (includePrerelease)
@@ -67,7 +67,7 @@ public class RawSearchClient : ISearchClient
 
         if (!string.IsNullOrWhiteSpace(query))
         {
-            queryString[queryParamName] = query;
+            queryString[queryParamName] = query!;
         }
 
         return AddQueryString(uri, queryString);

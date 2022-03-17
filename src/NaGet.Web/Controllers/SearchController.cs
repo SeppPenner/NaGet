@@ -14,15 +14,15 @@ namespace NaGet.Web
         }
 
         public async Task<ActionResult<SearchResponse>> SearchAsync(
-            [FromQuery(Name = "q")] string query = null,
+            [FromQuery(Name = "q")] string? query = null,
             [FromQuery]int skip = 0,
             [FromQuery]int take = 20,
             [FromQuery]bool prerelease = false,
-            [FromQuery]string semVerLevel = null,
+            [FromQuery]string? semVerLevel = null,
 
             // These are unofficial parameters
-            [FromQuery]string packageType = null,
-            [FromQuery]string framework = null,
+            [FromQuery]string? packageType = null,
+            [FromQuery]string? framework = null,
             CancellationToken cancellationToken = default)
         {
             var request = new SearchRequest
@@ -40,15 +40,15 @@ namespace NaGet.Web
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
-            [FromQuery(Name = "q")] string autocompleteQuery = null,
-            [FromQuery(Name = "id")] string versionsQuery = null,
+            [FromQuery(Name = "q")] string? autocompleteQuery = null,
+            [FromQuery(Name = "id")] string? versionsQuery = null,
             [FromQuery]bool prerelease = false,
-            [FromQuery]string semVerLevel = null,
+            [FromQuery]string? semVerLevel = null,
             [FromQuery]int skip = 0,
             [FromQuery]int take = 20,
 
             // These are unofficial parameters
-            [FromQuery]string packageType = null,
+            [FromQuery]string? packageType = null,
             CancellationToken cancellationToken = default)
         {
             // If only "id" is provided, find package versions. Otherwise, find package IDs.
@@ -58,7 +58,7 @@ namespace NaGet.Web
                 {
                     IncludePrerelease = prerelease,
                     IncludeSemVer2 = semVerLevel == "2.0.0",
-                    PackageId = versionsQuery,
+                    PackageId = versionsQuery
                 };
 
                 return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
@@ -72,7 +72,7 @@ namespace NaGet.Web
                     PackageType = packageType,
                     Skip = skip,
                     Take = take,
-                    Query = autocompleteQuery,
+                    Query = autocompleteQuery ?? string.Empty
                 };
 
                 return await _searchService.AutocompleteAsync(request, cancellationToken);
@@ -80,7 +80,7 @@ namespace NaGet.Web
         }
 
         public async Task<ActionResult<DependentsResponse>> DependentsAsync(
-            [FromQuery] string packageId = null,
+            [FromQuery] string? packageId = null,
             CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(packageId))

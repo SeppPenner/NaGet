@@ -17,92 +17,92 @@ namespace NaGet.Web
             this.linkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
         }
 
-        public string? GetServiceIndexUrl()
+        public string GetServiceIndexUrl()
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.IndexRouteName,
-                values: null);
+                values: null) ?? string.Empty;
         }
 
-        public string? GetPackageContentResourceUrl()
+        public string GetPackageContentResourceUrl()
         {
             return AbsoluteUrl("v3/package");
         }
 
-        public string? GetPackageMetadataResourceUrl()
+        public string GetPackageMetadataResourceUrl()
         {
             return AbsoluteUrl("v3/registration");
         }
 
-        public string? GetPackagePublishResourceUrl()
+        public string GetPackagePublishResourceUrl()
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.UploadPackageRouteName,
-                values: null);
+                values: null) ?? string.Empty;
         }
 
-        public string? GetSymbolPublishResourceUrl()
+        public string GetSymbolPublishResourceUrl()
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.UploadSymbolRouteName,
-                values: null);
+                values: null) ?? string.Empty;
         }
 
-        public string? GetSearchResourceUrl()
+        public string GetSearchResourceUrl()
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.SearchRouteName,
-                values: null);
+                values: null) ?? string.Empty;
         }
 
-        public string? GetAutocompleteResourceUrl()
+        public string GetAutocompleteResourceUrl()
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.AutocompleteRouteName,
-                values: null);
+                values: null) ?? string.Empty;
         }
 
-        public string? GetRegistrationIndexUrl(string id)
+        public string GetRegistrationIndexUrl(string id)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.RegistrationIndexRouteName,
-                values: new { Id = id.ToLowerInvariant() });
+                values: new { Id = id.ToLowerInvariant() }) ?? string.Empty;
         }
 
         public string GetRegistrationPageUrl(string id, NuGetVersion lower, NuGetVersion upper)
@@ -111,11 +111,11 @@ namespace NaGet.Web
             throw new NotImplementedException();
         }
 
-        public string? GetRegistrationLeafUrl(string id, NuGetVersion version)
+        public string GetRegistrationLeafUrl(string id, NuGetVersion version)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
@@ -125,27 +125,27 @@ namespace NaGet.Web
                 {
                     Id = id.ToLowerInvariant(),
                     Version = version.ToNormalizedString().ToLowerInvariant(),
-                });
+                }) ?? string.Empty;
         }
 
-        public string? GetPackageVersionsUrl(string id)
+        public string GetPackageVersionsUrl(string id)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return linkGenerator.GetUriByRouteValues(
                 httpContextAccessor.HttpContext,
                 Routes.PackageVersionsRouteName,
-                values: new { Id = id.ToLowerInvariant() });
+                values: new { Id = id.ToLowerInvariant() }) ?? string.Empty;
         }
 
-        public string? GetPackageDownloadUrl(string id, NuGetVersion version)
+        public string GetPackageDownloadUrl(string id, NuGetVersion version)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             id = id.ToLowerInvariant();
@@ -159,14 +159,14 @@ namespace NaGet.Web
                     Id = id,
                     Version = versionString,
                     IdVersion = $"{id}.{versionString}"
-                });
+                }) ?? string.Empty;
         }
 
-        public string? GetPackageManifestDownloadUrl(string id, NuGetVersion version)
+        public string GetPackageManifestDownloadUrl(string id, NuGetVersion version)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             id = id.ToLowerInvariant();
@@ -180,14 +180,14 @@ namespace NaGet.Web
                     Id = id,
                     Version = versionString,
                     Id2 = id,
-                });
+                }) ?? string.Empty;
         }
 
-        public string? GetPackageIconDownloadUrl(string id, NuGetVersion version)
+        public string GetPackageIconDownloadUrl(string id, NuGetVersion version)
         {
             if (httpContextAccessor?.HttpContext is null)
             {
-                return null;
+                return string.Empty;
             }
 
             id = id.ToLowerInvariant();
@@ -200,16 +200,16 @@ namespace NaGet.Web
                 {
                     Id = id,
                     Version = versionString
-                });
+                }) ?? string.Empty;
         }
 
-        private string? AbsoluteUrl(string relativePath)
+        private string AbsoluteUrl(string relativePath)
         {
             var request = httpContextAccessor?.HttpContext?.Request;
 
             if (request is null)
             {
-                return null;
+                return string.Empty;
             }
 
             return string.Concat(

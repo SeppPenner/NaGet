@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using NaGet.Protocol.Internal;
 using Xunit;
 
@@ -19,7 +18,7 @@ namespace NaGet.Protocol.Tests
             var response = await _target.AutocompleteAsync();
 
             Assert.NotNull(response);
-            Assert.Equal(1, response.TotalHits);
+            Assert.Equal(1, response!.TotalHits);
             Assert.Equal("Test.Package", Assert.Single(response.Data));
         }
 

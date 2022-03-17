@@ -20,9 +20,16 @@ public abstract class AbstractContext<TContext> : DbContext, IContext where TCon
         : base(options)
     { }
 
+    [NotNull]
     public DbSet<Package> Packages { get; set; }
+
+    [NotNull]
     public DbSet<PackageDependency> PackageDependencies { get; set; }
+
+    [NotNull]
     public DbSet<PackageType> PackageTypes { get; set; }
+
+    [NotNull]
     public DbSet<TargetFramework> TargetFrameworks { get; set; }
 
     public Task<int> SaveChangesAsync() => SaveChangesAsync(default);

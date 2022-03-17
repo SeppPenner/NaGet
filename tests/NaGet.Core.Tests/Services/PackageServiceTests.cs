@@ -229,7 +229,7 @@ namespace NaGet.Core.Tests
             {
                 _db
                     .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
-                    .ReturnsAsync((Package)null);
+                    .ReturnsAsync((Package?)null);
 
                 var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
 

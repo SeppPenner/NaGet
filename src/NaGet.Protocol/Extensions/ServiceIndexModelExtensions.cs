@@ -56,7 +56,7 @@ public static class ServiceIndexModelExtensions
     public static string GetResourceUrl(this ServiceIndexResponse serviceIndex, string[] types)
     {
         var resource = types.SelectMany(t => serviceIndex.Resources.Where(r => r.Type == t)).FirstOrDefault();
-        return resource?.ResourceUrl.Trim('/');
+        return resource?.ResourceUrl.Trim('/') ?? string.Empty;
     }
 
     public static string GetRequiredResourceUrl(this ServiceIndexResponse serviceIndex, string[] types, string resourceName)

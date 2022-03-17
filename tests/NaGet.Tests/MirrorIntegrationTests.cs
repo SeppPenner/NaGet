@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,26 +6,26 @@ namespace NaGet.Tests
 {
     public class MirrorIntegrationTests : IDisposable
     {
-        private readonly NaGetApplication _upstream;
-        private readonly NaGetApplication _downstream;
-        private readonly HttpClient _downstreamClient;
-        private readonly Stream _packageStream;
+        private readonly NaGetApplication upstream;
+        private readonly NaGetApplication downstream;
+        private readonly HttpClient downstreamClient;
+        private readonly Stream? packageStream;
 
         public MirrorIntegrationTests(ITestOutputHelper output)
         {
-            _upstream = new NaGetApplication(output);
-            _downstream = new NaGetApplication(output, _upstream.CreateClient());
+            upstream = new NaGetApplication(output);
+            downstream = new NaGetApplication(output, upstream.CreateClient());
 
-            _downstreamClient = _downstream.CreateClient();
-            _packageStream = TestResources.GetResourceStream(TestResources.Package);
+            downstreamClient = downstream.CreateClient();
+            packageStream = TestResources.GetResourceStream(TestResources.Package);
         }
 
         [Fact]
         public async Task SearchExcludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            using var downstreamResponse = await _downstreamClient.GetAsync("v3/search");
+            using var downstreamResponse = await downstreamClient.GetAsync("v3/search");
             var downstreamContent = await downstreamResponse.Content.ReadAsStreamAsync();
             var downstreamJson = downstreamContent.ToPrettifiedJson();
 
@@ -48,9 +44,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListIncludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            var response = await _downstreamClient.GetAsync("v3/package/TestData/index.json");
+            var response = await downstreamClient.GetAsync("v3/package/TestData/index.json");
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -60,9 +56,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageDownloadIncludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            using var response = await _downstreamClient.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
+            using var response = await downstreamClient.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -70,9 +66,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task NuspecDownloadIncludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            using var response = await _downstreamClient.GetAsync(
+            using var response = await downstreamClient.GetAsync(
                 "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -81,9 +77,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataIncludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            using var response = await _downstreamClient.GetAsync("v3/registration/TestData/index.json");
+            using var response = await downstreamClient.GetAsync("v3/registration/TestData/index.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -145,9 +141,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafIncludesUpstream()
         {
-            await _upstream.AddPackageAsync(_packageStream);
+            await upstream.AddPackageAsync(packageStream);
 
-            using var response = await _downstreamClient.GetAsync("v3/registration/TestData/1.2.3.json");
+            using var response = await downstreamClient.GetAsync("v3/registration/TestData/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -167,8 +163,9 @@ namespace NaGet.Tests
 
         public void Dispose()
         {
-            _upstream.Dispose();
-            _downstream.Dispose();
+            upstream.Dispose();
+            downstream.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

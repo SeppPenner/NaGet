@@ -18,39 +18,39 @@ namespace NaGet.Tests
     /// </summary>
     public class NuGetClientIntegrationTests : IDisposable
     {
-        private readonly NaGetApplication _app;
-        private readonly HttpClient _client;
+        private readonly NaGetApplication app;
+        private readonly HttpClient client;
 
-        private readonly Stream _packageStream;
+        private readonly Stream? packageStream;
 
-        private readonly SourceRepository _repository;
-        private readonly SourceCacheContext _cache;
-        private readonly NuGet.Common.ILogger _logger;
-        private readonly CancellationToken _cancellationToken;
+        private readonly SourceRepository repository;
+        private readonly SourceCacheContext cache;
+        private readonly NuGet.Common.ILogger logger;
+        private readonly CancellationToken cancellationToken;
 
         public NuGetClientIntegrationTests(ITestOutputHelper output)
         {
-            _app = new NaGetApplication(output);
-            _client = _app.CreateDefaultClient();
-            _packageStream = TestResources.GetResourceStream(TestResources.Package);
+            app = new NaGetApplication(output);
+            client = app.CreateDefaultClient();
+            packageStream = TestResources.GetResourceStream(TestResources.Package);
 
-            var sourceUri = new Uri(_app.Server.BaseAddress, "v3/index.json");
+            var sourceUri = new Uri(app.Server.BaseAddress, "v3/index.json");
             var packageSource = new PackageSource(sourceUri.AbsoluteUri);
             var providers = new List<Lazy<INuGetResourceProvider>>();
 
-            providers.Add(new Lazy<INuGetResourceProvider>(() => new HttpSourceResourceProviderTestHost(_client)));
+            providers.Add(new Lazy<INuGetResourceProvider>(() => new HttpSourceResourceProviderTestHost(client)));
             providers.AddRange(Repository.Provider.GetCoreV3());
 
-            _repository = new SourceRepository(packageSource, providers);
-            _cache = new SourceCacheContext { NoCache = true, MaxAge = new DateTimeOffset(), DirectDownload = true };
-            _logger = NuGet.Common.NullLogger.Instance;
-            _cancellationToken = CancellationToken.None;
+            repository = new SourceRepository(packageSource, providers);
+            cache = new SourceCacheContext { NoCache = true, MaxAge = new DateTimeOffset(), DirectDownload = true };
+            logger = NuGet.Common.NullLogger.Instance;
+            cancellationToken = CancellationToken.None;
         }
 
         [Fact]
         public async Task ValidIndex()
         {
-            var index = await _repository.GetResourceAsync<ServiceIndexResourceV3>();
+            var index = await repository.GetResourceAsync<ServiceIndexResourceV3>();
 
             Assert.Equal(12, index.Entries.Count);
 
@@ -65,9 +65,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var resource = await _repository.GetResourceAsync<PackageSearchResource>();
+            var resource = await repository.GetResourceAsync<PackageSearchResource>();
             var searchFilter = new SearchFilter(includePrerelease: true);
 
             var results = await resource.SearchAsync(
@@ -75,8 +75,8 @@ namespace NaGet.Tests
                 searchFilter,
                 skip: 0,
                 take: 20,
-                _logger,
-                _cancellationToken);
+                logger,
+                cancellationToken);
 
             var result = Assert.Single(results);
 
@@ -96,7 +96,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsEmpty()
         {
-            var resource = await _repository.GetResourceAsync<PackageSearchResource>();
+            var resource = await repository.GetResourceAsync<PackageSearchResource>();
             var searchFilter = new SearchFilter(includePrerelease: true);
 
             var results = await resource.SearchAsync(
@@ -104,8 +104,8 @@ namespace NaGet.Tests
                 searchFilter,
                 skip: 0,
                 take: 20,
-                _logger,
-                _cancellationToken);
+                logger,
+                cancellationToken);
 
             Assert.Empty(results);
         }
@@ -113,14 +113,14 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var resource = await _repository.GetResourceAsync<AutoCompleteResource>();
+            var resource = await repository.GetResourceAsync<AutoCompleteResource>();
             var results = await resource.IdStartsWith(
                 "",
                 includePrerelease: true,
-                _logger,
-                _cancellationToken);
+                logger,
+                cancellationToken);
 
             var result = Assert.Single(results);
 
@@ -130,12 +130,12 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsEmpty()
         {
-            var resource = await _repository.GetResourceAsync<AutoCompleteResource>();
+            var resource = await repository.GetResourceAsync<AutoCompleteResource>();
             var results = await resource.IdStartsWith(
                 "PackageDoesNotExist",
                 includePrerelease: true,
-                _logger,
-                _cancellationToken);
+                logger,
+                cancellationToken);
 
             Assert.Empty(results);
         }
@@ -143,14 +143,14 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
+            var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
             var versions = await resource.GetAllVersionsAsync(
                 "TestData",
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             var version = Assert.Single(versions);
 
@@ -160,12 +160,12 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsEmpty()
         {
-            var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
+            var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
             var versions = await resource.GetAllVersionsAsync(
                 "PackageDoesNotExist",
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             Assert.Empty(versions);
         }
@@ -176,16 +176,16 @@ namespace NaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageExistsWorks(string packageId, string packageVersion, bool exists)
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
             var version = NuGetVersion.Parse(packageVersion);
-            var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
+            var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
             var result = await resource.DoesPackageExistAsync(
                 packageId,
                 version,
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             Assert.Equal(exists, result);
         }
@@ -196,19 +196,19 @@ namespace NaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageDownloadWorks(string packageId, string packageVersion, bool exists)
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(this.packageStream);
 
             using var packageStream = new MemoryStream();
 
             var version = NuGetVersion.Parse(packageVersion);
-            var resource = await _repository.GetResourceAsync<FindPackageByIdResource>();
+            var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
             var result = await resource.CopyNupkgToStreamAsync(
                 packageId,
                 version,
                 packageStream,
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             packageStream.Position = 0;
 
@@ -219,16 +219,16 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var resource = await _repository.GetResourceAsync<PackageMetadataResource>();
+            var resource = await repository.GetResourceAsync<PackageMetadataResource>();
             var packages = await resource.GetMetadataAsync(
                 "TestData",
                 includePrerelease: true,
                 includeUnlisted: true,
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             var package = Assert.Single(packages);
 
@@ -242,23 +242,23 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsEmty()
         {
-            var resource = await _repository.GetResourceAsync<PackageMetadataResource>();
+            var resource = await repository.GetResourceAsync<PackageMetadataResource>();
             var packages = await resource.GetMetadataAsync(
                 "PackageDoesNotExist",
                 includePrerelease: true,
                 includeUnlisted: true,
-                _cache,
-                _logger,
-                _cancellationToken);
+                cache,
+                logger,
+                cancellationToken);
 
             Assert.Empty(packages);
         }
 
         public void Dispose()
         {
-            _app.Dispose();
-            _client.Dispose();
-            _cache.Dispose();
+            app.Dispose();
+            client.Dispose();
+            cache.Dispose();
         }
     }
 }

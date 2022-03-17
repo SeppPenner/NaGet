@@ -20,7 +20,7 @@ public class RawPackageMetadataClient : IPackageMetadataClient
     }
 
     /// <inheritdoc />
-    public async Task<RegistrationIndexResponse> GetRegistrationIndexOrNullAsync(
+    public async Task<RegistrationIndexResponse?> GetRegistrationIndexOrNullAsync(
         string packageId,
         CancellationToken cancellationToken = default)
     {
@@ -29,7 +29,7 @@ public class RawPackageMetadataClient : IPackageMetadataClient
     }
 
     /// <inheritdoc />
-    public async Task<RegistrationPageResponse> GetRegistrationPageAsync(
+    public async Task<RegistrationPageResponse?> GetRegistrationPageAsync(
         string pageUrl,
         CancellationToken cancellationToken = default)
     {
@@ -37,7 +37,7 @@ public class RawPackageMetadataClient : IPackageMetadataClient
     }
 
     /// <inheritdoc />
-    public async Task<RegistrationLeafResponse> GetRegistrationLeafAsync(
+    public async Task<RegistrationLeafResponse?> GetRegistrationLeafAsync(
         string leafUrl,
         CancellationToken cancellationToken = default)
     {

@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -8,15 +7,15 @@ namespace NaGet.Web
     [HtmlTargetElement(Attributes = "nav-link")]
     public class NavLinkTagHelper : TagHelper
     {
-        private readonly IHttpContextAccessor _accessor;
+        private readonly IHttpContextAccessor? accessor;
 
         public NavLinkTagHelper(IHttpContextAccessor accessor)
         {
-            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
         }
 
         [HtmlAttributeName("asp-page")]
-        public string Page { get; set; }
+        public string Page { get; set; } = string.Empty;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -28,7 +27,7 @@ namespace NaGet.Web
 
         private bool IsActiveLink()
         {
-            var endpoint = _accessor.HttpContext?.GetEndpoint();
+            var endpoint = accessor.HttpContext?.GetEndpoint();
             var pageDescriptor = endpoint?.Metadata.GetMetadata<PageActionDescriptor>();
 
             if (pageDescriptor is null) return false;

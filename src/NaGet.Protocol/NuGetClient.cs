@@ -7,10 +7,10 @@ using PackageMetadata = NaGet.Protocol.Models.PackageMetadata;
 /// </summary>
 public class NuGetClient
 {
-    private readonly IPackageContentClient contentClient;
-    private readonly IPackageMetadataClient metadataClient;
-    private readonly ISearchClient searchClient;
-    private readonly IAutocompleteClient autocompleteClient;
+    private readonly IPackageContentClient? contentClient;
+    private readonly IPackageMetadataClient? metadataClient;
+    private readonly ISearchClient? searchClient;
+    private readonly IAutocompleteClient? autocompleteClient;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NuGetClient"/> class
@@ -70,6 +70,12 @@ public class NuGetClient
         string packageId,
         CancellationToken cancellationToken = default)
     {
+        if (contentClient is null)
+        {
+            return false;
+        }
+
+
         var versions = await contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
         return (versions is not null && versions.Versions.Any());
     }
@@ -86,6 +92,12 @@ public class NuGetClient
         NuGetVersion packageVersion,
         CancellationToken cancellationToken = default)
     {
+        if (contentClient is null)
+        {
+            return false;
+        }
+
+
         var versions = await contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
         if (versions is null)
@@ -108,8 +120,14 @@ public class NuGetClient
     /// <exception cref="PackageNotFoundException">
     ///     The package could not be found.
     /// </exception>
-    public virtual async Task<Stream> DownloadPackageAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
+    public virtual async Task<Stream?> DownloadPackageAsync(string packageId, NuGetVersion packageVersion, CancellationToken cancellationToken = default)
     {
+        if (contentClient is null)
+        {
+            return null;
+        }
+
+
         var stream = await contentClient.DownloadPackageOrNullAsync(packageId, packageVersion, cancellationToken);
 
         if (stream is null)
@@ -130,11 +148,16 @@ public class NuGetClient
     /// <exception cref="PackageNotFoundException">
     ///     The package could not be found.
     /// </exception>
-    public virtual async Task<Stream> DownloadPackageManifestAsync(
+    public virtual async Task<Stream?> DownloadPackageManifestAsync(
         string packageId,
         NuGetVersion packageVersion,
         CancellationToken cancellationToken = default)
     {
+        if (contentClient is null)
+        {
+            return null;
+        }
+
         var stream = await contentClient.DownloadPackageManifestOrNullAsync(packageId, packageVersion, cancellationToken);
 
         if (stream is null)
@@ -181,6 +204,11 @@ public class NuGetClient
             return await ListPackageVersionsAsync(packageId, cancellationToken);
         }
 
+        if (contentClient is null)
+        {
+            return new List<NuGetVersion>();
+        }
+
         var response = await contentClient.GetPackageVersionsOrNullAsync(packageId, cancellationToken);
 
         if (response is null)
@@ -202,6 +230,11 @@ public class NuGetClient
         CancellationToken cancellationToken = default)
     {
         var result = new List<PackageMetadata>();
+
+        if (metadataClient is null)
+        {
+            return new List<PackageMetadata>();
+        }
 
         var registrationIndex = await metadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
@@ -248,11 +281,16 @@ public class NuGetClient
     /// <exception cref="PackageNotFoundException">
     ///     The package could not be found.
     /// </exception>
-    public virtual async Task<PackageMetadata> GetPackageMetadataAsync(
+    public virtual async Task<PackageMetadata?> GetPackageMetadataAsync(
         string packageId,
         NuGetVersion packageVersion,
         CancellationToken cancellationToken = default)
     {
+        if (metadataClient is null)
+        {
+            return null;
+        }
+
         var registrationIndex = await metadataClient.GetRegistrationIndexOrNullAsync(packageId, cancellationToken);
 
         if (registrationIndex is null)
@@ -322,6 +360,11 @@ public class NuGetClient
         string? query = null,
         CancellationToken cancellationToken = default)
     {
+        if (searchClient is null)
+        {
+            return new List<SearchResult>();
+        }
+
         var response = await searchClient.SearchAsync(query, cancellationToken: cancellationToken);
         return response?.Data ?? new List<SearchResult>();
     }
@@ -342,6 +385,11 @@ public class NuGetClient
         int take,
         CancellationToken cancellationToken = default)
     {
+        if (searchClient is null)
+        {
+            return new List<SearchResult>();
+        }
+
         var response = await searchClient.SearchAsync(
             query,
             skip,
@@ -367,6 +415,11 @@ public class NuGetClient
         bool includePrerelease,
         CancellationToken cancellationToken = default)
     {
+        if (searchClient is null)
+        {
+            return new List<SearchResult>();
+        }
+
         var response = await searchClient.SearchAsync(
             query,
             includePrerelease: includePrerelease,
@@ -393,6 +446,11 @@ public class NuGetClient
         bool includePrerelease,
         CancellationToken cancellationToken = default)
     {
+        if (searchClient is null)
+        {
+            return new List<SearchResult>();
+        }
+
         var response = await searchClient.SearchAsync(
             query,
             skip,
@@ -416,6 +474,11 @@ public class NuGetClient
         string? query = null,
         CancellationToken cancellationToken = default)
     {
+        if (autocompleteClient is null)
+        {
+            return new List<string>();
+        }
+
         var response = await autocompleteClient.AutocompleteAsync(query, cancellationToken: cancellationToken);
         return response?.Data ?? new List<string>();
     }
@@ -436,6 +499,11 @@ public class NuGetClient
         int take,
         CancellationToken cancellationToken = default)
     {
+        if (autocompleteClient is null)
+        {
+            return new List<string>();
+        }
+
         var response = await autocompleteClient.AutocompleteAsync(
             query,
             skip,
@@ -461,6 +529,11 @@ public class NuGetClient
         bool includePrerelease,
         CancellationToken cancellationToken = default)
     {
+        if (autocompleteClient is null)
+        {
+            return new List<string>();
+        }
+
         var response = await autocompleteClient.AutocompleteAsync(
             query,
             includePrerelease: includePrerelease,
@@ -487,6 +560,11 @@ public class NuGetClient
         bool includePrerelease,
         CancellationToken cancellationToken = default)
     {
+        if (autocompleteClient is null)
+        {
+            return new List<string>();
+        }
+
         var response = await autocompleteClient.AutocompleteAsync(
             query,
             skip,

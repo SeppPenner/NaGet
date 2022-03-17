@@ -107,7 +107,7 @@ public static partial class DependencyInjectionExtensions
         {
             if (!configuration.HasSearchType("null"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<NullSearchService>();
@@ -117,7 +117,7 @@ public static partial class DependencyInjectionExtensions
         {
             if (!configuration.HasSearchType("null"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<NullSearchIndexer>();
@@ -135,7 +135,7 @@ public static partial class DependencyInjectionExtensions
                 return provider.GetRequiredService<NullStorageService>();
             }
 
-            return null;
+            return null!;
         });
     }
 
@@ -189,7 +189,7 @@ public static partial class DependencyInjectionExtensions
 
         return new NuGetClientFactory(
             httpClient,
-            options.Value.PackageSource.ToString());
+            options.Value.PackageSource?.ToString() ?? string.Empty);
     }
 
     private static IUpstreamClient UpstreamClientFactory(IServiceProvider provider)

@@ -1,8 +1,4 @@
-using System;
-using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,25 +6,25 @@ namespace NaGet.Tests
 {
     public class ApiIntegrationTests : IDisposable
     {
-        private readonly NaGetApplication _app;
-        private readonly HttpClient _client;
+        private readonly NaGetApplication app;
+        private readonly HttpClient client;
 
-        private readonly Stream _packageStream;
-        private readonly Stream _symbolPackageStream;
+        private readonly Stream? packageStream;
+        private readonly Stream? symbolPackageStream;
 
         public ApiIntegrationTests(ITestOutputHelper output)
         {
-            _app = new NaGetApplication(output);
-            _client = _app.CreateClient();
+            app = new NaGetApplication(output);
+            client = app.CreateClient();
 
-            _packageStream = TestResources.GetResourceStream(TestResources.Package);
-            _symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
+            packageStream = TestResources.GetResourceStream(TestResources.Package);
+            symbolPackageStream = TestResources.GetResourceStream(TestResources.SymbolPackage);
         }
 
         [Fact]
         public async Task IndexReturnsOk()
         {
-            using var response = await _client.GetAsync("v3/index.json");
+            using var response = await client.GetAsync("v3/index.json");
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -38,9 +34,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/search");
+            using var response = await client.GetAsync("v3/search");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -82,7 +78,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsEmpty()
         {
-            using var response = await _client.GetAsync("v3/search?q=PackageDoesNotExist");
+            using var response = await client.GetAsync("v3/search?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -100,9 +96,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/autocomplete");
+            using var response = await client.GetAsync("v3/autocomplete");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -121,7 +117,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsEmpty()
         {
-            using var response = await _client.GetAsync("v3/autocomplete?q=PackageDoesNotExist");
+            using var response = await client.GetAsync("v3/autocomplete?q=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -138,9 +134,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteVersionsReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/autocomplete?id=TestData");
+            using var response = await client.GetAsync("v3/autocomplete?id=TestData");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -159,7 +155,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteVersionsReturnsEmpty()
         {
-            using var response = await _client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
+            using var response = await client.GetAsync("v3/autocomplete?id=PackageDoesNotExist");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -176,9 +172,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var response = await _client.GetAsync("v3/package/TestData/index.json");
+            var response = await client.GetAsync("v3/package/TestData/index.json");
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -188,7 +184,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsNotFound()
         {
-            using var response = await _client.GetAsync("v3/package/PackageDoesNotExist/index.json");
+            using var response = await client.GetAsync("v3/package/PackageDoesNotExist/index.json");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -196,9 +192,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageDownloadReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
+            using var response = await client.GetAsync("v3/package/TestData/1.2.3/TestData.1.2.3.nupkg");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -206,7 +202,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageDownloadReturnsNotFound()
         {
-            using var response = await _client.GetAsync(
+            using var response = await client.GetAsync(
                 "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nupkg");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -215,9 +211,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task NuspecDownloadReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync(
+            using var response = await client.GetAsync(
                 "v3/package/TestData/1.2.3/TestData.1.2.3.nuspec");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -226,7 +222,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task NuspecDownloadReturnsNotFound()
         {
-            using var response = await _client.GetAsync(
+            using var response = await client.GetAsync(
                 "v3/package/PackageDoesNotExist/1.0.0/PackageDoesNotExist.1.0.0.nuspec");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -235,9 +231,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/registration/TestData/index.json");
+            using var response = await client.GetAsync("v3/registration/TestData/index.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -302,7 +298,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsNotFound()
         {
-            using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/index.json");
+            using var response = await client.GetAsync("v3/registration/PackageDoesNotExist/index.json");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -310,9 +306,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            using var response = await _client.GetAsync("v3/registration/TestData/1.2.3.json");
+            using var response = await client.GetAsync("v3/registration/TestData/1.2.3.json");
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
 
@@ -333,7 +329,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataLeafReturnsNotFound()
         {
-            using var response = await _client.GetAsync("v3/registration/PackageDoesNotExist/1.0.0.json");
+            using var response = await client.GetAsync("v3/registration/PackageDoesNotExist/1.0.0.json");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -341,7 +337,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageDependentsReturnsOk()
         {
-            using var response = await _client.GetAsync("v3/dependents?packageId=TestData");
+            using var response = await client.GetAsync("v3/dependents?packageId=TestData");
 
             var content = await response.Content.ReadAsStreamAsync();
             var json = content.ToPrettifiedJson();
@@ -356,7 +352,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageDependentsReturnsBadRequest()
         {
-            using var response = await _client.GetAsync("v3/dependents");
+            using var response = await client.GetAsync("v3/dependents");
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -364,10 +360,10 @@ namespace NaGet.Tests
         [Fact]
         public async Task SymbolDownloadReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
-            await _app.AddSymbolPackageAsync(_symbolPackageStream);
+            await app.AddPackageAsync(packageStream);
+            await app.AddSymbolPackageAsync(symbolPackageStream);
 
-            using var response = await _client.GetAsync(
+            using var response = await client.GetAsync(
                 "api/download/symbols/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -379,10 +375,10 @@ namespace NaGet.Tests
         [InlineData("api/download/symbols/testprefix/testdata.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/testdata.pdb")]
         public async Task MalformedSymbolDownloadReturnsOk(string uri)
         {
-            await _app.AddPackageAsync(_packageStream);
-            await _app.AddSymbolPackageAsync(_symbolPackageStream);
+            await app.AddPackageAsync(packageStream);
+            await app.AddSymbolPackageAsync(symbolPackageStream);
 
-            using var response = await _client.GetAsync(uri);
+            using var response = await client.GetAsync(uri);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -390,7 +386,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task SymbolDownloadReturnsNotFound()
         {
-            using var response = await _client.GetAsync(
+            using var response = await client.GetAsync(
                 "api/download/symbols/doesnotexist.pdb/16F71ED8DD574AA2AD4A22D29E9C981Bffffffff/doesnotexist.pdb");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -398,8 +394,8 @@ namespace NaGet.Tests
 
         public void Dispose()
         {
-            _app.Dispose();
-            _client.Dispose();
+            app.Dispose();
+            client.Dispose();
         }
     }
 }

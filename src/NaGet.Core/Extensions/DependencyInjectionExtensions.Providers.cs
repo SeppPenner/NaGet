@@ -74,7 +74,7 @@ public static partial class DependencyInjectionExtensions
         {
             if (!config.HasDatabaseType(databaseType))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<TContext>();
@@ -84,7 +84,7 @@ public static partial class DependencyInjectionExtensions
         {
             if (!config.HasDatabaseType(databaseType))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<PackageDatabase>();
@@ -94,12 +94,12 @@ public static partial class DependencyInjectionExtensions
         {
             if (!config.HasSearchType(DatabaseSearchType))
             {
-                return null;
+                return null!;
             }
 
             if (!config.HasDatabaseType(databaseType))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<NullSearchIndexer>();
@@ -109,12 +109,12 @@ public static partial class DependencyInjectionExtensions
         {
             if (!config.HasSearchType(DatabaseSearchType))
             {
-                return null;
+                return null!;
             }
 
             if (!config.HasDatabaseType(databaseType))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<DatabaseSearchService>();

@@ -59,6 +59,11 @@ public class CatalogProcessor
     {
         var index = await client.GetIndexAsync(cancellationToken);
 
+        if (index is null)
+        {
+            return false;
+        }
+
         var pageItems = index.GetPagesInBounds(
             minCommitTimestamp,
             options.MaxCommitTimestamp);
@@ -90,6 +95,11 @@ public class CatalogProcessor
         CancellationToken cancellationToken)
     {
         var page = await client.GetPageAsync(pageItem.CatalogPageUrl, cancellationToken);
+
+        if (page is null)
+        {
+            return false;
+        }
 
         var leafItems = page.GetLeavesInBounds(
             minCommitTimestamp,

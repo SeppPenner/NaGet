@@ -34,7 +34,7 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasDatabaseType("AzureTable"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<TablePackageDatabase>();
@@ -44,12 +44,12 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasSearchType("Database"))
             {
-                return null;
+                return null!;
             }
 
             if (!config.HasDatabaseType("AzureTable"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<TableSearchService>();
@@ -59,12 +59,12 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasSearchType("Database"))
             {
-                return null;
+                return null!;
             }
 
             if (!config.HasDatabaseType("AzureTable"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<NullSearchIndexer>();
@@ -118,7 +118,7 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasStorageType("AzureBlobStorage"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<BlobStorageService>();
@@ -167,7 +167,7 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasSearchType("AzureSearch"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<AzureSearchService>();
@@ -177,7 +177,7 @@ public static class AzureApplicationExtensions
         {
             if (!config.HasSearchType("AzureSearch"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<AzureSearchIndexer>();

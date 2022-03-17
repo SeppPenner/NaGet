@@ -42,7 +42,8 @@ namespace NaGet.Core.Tests.Services
                 var result = await target.GetAsync("hello.txt");
 
                 // Assert
-                Assert.Equal("Hello world", await ToStringAsync(result));
+                Assert.NotNull(result);
+                Assert.Equal("Hello world", await ToStringAsync(result!));
             }
 
             [Fact]
@@ -214,23 +215,21 @@ namespace NaGet.Core.Tests.Services
             protected Stream StringStream(string input)
             {
                 var bytes = Encoding.ASCII.GetBytes(input);
-
                 return new MemoryStream(bytes);
             }
 
             protected async Task<string> ToStringAsync(Stream input)
             {
-                using (var reader = new StreamReader(input))
-                {
-                    return await reader.ReadToEndAsync();
-                }
+                using var reader = new StreamReader(input);
+                return await reader.ReadToEndAsync();
             }
 
             public IEnumerable<string> OutsideStorePathData
             {
                 get
                 {
-                    var fullPath = Path.GetFullPath(storePath);
+                    var fullPath = Path.GetFullPath(storePath) ?? string.Empty;
+                    var rootPath = Path.GetPathRoot(storePath) ?? string.Empty;
                     yield return "../file";
                     yield return ".";
                     yield return $"../{Path.GetFileName(storePath)}";
@@ -240,8 +239,8 @@ namespace NaGet.Core.Tests.Services
                     yield return fullPath + Path.DirectorySeparatorChar;
                     yield return fullPath + Path.DirectorySeparatorChar + "..";
                     yield return fullPath + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + "file";
-                    yield return Path.GetPathRoot(storePath);
-                    yield return Path.Combine(Path.GetPathRoot(storePath), "file");
+                    yield return $"{rootPath}";
+                    yield return Path.Combine(rootPath, "file");
                 }
             }
         }

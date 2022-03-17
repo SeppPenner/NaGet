@@ -13,7 +13,7 @@ public static class GoogleCloudApplicationExtensions
         {
             if (!config.HasStorageType("GoogleCloud"))
             {
-                return null;
+                return null!;
             }
 
             return provider.GetRequiredService<GoogleCloudStorageService>();

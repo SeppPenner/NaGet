@@ -14,7 +14,7 @@ namespace NaGet.Core.Tests.Services
             public async Task ThrowsIfPackageIsNull()
             {
                 await Assert.ThrowsAsync<ArgumentNullException>(
-                    () => _target.SavePackageContentAsync(
+                    () => target.SavePackageContentAsync(
                         null,
                         packageStream: Stream.Null,
                         nuspecStream: Stream.Null,
@@ -26,8 +26,8 @@ namespace NaGet.Core.Tests.Services
             public async Task ThrowsIfPackageStreamIsNull()
             {
                 await Assert.ThrowsAsync<ArgumentNullException>(
-                    () => _target.SavePackageContentAsync(
-                        _package,
+                    () => target.SavePackageContentAsync(
+                        package,
                         packageStream: null,
                         nuspecStream: Stream.Null,
                         readmeStream: Stream.Null,
@@ -38,8 +38,8 @@ namespace NaGet.Core.Tests.Services
             public async Task ThrowsIfNuspecStreamIsNull()
             {
                 await Assert.ThrowsAsync<ArgumentNullException>(
-                    () => _target.SavePackageContentAsync(
-                        _package,
+                    () => target.SavePackageContentAsync(
+                        package,
                         packageStream: Stream.Null,
                         nuspecStream: null,
                         readmeStream: Stream.Null,
@@ -58,29 +58,29 @@ namespace NaGet.Core.Tests.Services
                 using (var iconStream = StringStream("My icon"))
                 {
                     // Act
-                    await _target.SavePackageContentAsync(
-                        _package,
+                    await target.SavePackageContentAsync(
+                        package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
                         iconStream: iconStream);
 
                     // Assert
-                    Assert.True(_puts.ContainsKey(PackagePath));
-                    Assert.Equal("My package", await ToStringAsync(_puts[PackagePath].Content));
-                    Assert.Equal("binary/octet-stream", _puts[PackagePath].ContentType);
+                    Assert.True(puts.ContainsKey(PackagePath));
+                    Assert.Equal("My package", await ToStringAsync(puts[PackagePath].Content));
+                    Assert.Equal("binary/octet-stream", puts[PackagePath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(NuspecPath));
-                    Assert.Equal("My nuspec", await ToStringAsync(_puts[NuspecPath].Content));
-                    Assert.Equal("text/plain", _puts[NuspecPath].ContentType);
+                    Assert.True(puts.ContainsKey(NuspecPath));
+                    Assert.Equal("My nuspec", await ToStringAsync(puts[NuspecPath].Content));
+                    Assert.Equal("text/plain", puts[NuspecPath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(ReadmePath));
-                    Assert.Equal("My readme", await ToStringAsync(_puts[ReadmePath].Content));
-                    Assert.Equal("text/markdown", _puts[ReadmePath].ContentType);
+                    Assert.True(puts.ContainsKey(ReadmePath));
+                    Assert.Equal("My readme", await ToStringAsync(puts[ReadmePath].Content));
+                    Assert.Equal("text/markdown", puts[ReadmePath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(IconPath));
-                    Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
-                    Assert.Equal("image/xyz", _puts[IconPath].ContentType);
+                    Assert.True(puts.ContainsKey(IconPath));
+                    Assert.Equal("My icon", await ToStringAsync(puts[IconPath].Content));
+                    Assert.Equal("image/xyz", puts[IconPath].ContentType);
                 }
             }
 
@@ -94,8 +94,8 @@ namespace NaGet.Core.Tests.Services
                 using (var nuspecStream = StringStream("My nuspec"))
                 {
                     // Act
-                    await _target.SavePackageContentAsync(
-                        _package,
+                    await target.SavePackageContentAsync(
+                        package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: null,
@@ -103,7 +103,7 @@ namespace NaGet.Core.Tests.Services
                 }
 
                 // Assert
-                Assert.False(_puts.ContainsKey(ReadmePath));
+                Assert.False(puts.ContainsKey(ReadmePath));
             }
 
             [Fact]
@@ -112,15 +112,15 @@ namespace NaGet.Core.Tests.Services
                 // Arrange
                 SetupPutResult(StoragePutResult.Success);
 
-                _package.Version = new NuGetVersion("1.2.3.0");
+                package.Version = new NuGetVersion("1.2.3.0");
                 using (var packageStream = StringStream("My package"))
                 using (var nuspecStream = StringStream("My nuspec"))
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
                 {
                     // Act
-                    await _target.SavePackageContentAsync(
-                        _package,
+                    await target.SavePackageContentAsync(
+                        package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
@@ -128,9 +128,9 @@ namespace NaGet.Core.Tests.Services
                 }
 
                 // Assert
-                Assert.True(_puts.ContainsKey(PackagePath));
-                Assert.True(_puts.ContainsKey(NuspecPath));
-                Assert.True(_puts.ContainsKey(ReadmePath));
+                Assert.True(puts.ContainsKey(PackagePath));
+                Assert.True(puts.ContainsKey(NuspecPath));
+                Assert.True(puts.ContainsKey(ReadmePath));
             }
 
             [Fact]
@@ -144,29 +144,29 @@ namespace NaGet.Core.Tests.Services
                 using (var readmeStream = StringStream("My readme"))
                 using (var iconStream = StringStream("My icon"))
                 {
-                    await _target.SavePackageContentAsync(
-                        _package,
+                    await target.SavePackageContentAsync(
+                        package,
                         packageStream: packageStream,
                         nuspecStream: nuspecStream,
                         readmeStream: readmeStream,
                         iconStream: iconStream);
 
                     // Assert
-                    Assert.True(_puts.ContainsKey(PackagePath));
-                    Assert.Equal("My package", await ToStringAsync(_puts[PackagePath].Content));
-                    Assert.Equal("binary/octet-stream", _puts[PackagePath].ContentType);
+                    Assert.True(puts.ContainsKey(PackagePath));
+                    Assert.Equal("My package", await ToStringAsync(puts[PackagePath].Content));
+                    Assert.Equal("binary/octet-stream", puts[PackagePath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(NuspecPath));
-                    Assert.Equal("My nuspec", await ToStringAsync(_puts[NuspecPath].Content));
-                    Assert.Equal("text/plain", _puts[NuspecPath].ContentType);
+                    Assert.True(puts.ContainsKey(NuspecPath));
+                    Assert.Equal("My nuspec", await ToStringAsync(puts[NuspecPath].Content));
+                    Assert.Equal("text/plain", puts[NuspecPath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(ReadmePath));
-                    Assert.Equal("My readme", await ToStringAsync(_puts[ReadmePath].Content));
-                    Assert.Equal("text/markdown", _puts[ReadmePath].ContentType);
+                    Assert.True(puts.ContainsKey(ReadmePath));
+                    Assert.Equal("My readme", await ToStringAsync(puts[ReadmePath].Content));
+                    Assert.Equal("text/markdown", puts[ReadmePath].ContentType);
 
-                    Assert.True(_puts.ContainsKey(IconPath));
-                    Assert.Equal("My icon", await ToStringAsync(_puts[IconPath].Content));
-                    Assert.Equal("image/xyz", _puts[IconPath].ContentType);
+                    Assert.True(puts.ContainsKey(IconPath));
+                    Assert.Equal("My icon", await ToStringAsync(puts[IconPath].Content));
+                    Assert.Equal("image/xyz", puts[IconPath].ContentType);
                 }
             }
 
@@ -183,8 +183,8 @@ namespace NaGet.Core.Tests.Services
                 {
                     // Act
                     await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                        _target.SavePackageContentAsync(
-                            _package,
+                        target.SavePackageContentAsync(
+                            package,
                             packageStream: packageStream,
                             nuspecStream: nuspecStream,
                             readmeStream: readmeStream,
@@ -200,13 +200,13 @@ namespace NaGet.Core.Tests.Services
             {
                 // Arrange
                 var cancellationToken = CancellationToken.None;
-                _storage
+                storage
                     .Setup(s => s.GetAsync(PackagePath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetPackageStreamAsync(_package.Id, _package.Version, cancellationToken));
+                    target.GetPackageStreamAsync(package.Id, package.Version, cancellationToken));
             }
 
             [Fact]
@@ -214,20 +214,19 @@ namespace NaGet.Core.Tests.Services
             {
                 // Arrange
                 var cancellationToken = CancellationToken.None;
-                using (var packageStream = StringStream("My package"))
-                {
-                    _storage
-                        .Setup(s => s.GetAsync(PackagePath, cancellationToken))
-                        .ReturnsAsync(packageStream);
+                using var packageStream = StringStream("My package");
+                storage
+                    .Setup(s => s.GetAsync(PackagePath, cancellationToken))
+                    .ReturnsAsync(packageStream);
 
-                    // Act
-                    var result = await _target.GetPackageStreamAsync(_package.Id, _package.Version, cancellationToken);
+                // Act
+                var result = await target.GetPackageStreamAsync(package.Id, package.Version, cancellationToken);
 
-                    // Assert
-                    Assert.Equal("My package", await ToStringAsync(result));
+                // Assert
+                Assert.NotNull(result);
+                Assert.Equal("My package", await ToStringAsync(result!));
 
-                    _storage.Verify(s => s.GetAsync(PackagePath, cancellationToken), Times.Once);
-                }
+                storage.Verify(s => s.GetAsync(PackagePath, cancellationToken), Times.Once);
             }
         }
 
@@ -238,13 +237,13 @@ namespace NaGet.Core.Tests.Services
             {
                 // Arrange
                 var cancellationToken = CancellationToken.None;
-                _storage
+                storage
                     .Setup(s => s.GetAsync(NuspecPath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetNuspecStreamAsync(_package.Id, _package.Version, cancellationToken));
+                    target.GetNuspecStreamAsync(package.Id, package.Version, cancellationToken));
             }
 
             [Fact]
@@ -252,20 +251,19 @@ namespace NaGet.Core.Tests.Services
             {
                 // Arrange
                 var cancellationToken = CancellationToken.None;
-                using (var nuspecStream = StringStream("My nuspec"))
-                {
-                    _storage
-                        .Setup(s => s.GetAsync(NuspecPath, cancellationToken))
-                        .ReturnsAsync(nuspecStream);
+                using var nuspecStream = StringStream("My nuspec");
+                storage
+                    .Setup(s => s.GetAsync(NuspecPath, cancellationToken))
+                    .ReturnsAsync(nuspecStream);
 
-                    // Act
-                    var result = await _target.GetNuspecStreamAsync(_package.Id, _package.Version, cancellationToken);
+                // Act
+                var result = await target.GetNuspecStreamAsync(package.Id, package.Version, cancellationToken);
 
-                    // Assert
-                    Assert.Equal("My nuspec", await ToStringAsync(result));
+                // Assert
+                Assert.NotNull(result);
+                Assert.Equal("My nuspec", await ToStringAsync(result!));
 
-                    _storage.Verify(s => s.GetAsync(NuspecPath, cancellationToken), Times.Once);
-                }
+                storage.Verify(s => s.GetAsync(NuspecPath, cancellationToken), Times.Once);
             }
         }
 
@@ -276,13 +274,13 @@ namespace NaGet.Core.Tests.Services
             {
                 // Arrange
                 var cancellationToken = CancellationToken.None;
-                _storage
+                storage
                     .Setup(s => s.GetAsync(ReadmePath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    _target.GetReadmeStreamAsync(_package.Id, _package.Version, cancellationToken));
+                    target.GetReadmeStreamAsync(package.Id, package.Version, cancellationToken));
             }
 
             [Fact]
@@ -292,17 +290,18 @@ namespace NaGet.Core.Tests.Services
                 var cancellationToken = CancellationToken.None;
                 using (var readmeStream = StringStream("My readme"))
                 {
-                    _storage
+                    storage
                         .Setup(s => s.GetAsync(ReadmePath, cancellationToken))
                         .ReturnsAsync(readmeStream);
 
                     // Act
-                    var result = await _target.GetReadmeStreamAsync(_package.Id, _package.Version, cancellationToken);
+                    var result = await target.GetReadmeStreamAsync(package.Id, package.Version, cancellationToken);
 
                     // Assert
-                    Assert.Equal("My readme", await ToStringAsync(result));
+                    Assert.NotNull(result);
+                    Assert.Equal("My readme", await ToStringAsync(result!));
 
-                    _storage.Verify(s => s.GetAsync(ReadmePath, cancellationToken), Times.Once);
+                    storage.Verify(s => s.GetAsync(ReadmePath, cancellationToken), Times.Once);
                 }
             }
         }
@@ -314,33 +313,32 @@ namespace NaGet.Core.Tests.Services
             {
                 // Act
                 var cancellationToken = CancellationToken.None;
-                await _target.DeleteAsync(_package.Id, _package.Version, cancellationToken);
+                await target.DeleteAsync(package.Id, package.Version, cancellationToken);
 
-                _storage.Verify(s => s.DeleteAsync(PackagePath, cancellationToken), Times.Once);
-                _storage.Verify(s => s.DeleteAsync(NuspecPath, cancellationToken), Times.Once);
-                _storage.Verify(s => s.DeleteAsync(ReadmePath, cancellationToken), Times.Once);
+                storage.Verify(s => s.DeleteAsync(PackagePath, cancellationToken), Times.Once);
+                storage.Verify(s => s.DeleteAsync(NuspecPath, cancellationToken), Times.Once);
+                storage.Verify(s => s.DeleteAsync(ReadmePath, cancellationToken), Times.Once);
             }
         }
 
         public class FactsBase
         {
-            protected readonly Package _package = new Package
+            protected readonly Package package = new()
             {
                 Id = "My.Package",
                 Version = new NuGetVersion("1.2.3")
             };
 
-            protected readonly Mock<IStorageService> _storage;
-            protected readonly PackageStorageService _target;
+            protected readonly Mock<IStorageService> storage;
+            protected readonly PackageStorageService target;
 
-            protected readonly Dictionary<string, (Stream Content, string ContentType)> _puts;
+            protected readonly Dictionary<string, (Stream Content, string ContentType)> puts;
 
             public FactsBase()
             {
-                _storage = new Mock<IStorageService>();
-                _target = new PackageStorageService(_storage.Object, Mock.Of<ILogger<PackageStorageService>>());
-
-                _puts = new Dictionary<string, (Stream Content, string ContentType)>();
+                storage = new Mock<IStorageService>();
+                target = new PackageStorageService(storage.Object, Mock.Of<ILogger<PackageStorageService>>());
+                puts = new Dictionary<string, (Stream Content, string ContentType)>();
             }
 
             protected string PackagePath => Path.Combine("packages", "my.package", "1.2.3", "my.package.1.2.3.nupkg");
@@ -351,21 +349,18 @@ namespace NaGet.Core.Tests.Services
             protected Stream StringStream(string input)
             {
                 var bytes = Encoding.ASCII.GetBytes(input);
-
                 return new MemoryStream(bytes);
             }
 
             protected async Task<string> ToStringAsync(Stream input)
             {
-                using (var reader = new StreamReader(input))
-                {
-                    return await reader.ReadToEndAsync();
-                }
+                using var reader = new StreamReader(input);
+                return await reader.ReadToEndAsync();
             }
 
             protected void SetupPutResult(StoragePutResult result)
             {
-                _storage
+                storage
                     .Setup(
                         s => s.PutAsync(
                             It.IsAny<string>(),
@@ -374,7 +369,7 @@ namespace NaGet.Core.Tests.Services
                             It.IsAny<CancellationToken>()))
                     .Callback((string path, Stream content, string contentType, CancellationToken cancellationToken) =>
                     {
-                        _puts[path] = (content, contentType);
+                        puts[path] = (content, contentType);
                     })
                     .ReturnsAsync(result);
             }

@@ -24,6 +24,12 @@ public class V3UpstreamClient : IUpstreamClient
         try
         {
             using var downloadStream = await client.DownloadPackageAsync(id, version, cancellationToken);
+
+            if (downloadStream is null)
+            {
+                return null;
+            }
+
             return await downloadStream.AsTemporaryFileStreamAsync(cancellationToken);
         }
         catch (PackageNotFoundException)
@@ -131,7 +137,7 @@ public class V3UpstreamClient : IUpstreamClient
 
     private List<PackageDependency> ToDependencies(PackageMetadata package)
     {
-        if ((package.DependencyGroups?.Count ?? 0) == 0)
+        if (package.DependencyGroups.Count == 0)
         {
             return new List<PackageDependency>();
         }

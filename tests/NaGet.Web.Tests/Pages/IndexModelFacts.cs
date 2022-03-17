@@ -1,5 +1,3 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using NaGet.Protocol.Models;
 using Moq;
@@ -9,55 +7,57 @@ namespace NaGet.Web.Tests
 {
     public class IndexModelFacts
     {
-        private readonly IndexModel _target;
+        private readonly IndexModel target;
 
-        private SearchRequest _capturedRequest = null;
-        private readonly SearchResponse _response = new SearchResponse();
-        private readonly CancellationToken _cancellation = CancellationToken.None;
+        private SearchRequest? capturedRequest = null;
+        private readonly SearchResponse response = new SearchResponse();
+        private readonly CancellationToken cancellation = CancellationToken.None;
 
         public IndexModelFacts()
         {
             var search = new Mock<ISearchService>();
             search
-                .Setup(s => s.SearchAsync(It.IsAny<SearchRequest>(), _cancellation))
-                .Callback((SearchRequest r, CancellationToken c) => _capturedRequest = r)
-                .ReturnsAsync(_response);
+                .Setup(s => s.SearchAsync(It.IsAny<SearchRequest>(), cancellation))
+                .Callback((SearchRequest r, CancellationToken c) => capturedRequest = r)
+                .ReturnsAsync(response);
 
-            _target = new IndexModel(search.Object);
+            target = new IndexModel(search.Object);
         }
 
         [Fact]
         public async Task DefaultSearch()
         {
-            await _target.OnGetAsync(_cancellation);
+            await target.OnGetAsync(cancellation);
 
-            Assert.Equal(0, _capturedRequest.Skip);
-            Assert.Equal(20, _capturedRequest.Take);
-            Assert.True(_capturedRequest.IncludePrerelease);
-            Assert.True(_capturedRequest.IncludeSemVer2);
-            Assert.Null(_capturedRequest.PackageType);
-            Assert.Null(_capturedRequest.Framework);
-            Assert.Null(_capturedRequest.Query);
+            Assert.NotNull(capturedRequest);
+            Assert.Equal(0, capturedRequest.Skip);
+            Assert.Equal(20, capturedRequest.Take);
+            Assert.True(capturedRequest.IncludePrerelease);
+            Assert.True(capturedRequest.IncludeSemVer2);
+            Assert.Null(capturedRequest.PackageType);
+            Assert.Null(capturedRequest.Framework);
+            Assert.Null(capturedRequest.Query);
         }
 
         [Fact]
         public async Task AcceptsParameters()
         {
-            _target.Prerelease = false;
-            _target.PageIndex = 5;
-            _target.PackageType = "foo";
-            _target.Framework = "bar";
-            _target.Query = "Hello world";
+            target.Prerelease = false;
+            target.PageIndex = 5;
+            target.PackageType = "foo";
+            target.Framework = "bar";
+            target.Query = "Hello world";
 
-            await _target.OnGetAsync(_cancellation);
+            await target.OnGetAsync(cancellation);
 
-            Assert.Equal(80, _capturedRequest.Skip);
-            Assert.Equal(20, _capturedRequest.Take);
-            Assert.False(_capturedRequest.IncludePrerelease);
-            Assert.True(_capturedRequest.IncludeSemVer2);
-            Assert.Equal("foo", _capturedRequest.PackageType);
-            Assert.Equal("bar", _capturedRequest.Framework);
-            Assert.Equal("Hello world", _capturedRequest.Query);
+            Assert.NotNull(capturedRequest);
+            Assert.Equal(80, capturedRequest.Skip);
+            Assert.Equal(20, capturedRequest.Take);
+            Assert.False(capturedRequest.IncludePrerelease);
+            Assert.True(capturedRequest.IncludeSemVer2);
+            Assert.Equal("foo", capturedRequest.PackageType);
+            Assert.Equal("bar", capturedRequest.Framework);
+            Assert.Equal("Hello world", capturedRequest.Query);
         }
     }
 }

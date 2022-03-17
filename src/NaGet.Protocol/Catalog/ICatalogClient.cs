@@ -14,7 +14,7 @@ public interface ICatalogClient
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The catalog index.</returns>
-    Task<CatalogIndex> GetIndexAsync(CancellationToken cancellationToken = default);
+    Task<CatalogIndex?> GetIndexAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a single catalog page, used to discover catalog leafs.
@@ -23,7 +23,7 @@ public interface ICatalogClient
     /// <param name="pageUrl">The URL of the page, from the <see cref="CatalogIndex"/>.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>A catalog page.</returns>
-    Task<CatalogPage> GetPageAsync(
+    Task<CatalogPage?> GetPageAsync(
         string pageUrl,
         CancellationToken cancellationToken = default);
 
@@ -34,7 +34,7 @@ public interface ICatalogClient
     /// <param name="leafUrl">The URL of the leaf, from a <see cref="CatalogPage"/>.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>A catalog leaf.</returns>
-    Task<PackageDeleteCatalogLeaf> GetPackageDeleteLeafAsync(
+    Task<PackageDeleteCatalogLeaf?> GetPackageDeleteLeafAsync(
         string leafUrl,
         CancellationToken cancellationToken = default);
 
@@ -45,7 +45,7 @@ public interface ICatalogClient
     /// <param name="leafUrl">The URL of the leaf, from a <see cref="CatalogPage"/>.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>A catalog leaf.</returns>
-    Task<PackageDetailsCatalogLeaf> GetPackageDetailsLeafAsync(
+    Task<PackageDetailsCatalogLeaf?> GetPackageDetailsLeafAsync(
         string leafUrl,
         CancellationToken cancellationToken = default);
 }

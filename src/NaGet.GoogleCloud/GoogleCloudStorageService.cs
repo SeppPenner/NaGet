@@ -14,7 +14,7 @@ public class GoogleCloudStorageService : IStorageService
         bucketName = options.Value.BucketName;
     }
 
-    public async Task<Stream> GetAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
     {
         using var storage = await StorageClient.CreateAsync();
         var stream = new MemoryStream();
@@ -23,10 +23,10 @@ public class GoogleCloudStorageService : IStorageService
         return stream;
     }
 
-    public Task<Uri> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
     {
         // returns an Authenticated Browser Download URL: https://cloud.google.com/storage/docs/request-endpoints#cookieauth
-        return Task.FromResult(new Uri($"https://storage.googleapis.com/{bucketName}/{CoercePath(path).TrimStart('/')}"));
+        return Task.FromResult<Uri?>(new Uri($"https://storage.googleapis.com/{bucketName}/{CoercePath(path).TrimStart('/')}"));
     }
 
     public async Task<StoragePutResult> PutAsync(string path, Stream content, string contentType, CancellationToken cancellationToken = default)

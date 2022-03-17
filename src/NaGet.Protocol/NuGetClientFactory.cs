@@ -6,10 +6,10 @@ namespace NaGet.Protocol;
 /// </summary>
 public partial class NuGetClientFactory
 {
-    private readonly HttpClient httpClient;
-    private readonly string serviceIndexUrl;
+    private readonly HttpClient httpClient = new();
+    private readonly string serviceIndexUrl = string.Empty;
 
-    private readonly SemaphoreSlim mutex;
+    private readonly SemaphoreSlim mutex = new(1, 1);
     private NuGetClients? clients;
 
     /// <summary>
@@ -105,32 +105,32 @@ public partial class NuGetClientFactory
     }
 
 
-    private Task<ServiceIndexResponse> GetServiceIndexAsync(CancellationToken cancellationToken = default)
+    private Task<ServiceIndexResponse?> GetServiceIndexAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.ServiceIndex, cancellationToken);
     }
 
-    private Task<IPackageContentClient> GetPackageContentClientAsync(CancellationToken cancellationToken = default)
+    private Task<IPackageContentClient?> GetPackageContentClientAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.PackageContentClient, cancellationToken);
     }
 
-    private Task<IPackageMetadataClient> GetPackageMetadataClientAsync(CancellationToken cancellationToken = default)
+    private Task<IPackageMetadataClient?> GetPackageMetadataClientAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.PackageMetadataClient, cancellationToken);
     }
 
-    private Task<ISearchClient> GetSearchClientAsync(CancellationToken cancellationToken = default)
+    private Task<ISearchClient?> GetSearchClientAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.SearchClient, cancellationToken);
     }
 
-    private Task<IAutocompleteClient> GetAutocompleteClientAsync(CancellationToken cancellationToken = default)
+    private Task<IAutocompleteClient?> GetAutocompleteClientAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.AutocompleteClient, cancellationToken);
     }
 
-    private Task<ICatalogClient> GetCatalogClientAsync(CancellationToken cancellationToken = default)
+    private Task<ICatalogClient?> GetCatalogClientAsync(CancellationToken cancellationToken = default)
     {
         return GetAsync(c => c.CatalogClient, cancellationToken);
     }

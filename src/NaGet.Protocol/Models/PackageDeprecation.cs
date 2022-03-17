@@ -30,5 +30,5 @@ public class PackageDeprecation
     /// The alternate package that should be used instead.
     /// </summary>
     [JsonPropertyName("alternatePackage")]
-    public AlternatePackage AlternatePackage { get; set; }
+    public AlternatePackage? AlternatePackage { get; set; }
 }

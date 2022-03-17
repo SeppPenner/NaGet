@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NaGet.Protocol;
 using NaGet.Protocol.Models;
 using NuGet.Versioning;
@@ -15,31 +11,33 @@ namespace NaGet.Tests
     /// </summary>
     public class NaGetClientIntegrationTests : IDisposable
     {
-        private readonly NaGetApplication _app;
-        private readonly HttpClient _httpClient;
-        private readonly NuGetClientFactory _clientFactory;
-        private readonly NuGetClient _client;
+        private readonly NaGetApplication app;
+        private readonly HttpClient httpClient;
+        private readonly NuGetClientFactory clientFactory;
+        private readonly NuGetClient client;
 
-        private readonly Stream _packageStream;
+        private readonly Stream? packageStream;
 
         public NaGetClientIntegrationTests(ITestOutputHelper output)
         {
-            _app = new NaGetApplication(output);
+            app = new NaGetApplication(output);
 
-            var serviceIndexUrl = new Uri(_app.Server.BaseAddress, "v3/index.json");
+            var serviceIndexUrl = new Uri(app.Server.BaseAddress, "v3/index.json");
 
-            _httpClient = _app.CreateClient();
-            _clientFactory = new NuGetClientFactory(_httpClient, serviceIndexUrl.AbsoluteUri);
-            _client = new NuGetClient(_clientFactory);
+            httpClient = app.CreateClient();
+            clientFactory = new NuGetClientFactory(httpClient, serviceIndexUrl.AbsoluteUri);
+            client = new NuGetClient(clientFactory);
 
-            _packageStream = TestResources.GetResourceStream(TestResources.Package);
+            packageStream = TestResources.GetResourceStream(TestResources.Package);
         }
 
         [Fact]
         public async Task ValidIndex()
         {
-            var client = _clientFactory.CreateServiceIndexClient();
+            var client = clientFactory.CreateServiceIndexClient();
             var index = await client.GetAsync();
+
+            Assert.NotNull(index);
 
             Assert.Equal("3.0.0", index.Version);
             Assert.Equal(12, index.Resources.Count);
@@ -55,9 +53,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var results = await _client.SearchAsync();
+            var results = await client.SearchAsync();
 
             var result = Assert.Single(results);
             var author = Assert.Single(result.Authors);
@@ -76,7 +74,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task SearchReturnsEmpty()
         {
-            var results = await _client.SearchAsync("PackageDoesNotExist");
+            var results = await client.SearchAsync("PackageDoesNotExist");
 
             Assert.Empty(results);
         }
@@ -84,9 +82,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var results = await _client.AutocompleteAsync();
+            var results = await client.AutocompleteAsync();
 
             var result = Assert.Single(results);
 
@@ -96,7 +94,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteReturnsEmpty()
         {
-            var results = await _client.AutocompleteAsync("PackageDoesNotExist");
+            var results = await client.AutocompleteAsync("PackageDoesNotExist");
 
             Assert.Empty(results);
         }
@@ -104,9 +102,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteVersions()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var client = _clientFactory.CreateAutocompleteClient();
+            var client = clientFactory.CreateAutocompleteClient();
             var results = await client.ListPackageVersionsAsync("TestData");
 
             var result = Assert.Single(results.Data);
@@ -118,7 +116,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task AutocompleteVersionsReturnsEmpty()
         {
-            var client = _clientFactory.CreateAutocompleteClient();
+            var client = clientFactory.CreateAutocompleteClient();
             var results = await client.ListPackageVersionsAsync("PackageDoesNotExist");
 
             Assert.Empty(results.Data);
@@ -128,9 +126,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsResults()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var versions = await _client.ListPackageVersionsAsync("TestData");
+            var versions = await client.ListPackageVersionsAsync("TestData");
 
             var version = Assert.Single(versions);
 
@@ -140,7 +138,7 @@ namespace NaGet.Tests
         [Fact]
         public async Task VersionListReturnsEmpty()
         {
-            var versions = await _client.ListPackageVersionsAsync("PackageDoesNotExist");
+            var versions = await client.ListPackageVersionsAsync("PackageDoesNotExist");
 
             Assert.Empty(versions);
         }
@@ -151,14 +149,16 @@ namespace NaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task PackageDownloadWorks(string packageId, string packageVersion, bool exists)
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
             try
             {
                 var version = NuGetVersion.Parse(packageVersion);
 
                 using var memoryStream = new MemoryStream();
-                using var packageStream = await _client.DownloadPackageAsync(packageId, version);
+                using var packageStream = await client.DownloadPackageAsync(packageId, version);
+
+                Assert.NotNull(packageStream);
 
                 await packageStream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
@@ -178,14 +178,16 @@ namespace NaGet.Tests
         [InlineData("PackageDoesNotExists", "1.0.0", false)]
         public async Task ManifestDownloadWorks(string packageId, string packageVersion, bool exists)
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
             try
             {
                 var version = NuGetVersion.Parse(packageVersion);
 
                 using var memoryStream = new MemoryStream();
-                using var packageStream = await _client.DownloadPackageManifestAsync(packageId, version);
+                using var packageStream = await client.DownloadPackageManifestAsync(packageId, version);
+
+                Assert.NotNull(packageStream);
 
                 await packageStream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
@@ -202,9 +204,9 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsOk()
         {
-            await _app.AddPackageAsync(_packageStream);
+            await app.AddPackageAsync(packageStream);
 
-            var packages = await _client.GetPackageMetadataAsync("TestData");
+            var packages = await client.GetPackageMetadataAsync("TestData");
 
             var package = Assert.Single(packages);
 
@@ -218,15 +220,16 @@ namespace NaGet.Tests
         [Fact]
         public async Task PackageMetadataReturnsEmty()
         {
-            var packages = await _client.GetPackageMetadataAsync("PackageDoesNotExist");
+            var packages = await client.GetPackageMetadataAsync("PackageDoesNotExist");
 
             Assert.Empty(packages);
         }
 
         public void Dispose()
         {
-            _app.Dispose();
-            _httpClient.Dispose();
+            app.Dispose();
+            httpClient.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

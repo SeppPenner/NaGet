@@ -65,22 +65,23 @@ public class IndexActionBuilder
                 .Distinct()
                 .ToArray() ?? Array.Empty<string>();
 
-            var document = new PackageDocument();
-
-            document.Key = $"{encodedId}-{searchFilters}";
-            document.Id = latest.Id;
-            document.Version = latest.Version.ToFullString();
-            document.Description = latest.Description;
-            document.Authors = latest.Authors;
-            document.HasEmbeddedIcon = latest.HasEmbeddedIcon;
-            document.IconUrl = latest.IconUrlString;
-            document.LicenseUrl = latest.LicenseUrlString;
-            document.ProjectUrl = latest.ProjectUrlString;
-            document.Published = latest.Published;
-            document.Summary = latest.Summary;
-            document.Tags = latest.Tags;
-            document.Title = latest.Title;
-            document.TotalDownloads = versions.Sum(p => p.Downloads);
+            var document = new PackageDocument
+            {
+                Key = $"{encodedId}-{searchFilters}",
+                Id = latest.Id,
+                Version = latest.Version.ToFullString(),
+                Description = latest.Description,
+                Authors = latest.Authors,
+                HasEmbeddedIcon = latest.HasEmbeddedIcon,
+                IconUrl = latest.IconUrlString,
+                LicenseUrl = latest.LicenseUrlString,
+                ProjectUrl = latest.ProjectUrlString,
+                Published = latest.Published,
+                Summary = latest.Summary,
+                Tags = latest.Tags,
+                Title = latest.Title,
+                TotalDownloads = versions.Sum(p => p.Downloads)
+            };
             document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
             document.Versions = versions.Select(p => p.Version.ToFullString()).ToArray();
             document.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();

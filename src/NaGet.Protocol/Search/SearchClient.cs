@@ -23,6 +23,11 @@ public partial class NuGetClientFactory
             // See: https://github.com/loic-sharma/NaGet/issues/314
             var client = await clientfactory.GetSearchClientAsync(cancellationToken);
 
+            if (client is null)
+            {
+                return null;
+            }
+
             return await client.SearchAsync(query, skip, take, includePrerelease, includeSemVer2, cancellationToken);
         }
     }

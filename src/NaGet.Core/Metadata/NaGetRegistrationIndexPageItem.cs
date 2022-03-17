@@ -25,5 +25,5 @@ public class NaGetRegistrationIndexPageItem
     /// This was modified to use NaGet's extended package metadata model.
     /// </summary>
     [JsonPropertyName("catalogEntry")]
-    public NaGetPackageMetadata PackageMetadata { get; set; }
+    public NaGetPackageMetadata? PackageMetadata { get; set; }
 }

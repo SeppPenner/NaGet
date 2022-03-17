@@ -106,15 +106,21 @@ namespace NaGet.Tests
     {
         public static async Task AddPackageAsync(
             this WebApplicationFactory<Startup> factory,
-            Stream package,
+            Stream? package,
             CancellationToken cancellationToken = default)
         {
+            if (package is null)
+            {
+                return;
+            }
+
             var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
 
             using var scope = scopeFactory.CreateScope();
             var indexer = scope.ServiceProvider.GetRequiredService<IPackageIndexingService>();
 
             var result = await indexer.IndexAsync(package, cancellationToken);
+
             if (result != PackageIndexingResult.Success)
             {
                 throw new InvalidOperationException($"Unexpected indexing result {result}");
@@ -123,9 +129,14 @@ namespace NaGet.Tests
 
         public static async Task AddSymbolPackageAsync(
             this WebApplicationFactory<Startup> factory,
-            Stream symbolPackage,
+            Stream? symbolPackage,
             CancellationToken cancellationToken = default)
         {
+            if (symbolPackage is null)
+            {
+                return;
+            }
+
             var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
 
             using var scope = scopeFactory.CreateScope();
