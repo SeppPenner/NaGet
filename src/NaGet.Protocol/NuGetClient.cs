@@ -413,7 +413,7 @@ public class NuGetClient
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The package IDs that matched the query.</returns>
     public virtual async Task<IReadOnlyList<string>> AutocompleteAsync(
-        string query = null,
+        string? query = null,
         CancellationToken cancellationToken = default)
     {
         var response = await autocompleteClient.AutocompleteAsync(query, cancellationToken: cancellationToken);

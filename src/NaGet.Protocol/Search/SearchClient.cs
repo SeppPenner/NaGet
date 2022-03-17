@@ -12,7 +12,7 @@ public partial class NuGetClientFactory
         }
 
         public async Task<SearchResponse> SearchAsync(
-            string query = null,
+            string? query = null,
             int skip = 0,
             int take = 20,
             bool includePrerelease = true,
@@ -23,7 +23,7 @@ public partial class NuGetClientFactory
             // See: https://github.com/loic-sharma/NaGet/issues/314
             var client = await clientfactory.GetSearchClientAsync(cancellationToken);
 
-            return await client.SearchAsync(query, skip, take, includePrerelease, includeSemVer2);
+            return await client.SearchAsync(query, skip, take, includePrerelease, includeSemVer2, cancellationToken);
         }
     }
 }

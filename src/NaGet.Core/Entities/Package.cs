@@ -13,10 +13,7 @@ public class Package
         {
             // Favor the original version string as it contains more information.
             // Packages uploaded with older versions of NaGet may not have the original version string.
-            return NuGetVersion.Parse(
-                OriginalVersionString != null
-                    ? OriginalVersionString
-                    : NormalizedVersionString);
+            return NuGetVersion.Parse(OriginalVersionString ?? NormalizedVersionString);
         }
 
         set

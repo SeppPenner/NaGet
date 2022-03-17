@@ -22,7 +22,7 @@ public class RawSearchClient : ISearchClient
     }
 
     public async Task<SearchResponse> SearchAsync(
-        string query = null,
+        string? query = null,
         int skip = 0,
         int take = 20,
         bool includePrerelease = true,
@@ -36,7 +36,7 @@ public class RawSearchClient : ISearchClient
 
     internal static string AddSearchQueryString(
         string uri,
-        string query,
+        string? query,
         int? skip,
         int? take,
         bool includePrerelease,
@@ -65,7 +65,7 @@ public class RawSearchClient : ISearchClient
             queryString["semVerLevel"] = "2.0.0";
         }
 
-        if (!string.IsNullOrEmpty(query))
+        if (!string.IsNullOrWhiteSpace(query))
         {
             queryString[queryParamName] = query;
         }

@@ -14,7 +14,7 @@
     <PackageTags>c# csharp Todo</PackageTags>
     <PackageProjectUrl>https://www.nuget.org/packages/NaGet.GoogleCloud/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SeppPenner/NaGet</RepositoryUrl>
-    <PackageIcon>Icon.png</PackageIcon>
+    <PackageIcon>Icon.jpg</PackageIcon>
     <RepositoryType>Github</RepositoryType>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Icon.png">
+    <None Include="..\..\Icon.jpg">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

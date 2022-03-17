@@ -11,7 +11,7 @@ public class ApiKeyAuthenticationService : IAuthenticationService
             throw new ArgumentNullException(nameof(options));
         }
 
-        apiKey = string.IsNullOrEmpty(options.Value.ApiKey) ? null : options.Value.ApiKey;
+        apiKey = string.IsNullOrWhiteSpace(options.Value.ApiKey) ? string.Empty : options.Value.ApiKey;
     }
 
     public Task<bool> AuthenticateAsync(string apiKey, CancellationToken cancellationToken)

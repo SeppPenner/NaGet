@@ -22,7 +22,7 @@ public class RawAutocompleteClient : IAutocompleteClient
     }
 
     public async Task<AutocompleteResponse> AutocompleteAsync(
-        string query = null,
+        string? query = null,
         int skip = 0,
         int take = 20,
         bool includePrerelease = true,

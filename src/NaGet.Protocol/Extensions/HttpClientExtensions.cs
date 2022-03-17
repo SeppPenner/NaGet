@@ -15,18 +15,17 @@ internal static class HttpClientExtensions
         string requestUri,
         CancellationToken cancellationToken = default)
     {
-        using (var response = await httpClient.GetAsync(
+        using var response = await httpClient.GetAsync(
             requestUri,
             HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken))
-        {
-            // This is similar to System.Net.Http.Json's implementation, however,
-            // this does not validate that the response's content type indicates JSON content.
-            response.EnsureSuccessStatusCode();
+            cancellationToken);
 
-            using var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
-        }
+        // This is similar to System.Net.Http.Json's implementation, however,
+        // this does not validate that the response's content type indicates JSON content.
+        response.EnsureSuccessStatusCode();
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -38,25 +37,24 @@ internal static class HttpClientExtensions
     /// <param name="requestUri">The request URI.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The JSON content, or, the default value if the HTTP response status code is 404.</returns>
-    public static async Task<TResult> GetFromJsonOrDefaultAsync<TResult>(
+    public static async Task<TResult?> GetFromJsonOrDefaultAsync<TResult>(
         this HttpClient httpClient,
         string requestUri,
         CancellationToken cancellationToken = default)
     {
-        using (var response = await httpClient.GetAsync(
+        using var response = await httpClient.GetAsync(
             requestUri,
             HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken))
+            cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return default;
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            using var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
+            return default;
         }
+
+        response.EnsureSuccessStatusCode();
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        return await JsonSerializer.DeserializeAsync<TResult>(stream, cancellationToken: cancellationToken);
     }
 }

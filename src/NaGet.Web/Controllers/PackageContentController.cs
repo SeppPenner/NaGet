@@ -1,10 +1,7 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Core;
 using NaGet.Protocol.Models;
-using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace NaGet.Web
 {
