@@ -11,6 +11,7 @@ global using Microsoft.Extensions.Logging;
 global using NaGet.PackageMetadata;
 global using NaGet.Protocol;
 global using NaGet.Protocol.Catalog;
+global using NaGet.Protocol.Extensions;
 global using NaGet.Protocol.Internal;
 global using NaGet.Protocol.Models;
 

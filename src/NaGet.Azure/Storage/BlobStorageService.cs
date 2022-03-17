@@ -1,5 +1,8 @@
 namespace NaGet.Azure;
 
+using CosmosStorageException = Microsoft.Azure.Cosmos.Table.StorageException;
+using StorageAccessCondition = Microsoft.WindowsAzure.Storage.AccessCondition;
+
 // See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
 public class BlobStorageService : IStorageService
 {
@@ -40,7 +43,7 @@ public class BlobStorageService : IStorageService
         CancellationToken cancellationToken)
     {
         var blob = container.GetBlockBlobReference(path);
-        var condition = AccessCondition.GenerateIfNotExistsCondition();
+        var condition = StorageAccessCondition.GenerateIfNotExistsCondition();
 
         blob.Properties.ContentType = contentType;
 
@@ -55,7 +58,7 @@ public class BlobStorageService : IStorageService
 
             return StoragePutResult.Success;
         }
-        catch (StorageException e) when (e.IsAlreadyExistsException())
+        catch (CosmosStorageException e) when (e.IsAlreadyExistsException())
         {
             using var targetStream = await blob.OpenReadAsync(cancellationToken);
             content.Position = 0;

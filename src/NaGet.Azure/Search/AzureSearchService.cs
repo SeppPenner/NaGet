@@ -2,6 +2,7 @@ namespace NaGet.Azure;
 
 using QueryType = Microsoft.Azure.Search.Models.QueryType;
 using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
+using SearchResult = Protocol.Models.SearchResult;
 
 public class AzureSearchService : ISearchService
 {

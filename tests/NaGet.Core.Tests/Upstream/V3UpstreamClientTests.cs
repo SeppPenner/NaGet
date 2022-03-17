@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using NaGet.Protocol;
 using NaGet.Protocol.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NuGet.Versioning;
 using Xunit;
+
+using NaGetProtocolPackageMetadata = NaGet.Protocol.Models.PackageMetadata;
 
 namespace NaGet.Core.Tests
 {
@@ -70,7 +67,7 @@ namespace NaGet.Core.Tests
             {
                 _client
                     .Setup(c => c.GetPackageMetadataAsync(_id, _cancellation))
-                    .ReturnsAsync(new List<PackageMetadata>());
+                    .ReturnsAsync(new List<NaGetProtocolPackageMetadata>());
 
                 var result = await _target.ListPackagesAsync(_id, _cancellation);
 
@@ -96,9 +93,9 @@ namespace NaGet.Core.Tests
 
                 _client
                     .Setup(c => c.GetPackageMetadataAsync(_id, _cancellation))
-                    .ReturnsAsync(new List<PackageMetadata>
+                    .ReturnsAsync(new List<NaGetProtocolPackageMetadata>
                     {
-                        new PackageMetadata
+                        new NaGetProtocolPackageMetadata
                         {
                             PackageId = "Foo",
                             Version = "1.2.3-prerelease+semver2",

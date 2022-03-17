@@ -1,5 +1,7 @@
 namespace NaGet.Azure;
 
+using StorageException = Microsoft.Azure.Cosmos.Table.StorageException;
+
 /// <summary>
 /// Stores the metadata of packages using Azure Table Storage.
 /// </summary>
@@ -30,7 +32,7 @@ public class TablePackageDatabase : IPackageDatabase
 
             await table.ExecuteAsync(operation, cancellationToken);
         }
-        catch (StorageException e) when (e.IsAlreadyExistsException())
+        catch (Microsoft.Azure.Cosmos.Table.StorageException e) when (e.IsAlreadyExistsException())
         {
             return PackageAddResult.PackageAlreadyExists;
         }

@@ -22,6 +22,7 @@ global using Microsoft.Extensions.Options;
 
 global using NaGet.Core;
 global using NaGet.Protocol;
+global using NaGet.Protocol.Extensions;
 global using NaGet.Protocol.Models;
 
 global using Newtonsoft.Json;

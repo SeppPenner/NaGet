@@ -1,5 +1,7 @@
 namespace NaGet.Protocol;
 
+using PackageMetadata = NaGet.Protocol.Models.PackageMetadata;
+
 /// <summary>
 /// The client to interact with a NuGet server.
 /// </summary>
@@ -317,7 +319,7 @@ public class NuGetClient
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The search results, including prerelease packages.</returns>
     public virtual async Task<IReadOnlyList<SearchResult>> SearchAsync(
-        string query = null,
+        string? query = null,
         CancellationToken cancellationToken = default)
     {
         var response = await searchClient.SearchAsync(query, cancellationToken: cancellationToken);

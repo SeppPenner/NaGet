@@ -11,7 +11,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NuGet.Protocol" Version="5.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.18" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8 "/>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8 " />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +38,18 @@
     <EmbeddedResource Include="TestData\TestData.1.2.3.snupkg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Moq" Version="4.17.2" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

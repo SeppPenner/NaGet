@@ -1,4 +1,6 @@
-namespace NaGet.Protocol;
+namespace NaGet.Protocol.Extensions;
+
+using PackageMetadata = NaGet.Protocol.Models.PackageMetadata;
 
 /// <summary>
 /// These are documented interpretations of values returned by the

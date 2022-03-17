@@ -1,5 +1,7 @@
 namespace NaGet.Core;
 
+using PackageMetadata = NaGet.Protocol.Models.PackageMetadata;
+
 /// <summary>
 /// NaGet's extensions to the package metadata model. These additions
 /// are not part of the official protocol.

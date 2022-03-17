@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using NaGet.Protocol.Models;
 using Xunit;
+
+using NaGetProtocolPackageMetadata = NaGet.Protocol.Models.PackageMetadata;
 
 namespace NaGet.Core.Tests.Metadata
 {
@@ -74,7 +73,7 @@ namespace NaGet.Core.Tests.Metadata
                     ModifiedProperties = new Dictionary<string, (Type From, Type To)>
                     {
                         {
-                            "PackageMetadata", ( From: typeof(PackageMetadata), To: typeof(NaGetPackageMetadata) )
+                            "PackageMetadata", ( From: typeof(NaGetProtocolPackageMetadata), To: typeof(NaGetPackageMetadata) )
                         },
                     }
                 }
@@ -84,7 +83,7 @@ namespace NaGet.Core.Tests.Metadata
             {
                 new ExtendedModelData
                 {
-                    OriginalType = typeof(PackageMetadata),
+                    OriginalType = typeof(NaGetProtocolPackageMetadata),
                     DerivedType = typeof(NaGetPackageMetadata),
 
                     AddedProperties = new Dictionary<string, Type>

@@ -1,5 +1,7 @@
 namespace NaGet.Core;
 
+using PackageMetadata = NaGet.Protocol.Models.PackageMetadata;
+
 /// <summary>
 /// The mirroring client for a NuGet server that uses the V3 protocol.
 /// </summary>
@@ -21,7 +23,7 @@ public class V3UpstreamClient : IUpstreamClient
     {
         try
         {
-            using var downloadStream = await client.DownloadPackageAsync(id, version, cancellationToken)
+            using var downloadStream = await client.DownloadPackageAsync(id, version, cancellationToken);
             return await downloadStream.AsTemporaryFileStreamAsync(cancellationToken);
         }
         catch (PackageNotFoundException)
