@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet", "src\NaGet\NaGet.csproj", "{284366CB-C68F-473E-908A-50A382616AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet", "NaGet\NaGet.csproj", "{284366CB-C68F-473E-908A-50A382616AE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Core", "src\NaGet.Core\NaGet.Core.csproj", "{FFFACD28-C300-4046-BCFE-4A7899E88EA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Core", "NaGet.Core\NaGet.Core.csproj", "{FFFACD28-C300-4046-BCFE-4A7899E88EA3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Azure", "src\NaGet.Azure\NaGet.Azure.csproj", "{716C970D-9614-4265-AC92-57E8B227B98E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Azure", "NaGet.Azure\NaGet.Azure.csproj", "{716C970D-9614-4265-AC92-57E8B227B98E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Core.Tests", "tests\NaGet.Core.Tests\NaGet.Core.Tests.csproj", "{89AB1AE2-6CAA-4809-8B74-D78CBE00B049}"
 EndProject
@@ -17,34 +17,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26A0B557-53F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C237857D-AD8E-4C52-974F-6A8155BB0C18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Protocol", "src\NaGet.Protocol\NaGet.Protocol.csproj", "{A2D23427-9278-4D52-B31F-759212252832}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Protocol", "NaGet.Protocol\NaGet.Protocol.csproj", "{A2D23427-9278-4D52-B31F-759212252832}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Protocol.Tests", "tests\NaGet.Protocol.Tests\NaGet.Protocol.Tests.csproj", "{AC764A9A-9EAF-422B-9223-D3290C3CFD79}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Aws", "src\NaGet.Aws\NaGet.Aws.csproj", "{D067D82E-D515-44D1-A832-C79F29418DFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Aws", "NaGet.Aws\NaGet.Aws.csproj", "{D067D82E-D515-44D1-A832-C79F29418DFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B44364D-952B-497A-82E0-C9AAE94E0369}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Web", "src\NaGet.Web\NaGet.Web.csproj", "{D68B56AC-98DD-4DA7-B4F8-1243538A8A5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Web", "NaGet.Web\NaGet.Web.csproj", "{D68B56AC-98DD-4DA7-B4F8-1243538A8A5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.Sqlite", "src\NaGet.Database.Sqlite\NaGet.Database.Sqlite.csproj", "{EC5E6B2C-2494-40E8-8682-080BA580DDA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.Sqlite", "NaGet.Database.Sqlite\NaGet.Database.Sqlite.csproj", "{EC5E6B2C-2494-40E8-8682-080BA580DDA7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.SqlServer", "src\NaGet.Database.SqlServer\NaGet.Database.SqlServer.csproj", "{4C513AFC-BA7B-471D-B8F6-268E7AD2074C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.SqlServer", "NaGet.Database.SqlServer\NaGet.Database.SqlServer.csproj", "{4C513AFC-BA7B-471D-B8F6-268E7AD2074C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.MySql", "src\NaGet.Database.MySql\NaGet.Database.MySql.csproj", "{A4375529-E855-4D46-AA4F-B3FE630C3DE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.MySql", "NaGet.Database.MySql\NaGet.Database.MySql.csproj", "{A4375529-E855-4D46-AA4F-B3FE630C3DE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.PostgreSql", "src\NaGet.Database.PostgreSql\NaGet.Database.PostgreSql.csproj", "{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Database.PostgreSql", "NaGet.Database.PostgreSql\NaGet.Database.PostgreSql.csproj", "{F48F201A-4DEE-4D5B-9C0B-59490FE942FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.GoogleCloud", "src\NaGet.GoogleCloud\NaGet.GoogleCloud.csproj", "{D7D60BA0-FF7F-4B37-815C-74D487C5176E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.GoogleCloud", "NaGet.GoogleCloud\NaGet.GoogleCloud.csproj", "{D7D60BA0-FF7F-4B37-815C-74D487C5176E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DDEC0736-8169-4834-815E-B78E7CE612A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Protocol.Samples.Tests", "samples\NaGet.Protocol.Samples.Tests\NaGet.Protocol.Samples.Tests.csproj", "{16B0D424-BB2F-4C0C-90B0-4F7955326ADF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Aliyun", "src\NaGet.Aliyun\NaGet.Aliyun.csproj", "{9F7C4F38-D598-42D9-A9F8-962490483B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGet.Aliyun", "NaGet.Aliyun\NaGet.Aliyun.csproj", "{9F7C4F38-D598-42D9-A9F8-962490483B18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaGetWebApplication", "samples\NaGetWebApplication\NaGetWebApplication.csproj", "{E5AFE55D-0932-46A9-BFA3-C8A034037377}"
 EndProject
