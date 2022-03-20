@@ -2,6 +2,9 @@ namespace NaGet.Core;
 
 public class ApiKeyAuthenticationService : IAuthenticationService
 {
+    /// <summary>
+    /// The API key.
+    /// </summary>
     private readonly string apiKey;
 
     public ApiKeyAuthenticationService(IOptionsSnapshot<NaGetOptions> options)
@@ -14,8 +17,7 @@ public class ApiKeyAuthenticationService : IAuthenticationService
         apiKey = string.IsNullOrWhiteSpace(options.Value.ApiKey) ? string.Empty : options.Value.ApiKey;
     }
 
-    public Task<bool> AuthenticateAsync(string apiKey, CancellationToken cancellationToken)
-        => Task.FromResult(Authenticate(apiKey));
+    public Task<bool> Authenticate(string apiKey, CancellationToken cancellationToken) => Task.FromResult(Authenticate(apiKey));
 
     private bool Authenticate(string apiKey)
     {

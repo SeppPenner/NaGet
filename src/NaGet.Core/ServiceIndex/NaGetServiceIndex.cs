@@ -23,7 +23,7 @@ public class NaGetServiceIndex : IServiceIndexService
         }
     }
 
-    public Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken = default)
+    public Task<ServiceIndexResponse> Get(CancellationToken cancellationToken = default)
     {
         var resources = new List<ServiceIndexItem>();
 

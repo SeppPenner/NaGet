@@ -36,7 +36,7 @@ namespace NaGet.Web.Tests
         public async Task ReturnsNotFound()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>());
 
             await target.OnGetAsync("testpackage", "1.0.0", cancellation);
@@ -52,7 +52,7 @@ namespace NaGet.Web.Tests
         public async Task ReturnsNotFoundIfAllUnlisted()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0", listed: false),
@@ -71,7 +71,7 @@ namespace NaGet.Web.Tests
         public async Task ReturnsRequestedVersion()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0"),
@@ -102,7 +102,7 @@ namespace NaGet.Web.Tests
         public async Task ReturnsRequestedUnlistedVersion()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0"),
@@ -130,7 +130,7 @@ namespace NaGet.Web.Tests
         public async Task FallsBackToLatestListedVersion()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0"),
@@ -163,7 +163,7 @@ namespace NaGet.Web.Tests
         public async Task HandlesPackageTypes(IEnumerable<string> packageTypes, bool expectDotnetTemplate, bool expectDotnetTool)
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0", packageTypes: packageTypes)
@@ -180,7 +180,7 @@ namespace NaGet.Web.Tests
         public async Task FindsDependentPackages()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0")
@@ -208,7 +208,7 @@ namespace NaGet.Web.Tests
         public async Task GroupsVersions()
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0", dependencies: new[]
@@ -263,7 +263,7 @@ namespace NaGet.Web.Tests
         public async Task PrettifiesTargetFramework(string targetFramework, string expectedResult)
         {
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0", dependencies: new[]
@@ -290,7 +290,7 @@ namespace NaGet.Web.Tests
             var now = DateTime.Now;
 
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                     CreatePackage("1.0.0", downloads: 10, published: DateTime.Now.AddDays(-2)),
@@ -318,7 +318,7 @@ namespace NaGet.Web.Tests
             readmeStream.Position = 0;
 
             packages
-                .Setup(m => m.FindPackagesAsync("testpackage", cancellation))
+                .Setup(m => m.FindPackages("testpackage", cancellation))
                 .ReturnsAsync(new List<Package>
                 {
                         CreatePackage("1.0.0", hasReadme: true),

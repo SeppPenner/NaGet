@@ -16,9 +16,9 @@ public abstract class AbstractContext<TContext> : DbContext, IContext where TCon
 
     public const int MaxPackageDependencyVersionRangeLength = 256;
 
-    public AbstractContext(DbContextOptions<TContext> options)
-        : base(options)
-    { }
+    public AbstractContext(DbContextOptions<TContext> options): base(options)
+    {
+    }
 
     [NotNull]
     public DbSet<Package> Packages { get; set; }

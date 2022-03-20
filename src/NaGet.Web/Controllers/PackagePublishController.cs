@@ -35,7 +35,7 @@ namespace NaGet.Web
         public async Task Upload(CancellationToken cancellationToken)
         {
             if (_options.Value.IsReadOnlyMode ||
-                !await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
+                !await _authentication.Authenticate(Request.GetApiKey(), cancellationToken))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;
@@ -89,7 +89,7 @@ namespace NaGet.Web
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
+            if (!await _authentication.Authenticate(Request.GetApiKey(), cancellationToken))
             {
                 return Unauthorized();
             }
@@ -117,7 +117,7 @@ namespace NaGet.Web
                 return NotFound();
             }
 
-            if (!await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
+            if (!await _authentication.Authenticate(Request.GetApiKey(), cancellationToken))
             {
                 return Unauthorized();
             }

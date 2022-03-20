@@ -33,7 +33,7 @@ namespace NaGet.Web
         // See: https://docs.microsoft.com/en-us/nuget/api/package-publish-resource#push-a-package
         public async Task Upload(CancellationToken cancellationToken)
         {
-            if (_options.Value.IsReadOnlyMode || !await _authentication.AuthenticateAsync(Request.GetApiKey(), cancellationToken))
+            if (_options.Value.IsReadOnlyMode || !await _authentication.Authenticate(Request.GetApiKey(), cancellationToken))
             {
                 HttpContext.Response.StatusCode = 401;
                 return;

@@ -20,7 +20,7 @@ namespace NaGet.Core.Tests
             {
                 Setup();
 
-                var results = await _target.FindPackageVersionsAsync(
+                var results = await _target.FindPackageVersions(
                     "MyPackage",
                     _cancellationToken);
 
@@ -36,7 +36,7 @@ namespace NaGet.Core.Tests
                     new Package { Version = new NuGetVersion("2.0.0") },
                 });
 
-                var results = await _target.FindPackageVersionsAsync(
+                var results = await _target.FindPackageVersions(
                     "MyPackage",
                     _cancellationToken);
 
@@ -54,7 +54,7 @@ namespace NaGet.Core.Tests
                     new NuGetVersion("2.0.0"),
                 });
 
-                var results = await _target.FindPackageVersionsAsync(
+                var results = await _target.FindPackageVersions(
                     "MyPackage",
                     _cancellationToken);
 
@@ -78,7 +78,7 @@ namespace NaGet.Core.Tests
                         new NuGetVersion("3.0.0"),
                     });
 
-                var results = await _target.FindPackageVersionsAsync(
+                var results = await _target.FindPackageVersions(
                     "MyPackage",
                     _cancellationToken);
 
@@ -119,7 +119,7 @@ namespace NaGet.Core.Tests
             {
                 Setup();
 
-                var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
+                var results = await _target.FindPackages("MyPackage", _cancellationToken);
 
                 Assert.Empty(results);
             }
@@ -133,7 +133,7 @@ namespace NaGet.Core.Tests
                     new Package { Version = new NuGetVersion("2.0.0") },
                 });
 
-                var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
+                var results = await _target.FindPackages("MyPackage", _cancellationToken);
 
                 Assert.Equal(2, results.Count);
                 Assert.Equal("1.0.0", results[0].Version.OriginalVersion);
@@ -149,7 +149,7 @@ namespace NaGet.Core.Tests
                     new Package { Version = new NuGetVersion("2.0.0") },
                 });
 
-                var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
+                var results = await _target.FindPackages("MyPackage", _cancellationToken);
 
                 Assert.Equal(2, results.Count);
                 Assert.Equal("1.0.0", results[0].Version.OriginalVersion);
@@ -171,7 +171,7 @@ namespace NaGet.Core.Tests
                         new Package { Version = new NuGetVersion("3.0.0") },
                     });
 
-                var results = await _target.FindPackagesAsync("MyPackage", _cancellationToken);
+                var results = await _target.FindPackages("MyPackage", _cancellationToken);
                 var ordered = results.OrderBy(p => p.Version).ToList();
 
                 Assert.Equal(3, ordered.Count);
@@ -205,7 +205,7 @@ namespace NaGet.Core.Tests
         public class FindPackageOrNullAsync : MirrorAsync
         {
             protected override async Task TargetAsync()
-                => await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+                => await _target.FindPackageOrNull(_id, _version, _cancellationToken);
 
             [Fact]
             public async Task ExistsInDatabase()
@@ -219,7 +219,7 @@ namespace NaGet.Core.Tests
                     .Setup(p => p.FindOrNull(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
                     .ReturnsAsync(expected);
 
-                var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+                var result = await _target.FindPackageOrNull(_id, _version, _cancellationToken);
 
                 Assert.Same(expected, result);
             }
@@ -231,7 +231,7 @@ namespace NaGet.Core.Tests
                     .Setup(p => p.FindOrNull(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
                     .ReturnsAsync((Package?)null);
 
-                var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
+                var result = await _target.FindPackageOrNull(_id, _version, _cancellationToken);
 
                 Assert.Null(result);
             }
@@ -239,7 +239,7 @@ namespace NaGet.Core.Tests
 
         public class ExistsAsync : MirrorAsync
         {
-            protected override async Task TargetAsync() => await _target.ExistsAsync(_id, _version, _cancellationToken);
+            protected override async Task TargetAsync() => await _target.Exists(_id, _version, _cancellationToken);
 
             [Fact]
             public async Task ExistsInDatabase()
@@ -248,7 +248,7 @@ namespace NaGet.Core.Tests
                     .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(true);
 
-                var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
+                var result = await _target.Exists(_id, _version, _cancellationToken);
 
                 Assert.True(result);
             }
@@ -260,7 +260,7 @@ namespace NaGet.Core.Tests
                     .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
-                var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
+                var result = await _target.Exists(_id, _version, _cancellationToken);
 
                 Assert.False(result);
             }
@@ -353,7 +353,7 @@ namespace NaGet.Core.Tests
                 var id = "Hello";
                 var version = new NuGetVersion("1.2.3");
 
-                await _target.AddDownloadAsync(id, version, _cancellationToken);
+                await _target.AddDownload(id, version, _cancellationToken);
 
                 _db.Verify(
                     db => db.AddDownload(id, version, _cancellationToken),

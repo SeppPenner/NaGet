@@ -20,7 +20,7 @@ public class DefaultPackageContentService : IPackageContentService
         string id,
         CancellationToken cancellationToken = default)
     {
-        var versions = await packages.FindPackageVersionsAsync(id, cancellationToken);
+        var versions = await packages.FindPackageVersions(id, cancellationToken);
 
         if (!versions.Any())
         {
@@ -41,18 +41,18 @@ public class DefaultPackageContentService : IPackageContentService
         NuGetVersion version,
         CancellationToken cancellationToken = default)
     {
-        if (!await packages.ExistsAsync(id, version, cancellationToken))
+        if (!await packages.Exists(id, version, cancellationToken))
         {
             return null;
         }
 
-        await packages.AddDownloadAsync(id, version, cancellationToken);
+        await packages.AddDownload(id, version, cancellationToken);
         return await storage.GetPackageStreamAsync(id, version, cancellationToken);
     }
 
     public async Task<Stream?> GetPackageManifestStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
     {
-        if (!await packages.ExistsAsync(id, version, cancellationToken))
+        if (!await packages.Exists(id, version, cancellationToken))
         {
             return null;
         }
@@ -62,7 +62,7 @@ public class DefaultPackageContentService : IPackageContentService
 
     public async Task<Stream?> GetPackageReadmeStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
     {
-        var package = await packages.FindPackageOrNullAsync(id, version, cancellationToken);
+        var package = await packages.FindPackageOrNull(id, version, cancellationToken);
 
         if (package is null || !package.HasReadme)
         {
@@ -74,7 +74,7 @@ public class DefaultPackageContentService : IPackageContentService
 
     public async Task<Stream?> GetPackageIconStreamOrNullAsync(string id, NuGetVersion version, CancellationToken cancellationToken = default)
     {
-        var package = await packages.FindPackageOrNullAsync(id, version, cancellationToken);
+        var package = await packages.FindPackageOrNull(id, version, cancellationToken);
 
         if (package is null || !package.HasEmbeddedIcon)
         {

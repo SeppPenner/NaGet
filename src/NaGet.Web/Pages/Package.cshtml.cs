@@ -56,7 +56,7 @@ namespace NaGet.Web
 
         public async Task OnGetAsync(string id, string version, CancellationToken cancellationToken)
         {
-            var packages = await this.packages.FindPackagesAsync(id, cancellationToken);
+            var packages = await this.packages.FindPackages(id, cancellationToken);
             var listedPackages = packages.Where(p => p.Listed).ToList();
 
             // Try to find the requested version.

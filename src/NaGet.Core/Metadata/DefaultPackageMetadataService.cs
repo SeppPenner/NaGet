@@ -18,7 +18,7 @@ public class DefaultPackageMetadataService : IPackageMetadataService
         string packageId,
         CancellationToken cancellationToken = default)
     {
-        var packages = await this.packages.FindPackagesAsync(packageId, cancellationToken);
+        var packages = await this.packages.FindPackages(packageId, cancellationToken);
 
         if (!packages.Any())
         {
@@ -36,7 +36,7 @@ public class DefaultPackageMetadataService : IPackageMetadataService
         NuGetVersion version,
         CancellationToken cancellationToken = default)
     {
-        var package = await packages.FindPackageOrNullAsync(id, version, cancellationToken);
+        var package = await packages.FindPackageOrNull(id, version, cancellationToken);
 
         if (package is null)
         {

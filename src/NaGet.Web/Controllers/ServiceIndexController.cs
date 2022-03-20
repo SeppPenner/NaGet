@@ -23,7 +23,7 @@ namespace NaGet.Web
         [HttpGet]
         public async Task<ServiceIndexResponse> GetAsync(CancellationToken cancellationToken)
         {
-            return await _serviceIndex.GetAsync(cancellationToken);
+            return await _serviceIndex.Get(cancellationToken);
         }
     }
 }

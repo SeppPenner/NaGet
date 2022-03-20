@@ -19,7 +19,7 @@ public class PackageService : IPackageService
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersionsAsync(
+    public async Task<IReadOnlyList<NuGetVersion>> FindPackageVersions(
         string id,
         CancellationToken cancellationToken)
     {
@@ -42,7 +42,7 @@ public class PackageService : IPackageService
         return upstreamVersions.Concat(localVersions).Distinct().ToList();
     }
 
-    public async Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Package>> FindPackages(string id, CancellationToken cancellationToken)
     {
         var upstreamPackages = await upstream.ListPackagesAsync(id, cancellationToken);
         var localPackages = await database.Find(id, includeUnlisted: true, cancellationToken);
@@ -69,7 +69,7 @@ public class PackageService : IPackageService
         return result.Values.ToList();
     }
 
-    public async Task<Package?> FindPackageOrNullAsync(
+    public async Task<Package?> FindPackageOrNull(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
@@ -82,12 +82,12 @@ public class PackageService : IPackageService
         return await database.FindOrNull(id, version, includeUnlisted: true, cancellationToken);
     }
 
-    public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task<bool> Exists(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
         return await MirrorAsync(id, version, cancellationToken);
     }
 
-    public async Task AddDownloadAsync(string packageId, NuGetVersion version, CancellationToken cancellationToken)
+    public async Task AddDownload(string packageId, NuGetVersion version, CancellationToken cancellationToken)
     {
         await database.AddDownload(packageId, version, cancellationToken);
     }
