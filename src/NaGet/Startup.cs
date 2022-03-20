@@ -1,14 +1,8 @@
-using System;
 using NaGet.Core;
 using NaGet.Web;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace NaGet
@@ -97,7 +91,6 @@ namespace NaGet
             app.UseEndpoints(endpoints =>
             {
                 var naget = new NaGetEndpointBuilder();
-
                 naget.MapEndpoints(endpoints);
             });
         }
