@@ -1,19 +1,56 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AliyunStorageOptions.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure table package database class.
+//     Stores the metadata of packages using Azure Table Storage.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace NaGet.Azure.Table;
 
 using StorageException = Microsoft.Azure.Cosmos.Table.StorageException;
 
+/// <inheritdoc cref="IPackageDatabase"/>
 /// <summary>
+/// The Azure table package database class.
 /// Stores the metadata of packages using Azure Table Storage.
 /// </summary>
 public class TablePackageDatabase : IPackageDatabase
 {
+    /// <summary>
+    /// The table name.
+    /// </summary>
     private const string TableName = "Packages";
+
+    /// <summary>
+    /// The maximum pre-condition failures.
+    /// </summary>
     private const int MaxPreconditionFailures = 5;
 
+    /// <summary>
+    /// The operation builder.
+    /// </summary>
     private readonly TableOperationBuilder operationBuilder;
+
+    /// <summary>
+    /// The cloud table.
+    /// </summary>
     private readonly CloudTable table;
+
+    /// <summary>
+    /// The logger.
+    /// </summary>
     private readonly ILogger<TablePackageDatabase> logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TablePackageDatabase"/> class.
+    /// </summary>
+    /// <param name="operationBuilder">The operation builder.</param>
+    /// <param name="client">The client.</param>
+    /// <param name="logger">The logger.</param>
+    /// <exception cref="ArgumentNullException">Thrown if any of the parameters is null.</exception>
     public TablePackageDatabase(
         TableOperationBuilder operationBuilder,
         CloudTableClient client,
@@ -24,15 +61,15 @@ public class TablePackageDatabase : IPackageDatabase
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<PackageAddResult> Add(Package package, CancellationToken cancellationToken)
     {
         try
         {
             var operation = operationBuilder.AddPackage(package);
-
             await table.ExecuteAsync(operation, cancellationToken);
         }
-        catch (Microsoft.Azure.Cosmos.Table.StorageException e) when (e.IsAlreadyExistsException())
+        catch (StorageException e) when (e.IsAlreadyExistsException())
         {
             return PackageAddResult.PackageAlreadyExists;
         }
@@ -40,7 +77,8 @@ public class TablePackageDatabase : IPackageDatabase
         return PackageAddResult.Success;
     }
 
-    public async Task AddDownloadAsync(
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task AddDownload(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
@@ -56,9 +94,8 @@ public class TablePackageDatabase : IPackageDatabase
                     version.ToNormalizedString().ToLowerInvariant());
 
                 var result = await table.ExecuteAsync(operation, cancellationToken);
-                var entity = result.Result as PackageDownloadsEntity;
 
-                if (entity is null)
+                if (result.Result is not PackageDownloadsEntity entity)
                 {
                     return;
                 }
@@ -80,7 +117,8 @@ public class TablePackageDatabase : IPackageDatabase
         }
     }
 
-    public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<bool> Exists(string id, CancellationToken cancellationToken)
     {
         var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, id.ToLowerInvariant());
         var query = new TableQuery<PackageEntity>()
@@ -93,7 +131,8 @@ public class TablePackageDatabase : IPackageDatabase
         return result.Results.Any();
     }
 
-    public async Task<bool> ExistsAsync(
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<bool> Exists(
         string id,
         NuGetVersion version,
         CancellationToken cancellationToken)
@@ -108,7 +147,8 @@ public class TablePackageDatabase : IPackageDatabase
         return execution.Result is PackageEntity;
     }
 
-    public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<IReadOnlyList<Package>> Find(string id, bool includeUnlisted, CancellationToken cancellationToken)
     {
         var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, id.ToLowerInvariant());
         if (!includeUnlisted)
@@ -140,7 +180,8 @@ public class TablePackageDatabase : IPackageDatabase
         return results.OrderBy(p => p.Version).ToList();
     }
 
-    public async Task<Package?> FindOrNullAsync(
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<Package?> FindOrNull(
         string id,
         NuGetVersion version,
         bool includeUnlisted,
@@ -151,9 +192,8 @@ public class TablePackageDatabase : IPackageDatabase
             version.ToNormalizedString().ToLowerInvariant());
 
         var result = await table.ExecuteAsync(operation, cancellationToken);
-        var entity = result.Result as PackageEntity;
 
-        if (entity is null)
+        if (result.Result is not PackageEntity entity)
         {
             return null;
         }
@@ -167,30 +207,42 @@ public class TablePackageDatabase : IPackageDatabase
         return entity.AsPackage();
     }
 
-    public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<bool> HardDeletePackage(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
-        return await TryUpdatePackageAsync(
+        return await TryUpdatePackage(
             operationBuilder.HardDeletePackage(id, version),
             cancellationToken);
     }
 
-    public async Task<bool> RelistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<bool> RelistPackage(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
-        return await TryUpdatePackageAsync(
+        return await TryUpdatePackage(
             operationBuilder.RelistPackage(id, version),
             cancellationToken);
     }
 
-    public async Task<bool> UnlistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IPackageDatabase"/>
+    public async Task<bool> UnlistPackage(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
-        return await TryUpdatePackageAsync(
+        return await TryUpdatePackage(
             operationBuilder.UnlistPackage(id, version),
             cancellationToken);
     }
 
-    private List<string> MinimalColumnSet => new List<string> { "PartitionKey" };
+    /// <summary>
+    /// The minimal column set.
+    /// </summary>
+    private static List<string> MinimalColumnSet => new() { "PartitionKey" };
 
-    private async Task<bool> TryUpdatePackageAsync(TableOperation operation, CancellationToken cancellationToken)
+    /// <summary>
+    /// Tries to update the package.
+    /// </summary>
+    /// <param name="operation">The table operation.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A value indiacting whether the package update was successful or not.</returns>
+    private async Task<bool> TryUpdatePackage(TableOperation operation, CancellationToken cancellationToken)
     {
         try
         {

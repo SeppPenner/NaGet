@@ -14,7 +14,7 @@ public interface ISearchService
     /// <param name="request">The search request.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The search response.</returns>
-    Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken);
+    Task<SearchResponse> Search(SearchRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Perform an autocomplete query.
@@ -23,7 +23,7 @@ public interface ISearchService
     /// <param name="request">The autocomplete request.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The autocomplete response.</returns>
-    Task<AutocompleteResponse> AutocompleteAsync(AutocompleteRequest request, CancellationToken cancellationToken);
+    Task<AutocompleteResponse> Autocomplete(AutocompleteRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Enumerate listed package versions.
@@ -32,7 +32,7 @@ public interface ISearchService
     /// <param name="request">The autocomplete request.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The package versions that matched the request.</returns>
-    Task<AutocompleteResponse> ListPackageVersionsAsync(VersionsRequest request, CancellationToken cancellationToken);
+    Task<AutocompleteResponse> ListPackageVersions(VersionsRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Find the packages that depend on a given package.
@@ -40,7 +40,7 @@ public interface ISearchService
     /// <param name="packageId">The package whose dependents should be found.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The dependents response.</returns>
-    Task<DependentsResponse> FindDependentsAsync(
+    Task<DependentsResponse> FindDependents(
         string packageId,
         CancellationToken cancellationToken);
 }

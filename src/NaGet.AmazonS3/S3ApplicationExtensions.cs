@@ -1,8 +1,25 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AwsApplicationExtensions.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Amazon S3 application extensions class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace NaGet;
 
-public static class AwsApplicationExtensions
+/// <summary>
+/// The Amazon S3 application extensions class.
+/// </summary>
+public static class S3ApplicationExtensions
 {
-    public static NaGetApplication AddAwsS3Storage(this NaGetApplication app)
+    /// <summary>
+    /// Adds the Amazon S3 storage.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
+    public static NaGetApplication AddAmazonS3Storage(this NaGetApplication app)
     {
         app.Services.AddNaGetOptions<S3StorageOptions>(nameof(NaGetOptions.Storage));
 
@@ -37,7 +54,7 @@ public static class AwsApplicationExtensions
             if (!string.IsNullOrWhiteSpace(options.AssumeRoleArn))
             {
                 var credentials = FallbackCredentialsFactory.GetCredentials();
-                var assumedCredentials = AssumeRoleAsync(
+                var assumedCredentials = AssumeRole(
                         credentials,
                         options.AssumeRoleArn,
                         $"NaGet-Session-{Guid.NewGuid()}")
@@ -62,17 +79,28 @@ public static class AwsApplicationExtensions
         return app;
     }
 
-    public static NaGetApplication AddAwsS3Storage(this NaGetApplication app, Action<S3StorageOptions> configure)
+    /// <summary>
+    /// Adds the Amazon S3 storage.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <param name="configure">The configuration options builder.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
+    public static NaGetApplication AddAmazonS3Storage(this NaGetApplication app, Action<S3StorageOptions> configure)
     {
-        app.AddAwsS3Storage();
+        app.AddAmazonS3Storage();
         app.Services.Configure(configure);
         return app;
     }
 
-    private static async Task<AWSCredentials> AssumeRoleAsync(
-        AWSCredentials credentials,
-        string roleArn,
-        string roleSessionName)
+    /// <summary>
+    /// Tries to get an Amazon S3 role.
+    /// </summary>
+    /// <param name="credentials">The credentials.</param>
+    /// <param name="roleArn">The role ARN.</param>
+    /// <param name="roleSessionName">The role session name.</param>
+    /// <returns>The <see cref="AWSCredentials"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if no role is found.</exception>
+    private static async Task<AWSCredentials> AssumeRole(AWSCredentials credentials, string roleArn, string roleSessionName)
     {
         var assumedCredentials = new AssumeRoleAWSCredentials(credentials, roleArn, roleSessionName);
         var immutableCredentials = await credentials.GetCredentialsAsync();

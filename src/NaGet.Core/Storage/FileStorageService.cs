@@ -26,7 +26,7 @@ public class FileStorageService : IStorageService
         }
     }
 
-    public Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Stream?> Get(string path, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -36,7 +36,7 @@ public class FileStorageService : IStorageService
         return Task.FromResult<Stream?>(content);
     }
 
-    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUri(string path, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -45,7 +45,7 @@ public class FileStorageService : IStorageService
         return Task.FromResult<Uri?>(result);
     }
 
-    public async Task<StoragePutResult> PutAsync(
+    public async Task<StoragePutResult> Put(
         string path,
         Stream content,
         string contentType,
@@ -84,7 +84,7 @@ public class FileStorageService : IStorageService
         }
     }
 
-    public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+    public Task Delete(string path, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 

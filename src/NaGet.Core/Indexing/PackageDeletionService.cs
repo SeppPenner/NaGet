@@ -38,7 +38,7 @@ public class PackageDeletionService : IPackageDeletionService
     {
         logger.LogInformation("Unlisting package {PackageId} {PackageVersion}...", id, version);
 
-        if (!await packages.UnlistPackageAsync(id, version, cancellationToken))
+        if (!await packages.UnlistPackage(id, version, cancellationToken))
         {
             logger.LogWarning("Could not find package {PackageId} {PackageVersion}", id, version);
 
@@ -57,7 +57,7 @@ public class PackageDeletionService : IPackageDeletionService
             id,
             version);
 
-        var found = await packages.HardDeletePackageAsync(id, version, cancellationToken);
+        var found = await packages.HardDeletePackage(id, version, cancellationToken);
         if (!found)
         {
             logger.LogWarning(

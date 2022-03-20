@@ -1,25 +1,53 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TableSearchService.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure table search service class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+namespace NaGet.Azure.Table;
+
+/// <inheritdoc cref="ISearchService"/>
+/// <summary>
+/// The Azure table search service class.
+/// </summary>
 public class TableSearchService : ISearchService
 {
+    /// <summary>
+    /// The table name.
+    /// </summary>
     private const string TableName = "Packages";
 
+    /// <summary>
+    /// The cloud table.
+    /// </summary>
     private readonly CloudTable table;
-    private readonly ISearchResponseBuilder responseBuilder;
 
-    public TableSearchService(
-        CloudTableClient client,
-        ISearchResponseBuilder responseBuilder)
+    /// <summary>
+    /// The search response builder.
+    /// </summary>
+    private readonly ISearchResponseBuilder searchResponseBuilder;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TableSearchService"/> class.
+    /// </summary>
+    /// <param name="client">The client.</param>
+    /// <param name="searchResponseBuilder">The search response builder.</param>
+    /// <exception cref="ArgumentNullException">Thrown if any of the parameters is null.</exception>
+    public TableSearchService(CloudTableClient client, ISearchResponseBuilder searchResponseBuilder)
     {
         table = client?.GetTableReference(TableName) ?? throw new ArgumentNullException(nameof(client));
-        this.responseBuilder = responseBuilder ?? throw new ArgumentNullException(nameof(responseBuilder));
+        this.searchResponseBuilder = searchResponseBuilder ?? throw new ArgumentNullException(nameof(searchResponseBuilder));
     }
 
-    public async Task<SearchResponse> SearchAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public async Task<SearchResponse> Search(
         SearchRequest request,
         CancellationToken cancellationToken)
     {
-        var results = await SearchAsync(
+        var results = await Search(
             request.Query,
             request.Skip,
             request.Take,
@@ -27,14 +55,15 @@ public class TableSearchService : ISearchService
             request.IncludeSemVer2,
             cancellationToken);
 
-        return responseBuilder.BuildSearch(results);
+        return searchResponseBuilder.BuildSearch(results);
     }
 
-    public async Task<AutocompleteResponse> AutocompleteAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public async Task<AutocompleteResponse> Autocomplete(
         AutocompleteRequest request,
         CancellationToken cancellationToken)
     {
-        var results = await SearchAsync(
+        var results = await Search(
             request.Query,
             request.Skip,
             request.Take,
@@ -44,28 +73,38 @@ public class TableSearchService : ISearchService
 
         var packageIds = results.Select(p => p.PackageId).ToList();
 
-        return responseBuilder.BuildAutocomplete(packageIds);
+        return searchResponseBuilder.BuildAutocomplete(packageIds);
     }
 
-    public Task<AutocompleteResponse> ListPackageVersionsAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public Task<AutocompleteResponse> ListPackageVersions(
         VersionsRequest request,
         CancellationToken cancellationToken)
     {
         // TODO: Support versions autocomplete.
         // See: https://github.com/loic-sharma/NaGet/issues/291
-        var response = responseBuilder.BuildAutocomplete(new List<string>());
-
+        var response = searchResponseBuilder.BuildAutocomplete(new List<string>());
         return Task.FromResult(response);
     }
 
-    public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
+    /// <inheritdoc cref="ISearchService"/>
+    public Task<DependentsResponse> FindDependents(string packageId, CancellationToken cancellationToken)
     {
-        var response = responseBuilder.BuildDependents(new List<PackageDependent>());
-
+        var response = searchResponseBuilder.BuildDependents(new List<PackageDependent>());
         return Task.FromResult(response);
     }
 
-    private async Task<List<PackageRegistration>> SearchAsync(
+    /// <summary>
+    /// Searches for packages.
+    /// </summary>
+    /// <param name="searchText">The search text.</param>
+    /// <param name="skip">The skip counter.</param>
+    /// <param name="take">The take counter.</param>
+    /// <param name="includePrerelease">A value indicating whether pre-release packages are found or not.</param>
+    /// <param name="includeSemVer2">A value indicating whether SemVer2 packages are found or not.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="List{T}"/> of <see cref="PackageRegistration"/s.></returns>
+    private async Task<List<PackageRegistration>> Search(
         string? searchText,
         int skip,
         int take,
@@ -77,7 +116,7 @@ public class TableSearchService : ISearchService
         query = query.Where(GenerateSearchFilter(searchText, includePrerelease, includeSemVer2));
         query.TakeCount = 500;
 
-        var results = await LoadPackagesAsync(query, maxPartitions: skip + take, cancellationToken);
+        var results = await LoadPackages(query, maxPartitions: skip + take, cancellationToken);
 
         return results
             .GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
@@ -87,7 +126,14 @@ public class TableSearchService : ISearchService
             .ToList();
     }
 
-    private async Task<IReadOnlyList<Package>> LoadPackagesAsync(
+    /// <summary>
+    /// Loads the packages.
+    /// </summary>
+    /// <param name="query">The query.</param>
+    /// <param name="maxPartitions">The maximum partitions.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="IReadOnlyList{T}"/> of <see cref="Package"/s.></returns>
+    private async Task<IReadOnlyList<Package>> LoadPackages(
         TableQuery<PackageEntity> query,
         int maxPartitions,
         CancellationToken cancellationToken)
@@ -125,9 +171,16 @@ public class TableSearchService : ISearchService
         return results;
     }
 
-    private string GenerateSearchFilter(string? searchText, bool includePrerelease, bool includeSemVer2)
+    /// <summary>
+    /// Generates the search filter.
+    /// </summary>
+    /// <param name="searchText">The search text.</param>
+    /// <param name="includePrerelease">A value indicating whether pre-release packages are found or not.</param>
+    /// <param name="includeSemVer2">A value indicating whether SemVer2 packages are found or not.</param>
+    /// <returns>The search filter string.</returns>
+    private static string GenerateSearchFilter(string? searchText, bool includePrerelease, bool includeSemVer2)
     {
-        var result = "";
+        var result = string.Empty;
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
@@ -176,7 +229,10 @@ public class TableSearchService : ISearchService
 
         string GenerateAnd(string left, string right)
         {
-            if (string.IsNullOrWhiteSpace(left)) return right;
+            if (string.IsNullOrWhiteSpace(left))
+            {
+                return right;
+            }
 
             return TableQuery.CombineFilters(left, TableOperators.And, right);
         }

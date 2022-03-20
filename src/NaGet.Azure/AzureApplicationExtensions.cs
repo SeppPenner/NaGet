@@ -1,11 +1,28 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AzureApplicationExtensions.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure application extensions class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace NaGet;
 
 using CloudStorageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount;
 using StorageCredentials = Microsoft.WindowsAzure.Storage.Auth.StorageCredentials;
 using TableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 
+/// <summary>
+/// The Azure application extensions class.
+/// </summary>
 public static class AzureApplicationExtensions
 {
+    /// <summary>
+    /// Adds the Azure table database.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
     public static NaGetApplication AddAzureTableDatabase(this NaGetApplication app)
     {
         app.Services.AddNaGetOptions<AzureTableOptions>(nameof(NaGetOptions.Database));
@@ -73,15 +90,24 @@ public static class AzureApplicationExtensions
         return app;
     }
 
-    public static NaGetApplication AddAzureTableDatabase(
-        this NaGetApplication app,
-        Action<AzureTableOptions> configure)
+    /// <summary>
+    /// Adds the Azure table database.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <param name="configure">The configuration options builder.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
+    public static NaGetApplication AddAzureTableDatabase(this NaGetApplication app, Action<AzureTableOptions> configure)
     {
         app.AddAzureTableDatabase();
         app.Services.Configure(configure);
         return app;
     }
 
+    /// <summary>
+    /// Adds the Azure blob storage.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
     public static NaGetApplication AddAzureBlobStorage(this NaGetApplication app)
     {
         app.Services.AddNaGetOptions<AzureBlobStorageOptions>(nameof(NaGetOptions.Storage));
@@ -127,15 +153,24 @@ public static class AzureApplicationExtensions
         return app;
     }
 
-    public static NaGetApplication AddAzureBlobStorage(
-        this NaGetApplication app,
-        Action<AzureBlobStorageOptions> configure)
+    /// <summary>
+    /// Adds the Azure blob storage.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <param name="configure">The configuration options builder.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
+    public static NaGetApplication AddAzureBlobStorage(this NaGetApplication app, Action<AzureBlobStorageOptions> configure)
     {
         app.AddAzureBlobStorage();
         app.Services.Configure(configure);
         return app;
     }
 
+    /// <summary>
+    /// Adds the Azure search.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
     public static NaGetApplication AddAzureSearch(this NaGetApplication app)
     {
         app.Services.AddNaGetOptions<AzureSearchOptions>(nameof(NaGetOptions.Search));
@@ -186,9 +221,13 @@ public static class AzureApplicationExtensions
         return app;
     }
 
-    public static NaGetApplication AddAzureSearch(
-        this NaGetApplication app,
-        Action<AzureSearchOptions> configure)
+    /// <summary>
+    /// Adds the Azure search.
+    /// </summary>
+    /// <param name="app">The NaGet application.</param>
+    /// <param name="configure">The configuration options builder.</param>
+    /// <returns>The <see cref="NaGetApplication"/>.</returns>
+    public static NaGetApplication AddAzureSearch(this NaGetApplication app, Action<AzureSearchOptions> configure)
     {
         app.AddAzureSearch();
         app.Services.Configure(configure);

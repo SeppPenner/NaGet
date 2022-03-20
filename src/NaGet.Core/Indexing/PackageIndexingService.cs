@@ -70,14 +70,14 @@ public class PackageIndexingService : IPackageIndexingService
         }
 
         // The package is well-formed. Ensure this is a new package.
-        if (await packages.ExistsAsync(package.Id, package.Version, cancellationToken))
+        if (await packages.Exists(package.Id, package.Version, cancellationToken))
         {
             if (!options.Value.AllowPackageOverwrites)
             {
                 return PackageIndexingResult.PackageAlreadyExists;
             }
 
-            await packages.HardDeletePackageAsync(package.Id, package.Version, cancellationToken);
+            await packages.HardDeletePackage(package.Id, package.Version, cancellationToken);
             await storage.DeleteAsync(package.Id, package.Version, cancellationToken);
         }
 
@@ -119,7 +119,7 @@ public class PackageIndexingService : IPackageIndexingService
             package.Id,
             package.NormalizedVersionString);
 
-        var result = await packages.AddAsync(package, cancellationToken);
+        var result = await packages.Add(package, cancellationToken);
         if (result == PackageAddResult.PackageAlreadyExists)
         {
             logger.LogWarning(
@@ -142,7 +142,7 @@ public class PackageIndexingService : IPackageIndexingService
             package.Id,
             package.NormalizedVersionString);
 
-        await search.IndexAsync(package, cancellationToken);
+        await search.Index(package, cancellationToken);
 
         logger.LogInformation(
             "Successfully indexed package {Id} {Version} in search",

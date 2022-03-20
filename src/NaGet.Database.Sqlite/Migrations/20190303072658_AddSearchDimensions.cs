@@ -1,109 +1,121 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AddSearchDimensions.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The migration to add search dimensions.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NaGet.Database.Sqlite.Migrations
+namespace NaGet.Database.Sqlite.Migrations;
+
+/// <inheritdoc cref="Migration"/>
+/// <summary>
+/// The migration to add search dimensions.
+/// </summary>
+public partial class AddSearchDimensions : Migration
 {
-    public partial class AddSearchDimensions : Migration
+    /// <inheritdoc cref="Migration"/>
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsPrerelease",
-                table: "Packages",
-                nullable: false,
-                defaultValue: false);
+        migrationBuilder.AddColumn<bool>(
+            name: "IsPrerelease",
+            table: "Packages",
+            nullable: false,
+            defaultValue: false);
 
-            migrationBuilder.AddColumn<int>(
-                name: "SemVerLevel",
-                table: "Packages",
-                nullable: false,
-                defaultValue: 0);
+        migrationBuilder.AddColumn<int>(
+            name: "SemVerLevel",
+            table: "Packages",
+            nullable: false,
+            defaultValue: 0);
 
-            migrationBuilder.CreateTable(
-                name: "PackageTypes",
-                columns: table => new
-                {
-                    Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 512, nullable: true),
-                    Version = table.Column<string>(maxLength: 64, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageTypes", x => x.Key);
-                    table.ForeignKey(
-                        name: "FK_PackageTypes_Packages_PackageKey",
-                        column: x => x.PackageKey,
-                        principalTable: "Packages",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            name: "PackageTypes",
+            columns: table => new
+            {
+                Key = table.Column<int>(nullable: false)
+                    .Annotation("Sqlite:Autoincrement", true),
+                Name = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 512, nullable: true),
+                Version = table.Column<string>(maxLength: 64, nullable: true),
+                PackageKey = table.Column<int>(nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_PackageTypes", x => x.Key);
+                table.ForeignKey(
+                    name: "FK_PackageTypes_Packages_PackageKey",
+                    column: x => x.PackageKey,
+                    principalTable: "Packages",
+                    principalColumn: "Key",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "TargetFrameworks",
-                columns: table => new
-                {
-                    Key = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Moniker = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 256, nullable: true),
-                    PackageKey = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TargetFrameworks", x => x.Key);
-                    table.ForeignKey(
-                        name: "FK_TargetFrameworks_Packages_PackageKey",
-                        column: x => x.PackageKey,
-                        principalTable: "Packages",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            name: "TargetFrameworks",
+            columns: table => new
+            {
+                Key = table.Column<int>(nullable: false)
+                    .Annotation("Sqlite:Autoincrement", true),
+                Moniker = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 256, nullable: true),
+                PackageKey = table.Column<int>(nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_TargetFrameworks", x => x.Key);
+                table.ForeignKey(
+                    name: "FK_TargetFrameworks_Packages_PackageKey",
+                    column: x => x.PackageKey,
+                    principalTable: "Packages",
+                    principalColumn: "Key",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PackageDependencies_Id",
-                table: "PackageDependencies",
-                column: "Id");
+        migrationBuilder.CreateIndex(
+            name: "IX_PackageDependencies_Id",
+            table: "PackageDependencies",
+            column: "Id");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PackageTypes_Name",
-                table: "PackageTypes",
-                column: "Name");
+        migrationBuilder.CreateIndex(
+            name: "IX_PackageTypes_Name",
+            table: "PackageTypes",
+            column: "Name");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PackageTypes_PackageKey",
-                table: "PackageTypes",
-                column: "PackageKey");
+        migrationBuilder.CreateIndex(
+            name: "IX_PackageTypes_PackageKey",
+            table: "PackageTypes",
+            column: "PackageKey");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_TargetFrameworks_Moniker",
-                table: "TargetFrameworks",
-                column: "Moniker");
+        migrationBuilder.CreateIndex(
+            name: "IX_TargetFrameworks_Moniker",
+            table: "TargetFrameworks",
+            column: "Moniker");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_TargetFrameworks_PackageKey",
-                table: "TargetFrameworks",
-                column: "PackageKey");
-        }
+        migrationBuilder.CreateIndex(
+            name: "IX_TargetFrameworks_PackageKey",
+            table: "TargetFrameworks",
+            column: "PackageKey");
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "PackageTypes");
+    /// <inheritdoc cref="Migration"/>
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "PackageTypes");
 
-            migrationBuilder.DropTable(
-                name: "TargetFrameworks");
+        migrationBuilder.DropTable(
+            name: "TargetFrameworks");
 
-            migrationBuilder.DropIndex(
-                name: "IX_PackageDependencies_Id",
-                table: "PackageDependencies");
+        migrationBuilder.DropIndex(
+            name: "IX_PackageDependencies_Id",
+            table: "PackageDependencies");
 
-            migrationBuilder.DropColumn(
-                name: "IsPrerelease",
-                table: "Packages");
+        migrationBuilder.DropColumn(
+            name: "IsPrerelease",
+            table: "Packages");
 
-            migrationBuilder.DropColumn(
-                name: "SemVerLevel",
-                table: "Packages");
-        }
+        migrationBuilder.DropColumn(
+            name: "SemVerLevel",
+            table: "Packages");
     }
 }

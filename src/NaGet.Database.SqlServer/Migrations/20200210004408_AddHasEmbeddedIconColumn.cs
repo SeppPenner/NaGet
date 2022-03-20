@@ -1,23 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AddHasEmbeddedIconColumn.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The migration to add the has embedded icon column.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NaGet.Database.SqlServer.Migrations
+namespace NaGet.Database.SqlServer.Migrations;
+
+/// <inheritdoc cref="Migration"/>
+/// <summary>
+/// The migration to add the has embedded icon column.
+/// </summary>
+public partial class AddHasEmbeddedIconColumn : Migration
 {
-    public partial class AddHasEmbeddedIconColumn : Migration
+    /// <inheritdoc cref="Migration"/>
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<bool>(
-                name: "HasEmbeddedIcon",
-                table: "Packages",
-                nullable: false,
-                defaultValue: false);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "HasEmbeddedIcon",
+            table: "Packages",
+            nullable: false,
+            defaultValue: false);
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "HasEmbeddedIcon",
-                table: "Packages");
-        }
+    /// <inheritdoc cref="Migration"/>
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "HasEmbeddedIcon",
+            table: "Packages");
     }
 }

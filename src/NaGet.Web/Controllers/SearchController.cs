@@ -36,7 +36,7 @@ namespace NaGet.Web
                 Query = query ?? string.Empty,
             };
 
-            return await _searchService.SearchAsync(request, cancellationToken);
+            return await _searchService.Search(request, cancellationToken);
         }
 
         public async Task<ActionResult<AutocompleteResponse>> AutocompleteAsync(
@@ -61,7 +61,7 @@ namespace NaGet.Web
                     PackageId = versionsQuery
                 };
 
-                return await _searchService.ListPackageVersionsAsync(request, cancellationToken);
+                return await _searchService.ListPackageVersions(request, cancellationToken);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace NaGet.Web
                     Query = autocompleteQuery ?? string.Empty
                 };
 
-                return await _searchService.AutocompleteAsync(request, cancellationToken);
+                return await _searchService.Autocomplete(request, cancellationToken);
             }
         }
 
@@ -88,7 +88,7 @@ namespace NaGet.Web
                 return BadRequest();
             }
 
-            return await _searchService.FindDependentsAsync(packageId, cancellationToken);
+            return await _searchService.FindDependents(packageId, cancellationToken);
         }
     }
 }

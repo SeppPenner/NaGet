@@ -122,7 +122,7 @@ namespace NaGet.Web
                 return Unauthorized();
             }
 
-            if (await _packages.RelistPackageAsync(id, nugetVersion, cancellationToken))
+            if (await _packages.RelistPackage(id, nugetVersion, cancellationToken))
             {
                 return Ok();
             }

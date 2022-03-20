@@ -17,7 +17,7 @@ namespace NaGet.Web.Tests
         {
             var search = new Mock<ISearchService>();
             search
-                .Setup(s => s.SearchAsync(It.IsAny<SearchRequest>(), cancellation))
+                .Setup(s => s.Search(It.IsAny<SearchRequest>(), cancellation))
                 .Callback((SearchRequest r, CancellationToken c) => capturedRequest = r)
                 .ReturnsAsync(response);
 

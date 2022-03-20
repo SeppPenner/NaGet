@@ -1,22 +1,46 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IndexActionBuilder.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure index action builder class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+namespace NaGet.Azure.Search;
+
+/// <summary>
+/// The Azure index action builder class.
+/// </summary>
 public class IndexActionBuilder
 {
-    public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddPackage(
-        PackageRegistration registration)
+    /// <summary>
+    /// Adds a package.
+    /// </summary>
+    /// <param name="registration">The package registration.</param>
+    /// <returns>The found documents.</returns>
+    public virtual IReadOnlyList<IndexAction<KeyedDocument>> AddPackage(PackageRegistration registration)
     {
         return AddOrUpdatePackage(registration, isUpdate: false);
     }
 
-    public virtual IReadOnlyList<IndexAction<KeyedDocument>> UpdatePackage(
-        PackageRegistration registration)
+    /// <summary>
+    /// Updates a package.
+    /// </summary>
+    /// <param name="registration">The package registration.</param>
+    /// <returns>The found documents.</returns>
+    public virtual IReadOnlyList<IndexAction<KeyedDocument>> UpdatePackage(PackageRegistration registration)
     {
         return AddOrUpdatePackage(registration, isUpdate: true);
     }
 
-    private IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(
-        PackageRegistration registration,
-        bool isUpdate)
+    /// <summary>
+    /// Adds or updates a package.
+    /// </summary>
+    /// <param name="registration">The package registration.</param>
+    /// <param name="isUpdate">A value indicating whether the package is updated or not.</param>
+    /// <returns>The found documents.</returns>
+    private static IReadOnlyList<IndexAction<KeyedDocument>> AddOrUpdatePackage(PackageRegistration registration, bool isUpdate)
     {
         var encodedId = EncodePackageId(registration.PackageId.ToLowerInvariant());
         var result = new List<IndexAction<KeyedDocument>>();
@@ -41,6 +65,7 @@ public class IndexActionBuilder
             }
 
             var versions = filtered.OrderBy(p => p.Version).ToList();
+
             if (versions.Count == 0)
             {
                 if (isUpdate)
@@ -85,7 +110,7 @@ public class IndexActionBuilder
             document.DownloadsMagnitude = document.TotalDownloads.ToString().Length;
             document.Versions = versions.Select(p => p.Version.ToFullString()).ToArray();
             document.VersionDownloads = versions.Select(p => p.Downloads.ToString()).ToArray();
-            document.Dependencies = dependencies;
+            document.Dependencies = dependencies!;
             document.PackageTypes = latest.PackageTypes.Select(t => t.Name).ToArray();
             document.Frameworks = latest.TargetFrameworks.Select(f => f.Moniker.ToLowerInvariant()).ToArray();
             document.SearchFilters = searchFilters.ToString();
@@ -99,13 +124,17 @@ public class IndexActionBuilder
         return result;
     }
 
-    private string EncodePackageId(string key)
+    /// <summary>
+    /// Encodes the package identifier.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <returns>The encoded string.</returns>
+    private static string EncodePackageId(string key)
     {
         // Keys can only contain letters, digits, underscore(_), dash(-), or equal sign(=).
         // TODO: Align with NuGet.org's algorithm.
         var bytes = Encoding.UTF8.GetBytes(key);
         var base64 = Convert.ToBase64String(bytes);
-
         return base64.Replace('+', '-').Replace('/', '_');
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NaGet.Aliyun\NaGet.Aliyun.csproj" />
-    <ProjectReference Include="..\NaGet.Aws\NaGet.Aws.csproj" />
+    <ProjectReference Include="..\NaGet.AmazonS3\NaGet.AmazonS3.csproj" />
     <ProjectReference Include="..\NaGet.Azure\NaGet.Azure.csproj" />
     <ProjectReference Include="..\NaGet.Core\NaGet.Core.csproj" />
     <ProjectReference Include="..\NaGet.Database.MySql\NaGet.Database.MySql.csproj" />

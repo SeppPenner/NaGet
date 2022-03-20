@@ -86,7 +86,7 @@ namespace NaGet.Web
             LastUpdated = packages.Max(p => p.Published);
             TotalDownloads = packages.Sum(p => p.Downloads);
 
-            var dependents = await search.FindDependentsAsync(Package.Id, cancellationToken);
+            var dependents = await search.FindDependents(Package.Id, cancellationToken);
 
             UsedBy = dependents.Data;
             DependencyGroups = ToDependencyGroups(Package);

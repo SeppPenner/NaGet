@@ -1,26 +1,62 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AzureSearchBatchIndexer.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure search batch indexer class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+namespace NaGet.Azure.Search;
+
+/// <summary>
+/// The Azure search batch indexer class.
+/// </summary>
 public class AzureSearchBatchIndexer
 {
     /// <summary>
-    /// Azure Search accepts batches of up to 1000 documents.
+    /// The maximum batch size. Azure search accepts batches of up to 1000 documents.
     /// </summary>
     public const int MaxBatchSize = 1000;
 
+    /// <summary>
+    /// The index client.
+    /// </summary>
     private readonly ISearchIndexClient indexClient;
+
+    /// <summary>
+    /// The logger.
+    /// </summary>
     private readonly ILogger<AzureSearchBatchIndexer> logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureSearchBatchIndexer"/>.
+    /// </summary>
+    /// <param name="searchClient">The search client.</param>
+    /// <param name="logger">The logger.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the search client or logger is null.</exception>
     public AzureSearchBatchIndexer(
         SearchServiceClient searchClient,
         ILogger<AzureSearchBatchIndexer> logger)
     {
-        if (searchClient is null) throw new ArgumentNullException(nameof(searchClient));
+        if (searchClient is null)
+        {
+            throw new ArgumentNullException(nameof(searchClient));
+        }
 
         indexClient = searchClient.Indexes.GetClient(PackageDocument.IndexName);
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task IndexAsync(
+    /// <summary>
+    /// Searches Azure for matching documents.
+    /// </summary>
+    /// <param name="batch">The batch of documents.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException">Thrown if the batches are too big.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the indexing didn't work.</exception>
+    public async Task Index(
         IReadOnlyList<IndexAction<KeyedDocument>> batch,
         CancellationToken cancellationToken)
     {
@@ -64,8 +100,8 @@ public class AzureSearchBatchIndexer
                 halfA.Count,
                 halfB.Count);
 
-            await IndexAsync(halfA, cancellationToken);
-            await IndexAsync(halfB, cancellationToken);
+            await Index(halfA, cancellationToken);
+            await Index(halfB, cancellationToken);
         }
 
         if (indexingResults is not null && indexingResults.Any(result => !result.Succeeded))

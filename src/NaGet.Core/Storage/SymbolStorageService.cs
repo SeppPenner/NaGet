@@ -19,7 +19,7 @@ public class SymbolStorageService : ISymbolStorageService
         CancellationToken cancellationToken)
     {
         var path = GetPathForKey(filename, key);
-        var result = await storage.PutAsync(path, pdbStream, PdbContentType, cancellationToken);
+        var result = await storage.Put(path, pdbStream, PdbContentType, cancellationToken);
 
         if (result == StoragePutResult.Conflict)
         {
@@ -33,7 +33,7 @@ public class SymbolStorageService : ISymbolStorageService
 
         try
         {
-            return await storage.GetAsync(path);
+            return await storage.Get(path);
         }
         catch
         {

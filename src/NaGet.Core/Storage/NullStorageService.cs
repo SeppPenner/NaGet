@@ -5,22 +5,22 @@ namespace NaGet.Core;
 /// </summary>
 public class NullStorageService : IStorageService
 {
-    public Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+    public Task Delete(string path, CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
     }
 
-    public Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Stream?> Get(string path, CancellationToken cancellationToken = default)
     {
         return Task.FromResult<Stream?>(null);
     }
 
-    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetDownloadUri(string path, CancellationToken cancellationToken = default)
     {
         return Task.FromResult<Uri?>(null);
     }
 
-    public Task<StoragePutResult> PutAsync(
+    public Task<StoragePutResult> Put(
         string path,
         Stream content,
         string contentType,

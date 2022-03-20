@@ -13,7 +13,7 @@ namespace NaGet.Core.Tests.Services
             public async Task ThrowsIfStorePathDoesNotExist()
             {
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    target.GetAsync("hello.txt"));
+                    target.Get("hello.txt"));
             }
 
             [Fact]
@@ -23,10 +23,10 @@ namespace NaGet.Core.Tests.Services
                 Directory.CreateDirectory(storePath);
 
                 await Assert.ThrowsAsync<FileNotFoundException>(() =>
-                    target.GetAsync("hello.txt"));
+                    target.Get("hello.txt"));
 
                 await Assert.ThrowsAsync<DirectoryNotFoundException>(() =>
-                    target.GetAsync("hello/world.txt"));
+                    target.Get("hello/world.txt"));
             }
 
             [Fact]
@@ -35,11 +35,11 @@ namespace NaGet.Core.Tests.Services
                 // Arrange
                 using (var content = StringStream("Hello world"))
                 {
-                    await target.PutAsync("hello.txt", content, "text/plain");
+                    await target.Put("hello.txt", content, "text/plain");
                 }
 
                 // Act
-                var result = await target.GetAsync("hello.txt");
+                var result = await target.Get("hello.txt");
 
                 // Assert
                 Assert.NotNull(result);
@@ -52,7 +52,7 @@ namespace NaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await target.GetAsync(path));
+                        await target.Get(path));
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace NaGet.Core.Tests.Services
             [Fact]
             public async Task CreatesUriEvenIfDoesntExist()
             {
-                var result = await target.GetDownloadUriAsync("test.txt");
+                var result = await target.GetDownloadUri("test.txt");
                 var expected = new Uri(Path.Combine(storePath, "test.txt"));
 
                 Assert.Equal(expected, result);
@@ -74,7 +74,7 @@ namespace NaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await target.GetDownloadUriAsync(path));
+                        await target.GetDownloadUri(path));
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace NaGet.Core.Tests.Services
                 StoragePutResult result;
                 using (var content = StringStream("Hello world"))
                 {
-                    result = await target.PutAsync("test.txt", content, "text/plain");
+                    result = await target.Put("test.txt", content, "text/plain");
                 }
 
                 var path = Path.Combine(storePath, "test.txt");
@@ -110,7 +110,7 @@ namespace NaGet.Core.Tests.Services
                 using (var content = StringStream("Hello world"))
                 {
                     // Act
-                    result = await target.PutAsync("test.txt", content, "text/plain");
+                    result = await target.Put("test.txt", content, "text/plain");
                 }
 
                 // Assert
@@ -130,7 +130,7 @@ namespace NaGet.Core.Tests.Services
                 using (var content = StringStream("foo bar"))
                 {
                     // Act
-                    result = await target.PutAsync("test.txt", content, "text/plain");
+                    result = await target.Put("test.txt", content, "text/plain");
                 }
 
                 // Assert
@@ -144,7 +144,7 @@ namespace NaGet.Core.Tests.Services
                 {
                     using var content = StringStream("Hello world");
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await target.PutAsync(path, content, "text/plain"));
+                        await target.Put(path, content, "text/plain"));
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace NaGet.Core.Tests.Services
             [Fact]
             public async Task DoesNotThrowIfPathDoesNotExist()
             {
-                await target.DeleteAsync("test.txt");
+                await target.Delete("test.txt");
             }
 
             [Fact]
@@ -167,7 +167,7 @@ namespace NaGet.Core.Tests.Services
                 await File.WriteAllTextAsync(path, "Hello world");
 
                 // Act & Assert
-                await target.DeleteAsync("test.txt");
+                await target.Delete("test.txt");
 
                 Assert.False(File.Exists(path));
             }
@@ -178,7 +178,7 @@ namespace NaGet.Core.Tests.Services
                 foreach (var path in OutsideStorePathData)
                 {
                     await Assert.ThrowsAsync<ArgumentException>(async () =>
-                        await target.DeleteAsync(path));
+                        await target.Delete(path));
                 }
             }
         }

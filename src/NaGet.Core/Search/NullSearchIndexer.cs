@@ -5,7 +5,7 @@ namespace NaGet.Core;
 /// </summary>
 public class NullSearchIndexer : ISearchIndexer
 {
-    public Task IndexAsync(Package package, CancellationToken cancellationToken = default)
+    public Task Index(Package package, CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
     }

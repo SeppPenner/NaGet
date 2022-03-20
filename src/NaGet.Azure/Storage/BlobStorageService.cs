@@ -1,26 +1,50 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="BlobStorageService.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure blob storage service class.
+//    See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace NaGet.Azure.Storage;
 
 using CosmosStorageException = Microsoft.Azure.Cosmos.Table.StorageException;
 using StorageAccessCondition = Microsoft.WindowsAzure.Storage.AccessCondition;
 
-// See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
+/// <inheritdoc cref="IStorageService"/>
+/// <summary>
+/// The Azure blob storage service class.
+/// See: https://github.com/NuGet/NuGetGallery/blob/master/src/NuGetGallery.Core/Services/CloudBlobCoreFileStorageService.cs
+/// </summary>
 public class BlobStorageService : IStorageService
 {
+    /// <summary>
+    /// The cloud blob container.
+    /// </summary>
     private readonly CloudBlobContainer container;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlobStorageService"/> class.
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the container is null.</exception>
     public BlobStorageService(CloudBlobContainer container)
     {
         this.container = container ?? throw new ArgumentNullException(nameof(container));
     }
 
-    public async Task<Stream?> GetAsync(string path, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IStorageService"/>
+    public async Task<Stream?> Get(string path, CancellationToken cancellationToken)
     {
         return await container
             .GetBlockBlobReference(path)
             .OpenReadAsync(cancellationToken);
     }
 
-    public Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IStorageService"/>
+    public Task<Uri?> GetDownloadUri(string path, CancellationToken cancellationToken)
     {
         // TODO: Make expiry time configurable.
         var blob = container.GetBlockBlobReference(path);
@@ -32,11 +56,11 @@ public class BlobStorageService : IStorageService
 
         var signature = blob.GetSharedAccessSignature(accessPolicy);
         var result = new Uri(blob.Uri, signature);
-
         return Task.FromResult<Uri?>(result);
     }
 
-    public async Task<StoragePutResult> PutAsync(
+    /// <inheritdoc cref="IStorageService"/>
+    public async Task<StoragePutResult> Put(
         string path,
         Stream content,
         string contentType,
@@ -68,7 +92,8 @@ public class BlobStorageService : IStorageService
         }
     }
 
-    public async Task DeleteAsync(string path, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IStorageService"/>
+    public async Task Delete(string path, CancellationToken cancellationToken)
     {
         await container
             .GetBlockBlobReference(path)

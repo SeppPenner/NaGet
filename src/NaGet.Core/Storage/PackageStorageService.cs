@@ -48,7 +48,7 @@ public class PackageStorageService : IPackageStorageService
             packagePath);
 
         // Store the package.
-        var result = await storage.PutAsync(packagePath, packageStream, PackageContentType, cancellationToken);
+        var result = await storage.Put(packagePath, packageStream, PackageContentType, cancellationToken);
         if (result == StoragePutResult.Conflict)
         {
             // TODO: This should be returned gracefully with an enum.
@@ -68,7 +68,7 @@ public class PackageStorageService : IPackageStorageService
             lowercasedNormalizedVersion,
             nuspecPath);
 
-        result = await storage.PutAsync(nuspecPath, nuspecStream, NuspecContentType, cancellationToken);
+        result = await storage.Put(nuspecPath, nuspecStream, NuspecContentType, cancellationToken);
         if (result == StoragePutResult.Conflict)
         {
             // TODO: This should be returned gracefully with an enum.
@@ -90,7 +90,7 @@ public class PackageStorageService : IPackageStorageService
                 lowercasedNormalizedVersion,
                 readmePath);
 
-            result = await storage.PutAsync(readmePath, readmeStream, ReadmeContentType, cancellationToken);
+            result = await storage.Put(readmePath, readmeStream, ReadmeContentType, cancellationToken);
             if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
@@ -113,7 +113,7 @@ public class PackageStorageService : IPackageStorageService
                 lowercasedNormalizedVersion,
                 iconPath);
 
-            result = await storage.PutAsync(iconPath, iconStream, IconContentType, cancellationToken);
+            result = await storage.Put(iconPath, iconStream, IconContentType, cancellationToken);
             if (result == StoragePutResult.Conflict)
             {
                 // TODO: This should be returned gracefully with an enum.
@@ -163,10 +163,10 @@ public class PackageStorageService : IPackageStorageService
         var readmePath = ReadmePath(lowercasedId, lowercasedNormalizedVersion);
         var iconPath = IconPath(lowercasedId, lowercasedNormalizedVersion);
 
-        await storage.DeleteAsync(packagePath, cancellationToken);
-        await storage.DeleteAsync(nuspecPath, cancellationToken);
-        await storage.DeleteAsync(readmePath, cancellationToken);
-        await storage.DeleteAsync(iconPath, cancellationToken);
+        await storage.Delete(packagePath, cancellationToken);
+        await storage.Delete(nuspecPath, cancellationToken);
+        await storage.Delete(readmePath, cancellationToken);
+        await storage.Delete(iconPath, cancellationToken);
     }
 
     private async Task<Stream?> GetStreamAsync(
@@ -181,7 +181,7 @@ public class PackageStorageService : IPackageStorageService
 
         try
         {
-            return await storage.GetAsync(path, cancellationToken);
+            return await storage.Get(path, cancellationToken);
         }
         catch (DirectoryNotFoundException)
         {

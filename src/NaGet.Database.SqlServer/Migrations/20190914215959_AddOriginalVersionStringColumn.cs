@@ -1,23 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AddOriginalVersionStringColumn.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The migration to add the original version string.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NaGet.Database.SqlServer.Migrations
+namespace NaGet.Database.SqlServer.Migrations;
+
+/// <inheritdoc cref="Migration"/>
+/// <summary>
+/// The migration to add the original version string.
+/// </summary>
+public partial class AddOriginalVersionStringColumn : Migration
 {
-    public partial class AddOriginalVersionStringColumn : Migration
+    /// <inheritdoc cref="Migration"/>
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "OriginalVersion",
-                table: "Packages",
-                maxLength: 64,
-                nullable: true);
-        }
+        migrationBuilder.AddColumn<string>(
+            name: "OriginalVersion",
+            table: "Packages",
+            maxLength: 64,
+            nullable: true);
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "OriginalVersion",
-                table: "Packages");
-        }
+    /// <inheritdoc cref="Migration"/>
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "OriginalVersion",
+            table: "Packages");
     }
 }

@@ -10,6 +10,6 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Options;
 
-global using NaGet.Aws;
+global using NaGet.AmazonS3;
 global using NaGet.Core;
 #pragma warning restore IDE0065 // Die using-Anweisung wurde falsch platziert.

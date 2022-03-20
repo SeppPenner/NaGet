@@ -201,7 +201,7 @@ namespace NaGet.Core.Tests.Services
                 // Arrange
                 var cancellationToken = CancellationToken.None;
                 storage
-                    .Setup(s => s.GetAsync(PackagePath, cancellationToken))
+                    .Setup(s => s.Get(PackagePath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
@@ -216,7 +216,7 @@ namespace NaGet.Core.Tests.Services
                 var cancellationToken = CancellationToken.None;
                 using var packageStream = StringStream("My package");
                 storage
-                    .Setup(s => s.GetAsync(PackagePath, cancellationToken))
+                    .Setup(s => s.Get(PackagePath, cancellationToken))
                     .ReturnsAsync(packageStream);
 
                 // Act
@@ -226,7 +226,7 @@ namespace NaGet.Core.Tests.Services
                 Assert.NotNull(result);
                 Assert.Equal("My package", await ToStringAsync(result!));
 
-                storage.Verify(s => s.GetAsync(PackagePath, cancellationToken), Times.Once);
+                storage.Verify(s => s.Get(PackagePath, cancellationToken), Times.Once);
             }
         }
 
@@ -238,7 +238,7 @@ namespace NaGet.Core.Tests.Services
                 // Arrange
                 var cancellationToken = CancellationToken.None;
                 storage
-                    .Setup(s => s.GetAsync(NuspecPath, cancellationToken))
+                    .Setup(s => s.Get(NuspecPath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
@@ -253,7 +253,7 @@ namespace NaGet.Core.Tests.Services
                 var cancellationToken = CancellationToken.None;
                 using var nuspecStream = StringStream("My nuspec");
                 storage
-                    .Setup(s => s.GetAsync(NuspecPath, cancellationToken))
+                    .Setup(s => s.Get(NuspecPath, cancellationToken))
                     .ReturnsAsync(nuspecStream);
 
                 // Act
@@ -263,7 +263,7 @@ namespace NaGet.Core.Tests.Services
                 Assert.NotNull(result);
                 Assert.Equal("My nuspec", await ToStringAsync(result!));
 
-                storage.Verify(s => s.GetAsync(NuspecPath, cancellationToken), Times.Once);
+                storage.Verify(s => s.Get(NuspecPath, cancellationToken), Times.Once);
             }
         }
 
@@ -275,7 +275,7 @@ namespace NaGet.Core.Tests.Services
                 // Arrange
                 var cancellationToken = CancellationToken.None;
                 storage
-                    .Setup(s => s.GetAsync(ReadmePath, cancellationToken))
+                    .Setup(s => s.Get(ReadmePath, cancellationToken))
                     .ThrowsAsync(new DirectoryNotFoundException());
 
                 // Act
@@ -291,7 +291,7 @@ namespace NaGet.Core.Tests.Services
                 using (var readmeStream = StringStream("My readme"))
                 {
                     storage
-                        .Setup(s => s.GetAsync(ReadmePath, cancellationToken))
+                        .Setup(s => s.Get(ReadmePath, cancellationToken))
                         .ReturnsAsync(readmeStream);
 
                     // Act
@@ -301,7 +301,7 @@ namespace NaGet.Core.Tests.Services
                     Assert.NotNull(result);
                     Assert.Equal("My readme", await ToStringAsync(result!));
 
-                    storage.Verify(s => s.GetAsync(ReadmePath, cancellationToken), Times.Once);
+                    storage.Verify(s => s.Get(ReadmePath, cancellationToken), Times.Once);
                 }
             }
         }
@@ -315,9 +315,9 @@ namespace NaGet.Core.Tests.Services
                 var cancellationToken = CancellationToken.None;
                 await target.DeleteAsync(package.Id, package.Version, cancellationToken);
 
-                storage.Verify(s => s.DeleteAsync(PackagePath, cancellationToken), Times.Once);
-                storage.Verify(s => s.DeleteAsync(NuspecPath, cancellationToken), Times.Once);
-                storage.Verify(s => s.DeleteAsync(ReadmePath, cancellationToken), Times.Once);
+                storage.Verify(s => s.Delete(PackagePath, cancellationToken), Times.Once);
+                storage.Verify(s => s.Delete(NuspecPath, cancellationToken), Times.Once);
+                storage.Verify(s => s.Delete(ReadmePath, cancellationToken), Times.Once);
             }
         }
 
@@ -362,7 +362,7 @@ namespace NaGet.Core.Tests.Services
             {
                 storage
                     .Setup(
-                        s => s.PutAsync(
+                        s => s.Put(
                             It.IsAny<string>(),
                             It.IsAny<Stream>(),
                             It.IsAny<string>(),

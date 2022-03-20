@@ -20,7 +20,7 @@ public interface IStorageService
     /// <param name="path">The content's path.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The path's content or null if the content does not exist.</returns>
-    Task<Stream?> GetAsync(string path, CancellationToken cancellationToken = default);
+    Task<Stream?> Get(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a URI that can be used to download the content.
@@ -31,7 +31,7 @@ public interface IStorageService
     /// The content's URI. This may be a local file. Returns null if the content
     /// does not exist or if a URI could not be created.
     /// </returns>
-    Task<Uri?> GetDownloadUriAsync(string path, CancellationToken cancellationToken = default);
+    Task<Uri?> GetDownloadUri(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Store content into storage.
@@ -41,7 +41,7 @@ public interface IStorageService
     /// <param name="contentType">The type of content that is being stored.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>The result of the put operation.</returns>
-    Task<StoragePutResult> PutAsync(
+    Task<StoragePutResult> Put(
         string path,
         Stream content,
         string contentType,
@@ -53,11 +53,11 @@ public interface IStorageService
     /// <param name="path">The path to the content to delete.</param>
     /// <param name="cancellationToken">A token to cancel the task.</param>
     /// <returns>A task that completes when the content has been deleted.</returns>
-    Task DeleteAsync(string path, CancellationToken cancellationToken = default);
+    Task Delete(string path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
-/// The result of a <see cref="IStorageService.PutAsync(string, Stream, string, CancellationToken)"/> operation.
+/// The result of a <see cref="IStorageService.Put(string, Stream, string, CancellationToken)"/> operation.
 /// </summary>
 public enum StoragePutResult
 {

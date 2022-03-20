@@ -1,22 +1,41 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SqliteContext.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The SQLite context class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace NaGet.Database.Sqlite;
 
+/// <inheritdoc cref="AbstractContext{TContext}"/>
+/// <summary>
+/// The SQLite context class.
+/// </summary>
 public class SqliteContext : AbstractContext<SqliteContext>
 {
     /// <summary>
-    /// The Sqlite error code for when a unique constraint is violated.
+    /// The SQLite error code for when a unique constraint is violated.
     /// </summary>
     private const int SqliteUniqueConstraintViolationErrorCode = 19;
 
-    public SqliteContext(DbContextOptions<SqliteContext> options)
-        : base(options)
-    { }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SqliteContext"/> class.
+    /// </summary>
+    /// <param name="options">The database options.</param>
+    public SqliteContext(DbContextOptions<SqliteContext> options): base(options)
+    {
+    }
 
+    /// <inheritdoc cref="AbstractContext{TContext}"/>
     public override bool IsUniqueConstraintViolationException(DbUpdateException exception)
     {
         return exception.InnerException is SqliteException sqliteException &&
             sqliteException.SqliteErrorCode == SqliteUniqueConstraintViolationErrorCode;
     }
 
+    /// <inheritdoc cref="AbstractContext{TContext}"/>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

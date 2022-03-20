@@ -44,7 +44,7 @@ public class SymbolIndexingService : ISymbolIndexingService
             var packageId = symbolPackage.NuspecReader.GetId();
             var packageVersion = symbolPackage.NuspecReader.GetVersion();
 
-            var package = await packages.FindOrNullAsync(packageId, packageVersion, includeUnlisted: true, cancellationToken);
+            var package = await packages.FindOrNull(packageId, packageVersion, includeUnlisted: true, cancellationToken);
 
             if (package is null)
             {

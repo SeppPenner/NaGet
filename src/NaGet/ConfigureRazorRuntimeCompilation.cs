@@ -1,32 +1,50 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConfigureRazorRuntimeCompilation.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//   A class that configures the razor runtime compilation options.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NaGet
+namespace NaGet;
+
+/// <summary>
+/// A class that configures the razor runtime compilation options.
+/// </summary>
+public class ConfigureRazorRuntimeCompilation : IConfigureOptions<MvcRazorRuntimeCompilationOptions>
 {
-    public class ConfigureRazorRuntimeCompilation : IConfigureOptions<MvcRazorRuntimeCompilationOptions>
+    /// <summary>
+    /// The host environment.
+    /// </summary>
+    private readonly IHostEnvironment environment;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigureRazorRuntimeCompilation"/> class.
+    /// </summary>
+    /// <param name="env">The host environment.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the environment is null.</exception>
+    public ConfigureRazorRuntimeCompilation(IHostEnvironment env)
     {
-        private readonly IHostEnvironment _env;
+        environment = env ?? throw new ArgumentNullException(nameof(env));
+    }
 
-        public ConfigureRazorRuntimeCompilation(IHostEnvironment env)
+    public void Configure(MvcRazorRuntimeCompilationOptions options)
+    {
+        var path = Path.Combine(environment.ContentRootPath, "..", "NaGet.Web");
+
+        // Try to enable Razor "hot reload".
+        if (!environment.IsDevelopment())
         {
-            _env = env ?? throw new ArgumentNullException(nameof(env));
+            return;
         }
 
-        public void Configure(MvcRazorRuntimeCompilationOptions options)
+        if (!Directory.Exists(path))
         {
-            var path = Path.Combine(_env.ContentRootPath, "..", "NaGet.Web");
-
-            // Try to enable Razor "hot reload".
-            if (!_env.IsDevelopment()) return;
-            if (!Directory.Exists(path)) return;
-
-            var provider = new PhysicalFileProvider(Path.GetFullPath(path));
-
-            options.FileProviders.Add(provider);
+            return;
         }
+
+        var provider = new PhysicalFileProvider(Path.GetFullPath(path));
+        options.FileProviders.Add(provider);
     }
 }

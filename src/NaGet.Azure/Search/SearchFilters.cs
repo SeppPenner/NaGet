@@ -1,6 +1,19 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SearchFilters.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure search filters class.
+//    Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/d3e6b7a3aa8ec9cb8b32bf860f2d4f0d6766ed92/src/NuGet.Services.AzureSearch/VersionList/SearchFilters.cs#L9.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/d3e6b7a3aa8ec9cb8b32bf860f2d4f0d6766ed92/src/NuGet.Services.AzureSearch/VersionList/SearchFilters.cs#L9
+namespace NaGet.Azure.Search;
+
+/// <summary>
+/// The Azure search filters class.
+/// Based off: https://github.com/NuGet/NuGet.Services.Metadata/blob/d3e6b7a3aa8ec9cb8b32bf860f2d4f0d6766ed92/src/NuGet.Services.AzureSearch/VersionList/SearchFilters.cs#L9.
+/// </summary>
 [Flags]
 public enum SearchFilters
 {
@@ -24,5 +37,5 @@ public enum SearchFilters
     /// <summary>
     /// Include package that have prerelease versions and include SemVer 2.0.0 packages.
     /// </summary>
-    IncludePrereleaseAndSemVer2 = IncludePrerelease | IncludeSemVer2,
+    IncludePrereleaseAndSemVer2 = IncludePrerelease | IncludeSemVer2
 }

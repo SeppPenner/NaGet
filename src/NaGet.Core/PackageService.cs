@@ -26,7 +26,7 @@ public class PackageService : IPackageService
         var upstreamVersions = await upstream.ListPackageVersionsAsync(id, cancellationToken);
 
         // Merge the local package versions into the upstream package versions.
-        var localPackages = await database.FindAsync(id, includeUnlisted: true, cancellationToken);
+        var localPackages = await database.Find(id, includeUnlisted: true, cancellationToken);
         var localVersions = localPackages.Select(p => p.Version);
 
         if (!upstreamVersions.Any())
@@ -45,7 +45,7 @@ public class PackageService : IPackageService
     public async Task<IReadOnlyList<Package>> FindPackagesAsync(string id, CancellationToken cancellationToken)
     {
         var upstreamPackages = await upstream.ListPackagesAsync(id, cancellationToken);
-        var localPackages = await database.FindAsync(id, includeUnlisted: true, cancellationToken);
+        var localPackages = await database.Find(id, includeUnlisted: true, cancellationToken);
 
         if (!upstreamPackages.Any())
         {
@@ -79,7 +79,7 @@ public class PackageService : IPackageService
             return null;
         }
 
-        return await database.FindOrNullAsync(id, version, includeUnlisted: true, cancellationToken);
+        return await database.FindOrNull(id, version, includeUnlisted: true, cancellationToken);
     }
 
     public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
@@ -89,7 +89,7 @@ public class PackageService : IPackageService
 
     public async Task AddDownloadAsync(string packageId, NuGetVersion version, CancellationToken cancellationToken)
     {
-        await database.AddDownloadAsync(packageId, version, cancellationToken);
+        await database.AddDownload(packageId, version, cancellationToken);
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public class PackageService : IPackageService
     /// <returns>True if the package exists locally or was indexed from an upstream source.</returns>
     private async Task<bool> MirrorAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
     {
-        if (await database.ExistsAsync(id, version, cancellationToken))
+        if (await database.Exists(id, version, cancellationToken))
         {
             return true;
         }

@@ -98,7 +98,7 @@ namespace NaGet.Core.Tests
                 upstreamPackages = upstreamPackages ?? new List<NuGetVersion>();
 
                 _db
-                    .Setup(p => p.FindAsync(
+                    .Setup(p => p.Find(
                         "MyPackage",
                         /*includeUnlisted: */ true,
                         _cancellationToken))
@@ -188,7 +188,7 @@ namespace NaGet.Core.Tests
                 upstreamPackages = upstreamPackages ?? new List<Package>();
 
                 _db
-                    .Setup(p => p.FindAsync(
+                    .Setup(p => p.Find(
                         "MyPackage",
                         /*includeUnlisted: */ true,
                         _cancellationToken))
@@ -213,10 +213,10 @@ namespace NaGet.Core.Tests
                 var expected = new Package();
 
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(true);
                 _db
-                    .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
+                    .Setup(p => p.FindOrNull(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
                     .ReturnsAsync(expected);
 
                 var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
@@ -228,7 +228,7 @@ namespace NaGet.Core.Tests
             public async Task DoesNotExistInDatabase()
             {
                 _db
-                    .Setup(p => p.FindOrNullAsync(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
+                    .Setup(p => p.FindOrNull(_id, _version,  /*includeUnlisted:*/ true, _cancellationToken))
                     .ReturnsAsync((Package?)null);
 
                 var result = await _target.FindPackageOrNullAsync(_id, _version, _cancellationToken);
@@ -245,7 +245,7 @@ namespace NaGet.Core.Tests
             public async Task ExistsInDatabase()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(true);
 
                 var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
@@ -257,7 +257,7 @@ namespace NaGet.Core.Tests
             public async Task DoesNotExistInDatabase()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
                 var result = await _target.ExistsAsync(_id, _version, _cancellationToken);
@@ -277,7 +277,7 @@ namespace NaGet.Core.Tests
             public async Task SkipsIfAlreadyMirrored()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(true);
 
                 await TargetAsync();
@@ -291,7 +291,7 @@ namespace NaGet.Core.Tests
             public async Task SkipsIfUpstreamDoesntHavePackage()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
                 _upstream
@@ -309,7 +309,7 @@ namespace NaGet.Core.Tests
             public async Task SkipsIfUpstreamThrows()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
                 _upstream
@@ -327,7 +327,7 @@ namespace NaGet.Core.Tests
             public async Task MirrorsPackage()
             {
                 _db
-                    .Setup(p => p.ExistsAsync(_id, _version, _cancellationToken))
+                    .Setup(p => p.Exists(_id, _version, _cancellationToken))
                     .ReturnsAsync(false);
 
                 using (var downloadStream = new MemoryStream())
@@ -356,7 +356,7 @@ namespace NaGet.Core.Tests
                 await _target.AddDownloadAsync(id, version, _cancellationToken);
 
                 _db.Verify(
-                    db => db.AddDownloadAsync(id, version, _cancellationToken),
+                    db => db.AddDownload(id, version, _cancellationToken),
                     Times.Once);
             }
         }

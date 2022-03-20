@@ -16,7 +16,7 @@ public class DatabaseSearchService : ISearchService
         this.searchBuilder = searchBuilder ?? throw new ArgumentNullException(nameof(searchBuilder));
     }
 
-    public async Task<SearchResponse> SearchAsync(SearchRequest request, CancellationToken cancellationToken)
+    public async Task<SearchResponse> Search(SearchRequest request, CancellationToken cancellationToken)
     {
         var frameworks = GetCompatibleFrameworksOrNull(request.Framework);
 
@@ -69,7 +69,7 @@ public class DatabaseSearchService : ISearchService
         return searchBuilder.BuildSearch(groupedResults);
     }
 
-    public async Task<AutocompleteResponse> AutocompleteAsync(
+    public async Task<AutocompleteResponse> Autocomplete(
         AutocompleteRequest request,
         CancellationToken cancellationToken)
     {
@@ -94,7 +94,7 @@ public class DatabaseSearchService : ISearchService
         return searchBuilder.BuildAutocomplete(packageIds);
     }
 
-    public async Task<AutocompleteResponse> ListPackageVersionsAsync(
+    public async Task<AutocompleteResponse> ListPackageVersions(
         VersionsRequest request,
         CancellationToken cancellationToken)
     {
@@ -117,7 +117,7 @@ public class DatabaseSearchService : ISearchService
         return searchBuilder.BuildAutocomplete(packageVersions);
     }
 
-    public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
+    public async Task<DependentsResponse> FindDependents(string packageId, CancellationToken cancellationToken)
     {
         var dependents = await context
             .Packages

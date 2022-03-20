@@ -29,26 +29,26 @@ public class NullSearchService : ISearchService
             Data = new List<SearchResult>()
         });
 
-    public Task<AutocompleteResponse> AutocompleteAsync(
+    public Task<AutocompleteResponse> Autocomplete(
         AutocompleteRequest request,
         CancellationToken cancellationToken)
     {
         return EmptyAutocompleteResponseTask;
     }
 
-    public Task<AutocompleteResponse> ListPackageVersionsAsync(
+    public Task<AutocompleteResponse> ListPackageVersions(
         VersionsRequest request,
         CancellationToken cancellationToken)
     {
         return EmptyAutocompleteResponseTask;
     }
 
-    public Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
+    public Task<DependentsResponse> FindDependents(string packageId, CancellationToken cancellationToken)
     {
         return EmptyDependentsResponseTask;
     }
 
-    public Task<SearchResponse> SearchAsync(
+    public Task<SearchResponse> Search(
         SearchRequest request,
         CancellationToken cancellationToken)
     {

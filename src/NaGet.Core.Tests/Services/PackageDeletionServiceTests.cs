@@ -45,7 +45,7 @@ namespace NaGet.Core.Tests.Services
             _options.PackageDeletionBehavior = PackageDeletionBehavior.Unlist;
 
             _packages
-                .Setup(p => p.UnlistPackageAsync(PackageId, PackageVersion, cancellationToken))
+                .Setup(p => p.UnlistPackage(PackageId, PackageVersion, cancellationToken))
                 .ReturnsAsync(packageExists);
 
             // Act
@@ -55,11 +55,11 @@ namespace NaGet.Core.Tests.Services
             Assert.Equal(packageExists, result);
 
             _packages.Verify(
-                p => p.UnlistPackageAsync(PackageId, PackageVersion, cancellationToken),
+                p => p.UnlistPackage(PackageId, PackageVersion, cancellationToken),
                 Times.Once);
 
             _packages.Verify(
-                p => p.HardDeletePackageAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>(), It.IsAny<CancellationToken>()),
+                p => p.HardDeletePackage(It.IsAny<string>(), It.IsAny<NuGetVersion>(), It.IsAny<CancellationToken>()),
                 Times.Never);
             _storage.Verify(
                 s => s.DeleteAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>(), It.IsAny<CancellationToken>()),
@@ -80,7 +80,7 @@ namespace NaGet.Core.Tests.Services
             var cancellationToken = CancellationToken.None;
 
             _packages
-                .Setup(p => p.HardDeletePackageAsync(PackageId, PackageVersion, cancellationToken))
+                .Setup(p => p.HardDeletePackage(PackageId, PackageVersion, cancellationToken))
                 .Callback(() => databaseStep = step++)
                 .ReturnsAsync(packageExists);
 
@@ -100,14 +100,14 @@ namespace NaGet.Core.Tests.Services
             // The storage deletion should happen even if the package couldn't
             // be found in the database. This ensures consistency.
             _packages.Verify(
-                p => p.HardDeletePackageAsync(PackageId, PackageVersion, cancellationToken),
+                p => p.HardDeletePackage(PackageId, PackageVersion, cancellationToken),
                 Times.Once);
             _storage.Verify(
                 s => s.DeleteAsync(PackageId, PackageVersion, cancellationToken),
                 Times.Once);
 
             _packages.Verify(
-                p => p.UnlistPackageAsync(It.IsAny<string>(), It.IsAny<NuGetVersion>(), It.IsAny<CancellationToken>()),
+                p => p.UnlistPackage(It.IsAny<string>(), It.IsAny<NuGetVersion>(), It.IsAny<CancellationToken>()),
                 Times.Never);
         }
     }

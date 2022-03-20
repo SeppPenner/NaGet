@@ -42,7 +42,7 @@ namespace NaGet.Web
             var packageType = PackageType == "any" ? null : PackageType;
             var framework = Framework == "any" ? null : Framework;
 
-            var search = await this.search.SearchAsync(
+            var search = await this.search.Search(
                 new SearchRequest
                 {
                     Skip = (PageIndex - 1) * ResultsPerPage,

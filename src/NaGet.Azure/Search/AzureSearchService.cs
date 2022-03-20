@@ -1,26 +1,57 @@
-namespace NaGet.Azure;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AzureSearchService.cs" company="Hämmer Electronics">
+// The project is licensed under the MIT license.
+// </copyright>
+// <summary>
+//    The Azure search service class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace NaGet.Azure.Search;
 
 using QueryType = Microsoft.Azure.Search.Models.QueryType;
 using SearchParameters = Microsoft.Azure.Search.Models.SearchParameters;
 using SearchResult = Protocol.Models.SearchResult;
 
+/// <summary>
+/// The Azure search service class.
+/// </summary>
 public class AzureSearchService : ISearchService
 {
+    /// <summary>
+    /// The search client.
+    /// </summary>
     private readonly SearchIndexClient searchClient;
-    private readonly IUrlGenerator url;
-    private readonly IFrameworkCompatibilityService frameworks;
 
+    /// <summary>
+    /// The url generator.
+    /// </summary>
+    private readonly IUrlGenerator urlGenerator;
+
+    /// <summary>
+    /// The framework compabitility service.
+    /// </summary>
+    private readonly IFrameworkCompatibilityService frameworkCompatibilityService;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureSearchService"/> class.
+    /// </summary>
+    /// <param name="searchClient">The search client.</param>
+    /// <param name="urlGenerator">The url generator.</param>
+    /// <param name="frameworkCompatibilityService">The framework compabitility service.</param>
+    /// <exception cref="ArgumentNullException">Thrown if any of the parameters is null.</exception>
     public AzureSearchService(
         SearchIndexClient searchClient,
-        IUrlGenerator url,
-        IFrameworkCompatibilityService frameworks)
+        IUrlGenerator urlGenerator,
+        IFrameworkCompatibilityService frameworkCompatibilityService)
     {
         this.searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
-        this.url = url ?? throw new ArgumentNullException(nameof(url));
-        this.frameworks = frameworks ?? throw new ArgumentNullException(nameof(frameworks));
+        this.urlGenerator = urlGenerator ?? throw new ArgumentNullException(nameof(urlGenerator));
+        this.frameworkCompatibilityService = frameworkCompatibilityService ?? throw new ArgumentNullException(nameof(frameworkCompatibilityService));
     }
 
-    public async Task<SearchResponse> SearchAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public async Task<SearchResponse> Search(
         SearchRequest request,
         CancellationToken cancellationToken)
     {
@@ -58,14 +89,14 @@ public class AzureSearchService : ISearchService
 
                 versions.Add(new SearchResultVersion
                 {
-                    RegistrationLeafUrl = url.GetRegistrationLeafUrl(document.Id, version) ?? string.Empty,
+                    RegistrationLeafUrl = urlGenerator.GetRegistrationLeafUrl(document.Id, version) ?? string.Empty,
                     Version = document.Versions[i],
                     Downloads = long.Parse(document.VersionDownloads[i]),
                 });
             }
 
             var iconUrl = document.HasEmbeddedIcon
-                ? url.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
+                ? urlGenerator.GetPackageIconDownloadUrl(document.Id, NuGetVersion.Parse(document.Version))
                 : document.IconUrl;
 
             results.Add(new SearchResult
@@ -77,7 +108,7 @@ public class AzureSearchService : ISearchService
                 IconUrl = iconUrl ?? string.Empty,
                 LicenseUrl = document.LicenseUrl,
                 ProjectUrl = document.ProjectUrl,
-                RegistrationIndexUrl = url.GetRegistrationIndexUrl(document.Id) ?? string.Empty,
+                RegistrationIndexUrl = urlGenerator.GetRegistrationIndexUrl(document.Id) ?? string.Empty,
                 Summary = document.Summary,
                 Tags = document.Tags,
                 Title = document.Title,
@@ -90,11 +121,12 @@ public class AzureSearchService : ISearchService
         {
             TotalHits = response?.Count ?? 0L,
             Data = results,
-            Context = SearchContext.Default(url.GetPackageMetadataResourceUrl() ?? string.Empty)
+            Context = SearchContext.Default(urlGenerator.GetPackageMetadataResourceUrl() ?? string.Empty)
         };
     }
 
-    public async Task<AutocompleteResponse> AutocompleteAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public async Task<AutocompleteResponse> Autocomplete(
         AutocompleteRequest request,
         CancellationToken cancellationToken)
     {
@@ -111,7 +143,7 @@ public class AzureSearchService : ISearchService
         var response = await searchClient.Documents.SearchAsync<PackageDocument>(
             request.Query,
             parameters,
-            cancellationToken: cancellationToken);
+            cancellationToken : cancellationToken);
 
         var results = response.Results
             .Select(r => r.Document.Id)
@@ -126,7 +158,8 @@ public class AzureSearchService : ISearchService
         };
     }
 
-    public Task<AutocompleteResponse> ListPackageVersionsAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public Task<AutocompleteResponse> ListPackageVersions(
         VersionsRequest request,
         CancellationToken cancellationToken)
     {
@@ -135,7 +168,8 @@ public class AzureSearchService : ISearchService
         throw new NotImplementedException();
     }
 
-    public async Task<DependentsResponse> FindDependentsAsync(
+    /// <inheritdoc cref="ISearchService"/>
+    public async Task<DependentsResponse> FindDependents(
         string packageId,
         CancellationToken cancellationToken)
     {
@@ -167,6 +201,13 @@ public class AzureSearchService : ISearchService
         };
     }
 
+    /// <summary>
+    /// Builds the search query.
+    /// </summary>
+    /// <param name="query">The query.</param>
+    /// <param name="packageType">The package type.</param>
+    /// <param name="framework">The framework.</param>
+    /// <returns>The query string.</returns>
     private string BuildSeachQuery(string? query, string? packageType, string? framework)
     {
         var queryBuilder = new StringBuilder();
@@ -185,7 +226,7 @@ public class AzureSearchService : ISearchService
 
         if (!string.IsNullOrWhiteSpace(framework))
         {
-            var frameworks = this.frameworks.FindAllCompatibleFrameworks(framework);
+            var frameworks = this.frameworkCompatibilityService.FindAllCompatibleFrameworks(framework);
 
             queryBuilder.Append(" +frameworks:(");
             queryBuilder.Append(string.Join(" ", frameworks));
@@ -195,7 +236,13 @@ public class AzureSearchService : ISearchService
         return queryBuilder.ToString();
     }
 
-    private string BuildSearchFilter(bool includePrerelease, bool includeSemVer2)
+    /// <summary>
+    /// Builds the search filter.
+    /// </summary>
+    /// <param name="includePrerelease">A value indicating whether prereleases should be included or not.</param>
+    /// <param name="includeSemVer2">A value indicating whether SemVer2 packages should be included or not.</param>
+    /// <returns>The search filter.</returns>
+    private static string BuildSearchFilter(bool includePrerelease, bool includeSemVer2)
     {
         var searchFilters = SearchFilters.Default;
 

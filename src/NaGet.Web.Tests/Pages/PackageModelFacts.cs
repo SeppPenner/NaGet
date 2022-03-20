@@ -28,7 +28,7 @@ namespace NaGet.Web.Tests
                 url.Object);
 
             search
-                .Setup(s => s.FindDependentsAsync("testpackage", cancellation))
+                .Setup(s => s.FindDependents("testpackage", cancellation))
                 .ReturnsAsync(new DependentsResponse());
         }
 
@@ -187,7 +187,7 @@ namespace NaGet.Web.Tests
                 });
 
             search
-                .Setup(s => s.FindDependentsAsync("testpackage", cancellation))
+                .Setup(s => s.FindDependents("testpackage", cancellation))
                 .ReturnsAsync(new DependentsResponse
                 {
                     Data = new List<PackageDependent>
