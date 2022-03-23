@@ -1,0 +1,51 @@
+@page "/upload"
+
+@inherits UploadBase
+
+@using Microsoft.AspNetCore.Components
+
+<div class="col-sm-12">
+    <h1>@this.Localizer["Upload"]</h1>
+    <hr class="breadcrumb-divider" />
+
+    <div>(MarkupString)@this.YouCanPushPackagesText</div>
+
+    <div class="tabbed-info">
+        <ul class="nav">
+            @foreach (var tab in this.Tabs)
+            {
+                <li class="@tab.CssClass">
+                    <a href="#" text="@tab.Name" @onclick="() => this.OnClickTab(tab)"></a>
+                </li>
+            }
+        </ul>
+
+        <div class="content">
+            <div class="script">
+                @foreach (var scriptLine in this.ActiveTab.Script)
+                {
+                    <div class="script-line" text="@scriptLine"></div>
+                }
+            </div>
+
+            <div class="copy-button">
+                @*Todo: Check copy to clipboard function.*@
+                <button class="btn btn-default btn-warning"
+                        type="button"
+                        data-tottle="popover"
+                        data-placement="bottom"
+                        data-content="Copied"
+                        @@click="window.naget.copyTextToClipboard(active.content.join('\n'), $el)">
+                    <i class="ms-Icon ms-Icon--Copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="icon-text alert alert-warning">
+            For more information, please refer to
+             <a href="@this.ActiveTab.Documentation" target="_blank" rel="noopener noreferrer">
+                 @this.ActiveTab.Name's documentation
+             </a>
+        </div>
+    </div>
+</div>

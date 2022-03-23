@@ -1,8 +1,3 @@
-using NaGet.Web;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Constraints;
-
 namespace NaGet
 {
     public class NaGetEndpointBuilder

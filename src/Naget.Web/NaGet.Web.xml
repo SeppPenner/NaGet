@@ -1,0 +1,362 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NaGet.Web</name>
+    </assembly>
+    <members>
+        <member name="T:NaGet.Web.AppBase">
+            <summary>
+            The application base class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.AppBase.Localizer">
+            <summary>
+            Gets or sets the localizer.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.PackageContentController">
+            <summary>
+            The Package Content resource, used to download content from packages.
+            See: https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
+            </summary>
+        </member>
+        <member name="F:NaGet.Web.PackageContentController.packageContentService">
+            <summary>
+            The package content service.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.PackageContentController.#ctor(NaGet.Core.IPackageContentService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NaGet.Web.PackageContentController"/> class.
+            </summary>
+            <param name="packageContentService">The package content service.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the package content service is null.</exception>
+        </member>
+        <member name="M:NaGet.Web.PackageContentController.GetPackageVersionsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Uploads the file used for the text recognition from the image.
+            </summary>
+            <param name="files">The file used for the text recognition from the image.</param>
+            <returns>
+                A <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.String"/>s.
+            </returns>
+            <remarks>
+                Uploads the file used for the text recognition from the image.
+            </remarks>
+            <response code="200">Text found successfully.</response>
+            <response code="400">Bad request.</response>
+            <response code="401">Unauthorized.</response>
+            <response code="500">Internal server error.</response>
+        </member>
+        <member name="T:NaGet.Web.PackageMetadataController">
+            <summary>
+            The Package Metadata resource, used to fetch packages' information.
+            See: https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.ServiceIndexController">
+            <summary>
+            The NuGet Service Index. This aids NuGet client to discover this server's services.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Models.DependencyGroupModel">
+            <summary>
+            The dependency group model class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.DependencyGroupModel.Name">
+            <summary>
+            Gets or sets the group model name.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.DependencyGroupModel.Dependencies">
+            <summary>
+            Gets or sets the dependencies.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Models.DependencyModel">
+            <summary>
+            The dependency model class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.DependencyModel.PackageId">
+            <summary>
+            Gets or sets the package identifier.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.DependencyModel.VersionSpec">
+            <summary>
+            Gets or sets the version specification.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Models.TabModel">
+            <summary>
+            The tab model class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.TabModel.Name">
+            <summary>
+            Gets or sets the tab name.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.TabModel.Index">
+            <summary>
+            Gets or sets the index.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.TabModel.CssClass">
+            <summary>
+            Gets or sets the CSS class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.TabModel.Script">
+            <summary>
+            Gets or sets the script lines.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.TabModel.Documentation">
+            <summary>
+            Gets or sets the documentation.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Models.VersionModel">
+            <summary>
+            The version model class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.VersionModel.Version">
+            <summary>
+            Gets or sets the version.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.VersionModel.Downloads">
+            <summary>
+            Gets or sets the downloads count.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.VersionModel.Selected">
+            <summary>
+            Gets or sets a value indicating whether the version is selected or not.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Models.VersionModel.LastUpdated">
+            <summary>
+            Gets or sets the last updated date time.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.OperationCancelledMiddleware">
+            <summary>
+            Captures <see cref="T:System.OperationCanceledException" /> and converts to HTTP 409 response.
+            Based off: https://github.com/aspnet/AspNetCore/blob/28157e62597bf0e043bc7e937e44c5ec81946b83/src/Middleware/Diagnostics/src/DeveloperExceptionPage/DeveloperExceptionPageMiddleware.cs
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Pages.UploadBase">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.ComponentBase"/>
+            <summary>
+            The code behind class for the <see cref="T:NaGet.Web.Pages.Upload"/> page.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Pages.UploadBase.UrlGenerator">
+            <summary>
+            Gets or sets the url generator.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Pages.UploadBase.Localizer">
+            <summary>
+            Gets or sets the localizer.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Pages.UploadBase.Tabs">
+            <summary>
+            Gets or sets the tabs.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Pages.UploadBase.ActiveTab">
+            <summary>
+            Gets or sets the active tab.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Pages.UploadBase.YouCanPushPackagesText">
+            <summary>
+            Gets or sets the text shown 
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.Pages.UploadBase.OnInitializedAsync">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.ComponentBase"/>
+        </member>
+        <member name="M:NaGet.Web.Pages.UploadBase.OnClickTab(NaGet.Web.Models.TabModel)">
+            <summary>
+            Handles the click on a new tab.
+            </summary>
+            <param name="tab">The tab model.</param>
+        </member>
+        <member name="T:NaGet.Web.PackageBase">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.ComponentBase"/>
+            <summary>
+            The code behind class for the <see cref="P:NaGet.Web.PackageBase.Package"/> page.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.PackageBase.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.PackageBase.Version">
+            <summary>
+            Gets or sets the version.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.MainLayoutBase">
+            <summary>
+                The code behind class for the <see cref="T:NaGet.Web.Pages.Shared.MainLayout" /> page.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.MainLayoutBase.Localizer">
+            <summary>
+            Gets or sets the localizer.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.MainLayoutBase.ErrorBoundary">
+            <summary>
+            Gets or sets the error boundary.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.MainLayoutBase.SearchQuery">
+            <summary>
+            Gets or sets the search query.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.MainLayoutBase.OnParametersSet">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.ComponentBase" />
+        </member>
+        <member name="T:NaGet.Web.Program">
+            <summary>
+            The program class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Program.InDocker">
+            <summary>
+            Checks whether the application is run in Docker environment or not. The variable is set in all Microsoft runtime images.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Program.InCompose">
+            <summary>
+            Checks whether the application is run in Docker compose environment or not.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Program.EnvironmentName">
+            <summary>
+            Gets the environment name.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Program.Configuration">
+            <summary>
+            Gets or sets the NaGet service configuration.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.Program.ServiceName">
+            <summary>
+            The service name.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.Program.Main(System.String[])">
+            <summary>
+            The main method.
+            </summary>
+            <param name="args">Some arguments.</param>
+            <returns>The result code.</returns>
+        </member>
+        <member name="M:NaGet.Web.Program.CreateHostBuilder(System.String[],System.String)">
+            <summary>
+            Creates the host builder.
+            </summary>
+            <param name="args">The arguments.</param>
+            <param name="currentLocation">The current assembly location.</param>
+            <returns>A new <see cref="T:Microsoft.Extensions.Hosting.IHostBuilder"/>.</returns>
+        </member>
+        <member name="M:NaGet.Web.Program.ReadConfiguration">
+            <summary>
+            Reads the configuration.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.Program.SetupLogging">
+            <summary>
+            Setup the logging.
+            </summary>
+        </member>
+        <member name="T:NaGet.Web.Startup">
+            <summary>
+            The startup class.
+            </summary>
+        </member>
+        <member name="F:NaGet.Web.Startup.serviceName">
+            <summary>
+            The service name.
+            </summary>
+        </member>
+        <member name="F:NaGet.Web.Startup.configuration">
+            <summary>
+            Gets the NaGet configuration.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NaGet.Web.Startup"/> class.
+            </summary>
+            <param name="configuration">The configuration.</param>
+        </member>
+        <member name="M:NaGet.Web.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:NaGet.Web.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime.
+            </summary>
+            <param name="app">The application.</param>
+            <param name="env">The web hosting environment.</param>
+        </member>
+        <member name="T:NaGet.Web.WebServerService">
+            <summary>
+                The main service class of the <see cref="T:NaGet.Web.WebServerService" />.
+            </summary>
+        </member>
+        <member name="F:NaGet.Web.WebServerService.logger">
+            <summary>
+            The logger.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.WebServerService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NaGet.Web.WebServerService"/> class.
+            </summary>
+        </member>
+        <member name="P:NaGet.Web.WebServerService.DelayInMilliSeconds">
+            <summary>
+            Gets or sets the delay in milliseconds.
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.WebServerService.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Start the web server service
+            </summary>
+            <param name="cancellationToken">Cancellation token to kill start</param>
+            <returns>A task representing the start action</returns>
+        </member>
+        <member name="M:NaGet.Web.WebServerService.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:NaGet.Web.IndexModel">
+            <summary>
+            The index model
+            </summary>
+        </member>
+        <member name="M:NaGet.Web.IndexModel.OnGet">
+            <summary>
+            The GET
+            </summary>
+        </member>
+    </members>
+</doc>

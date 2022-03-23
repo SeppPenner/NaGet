@@ -1,6 +1,3 @@
-using NaGet.Core;
-using Microsoft.AspNetCore.Http;
-
 namespace NaGet.Web
 {
     public static class HttpRequestExtensions

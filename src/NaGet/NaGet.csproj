@@ -31,7 +31,6 @@
     <ProjectReference Include="..\NaGet.Database.Sqlite\NaGet.Database.Sqlite.csproj" />
     <ProjectReference Include="..\NaGet.Database.SqlServer\NaGet.Database.SqlServer.csproj" />
     <ProjectReference Include="..\NaGet.GoogleCloud\NaGet.GoogleCloud.csproj" />
-    <ProjectReference Include="..\NaGet.Web\NaGet.Web.csproj" />
     <ProjectReference Include="..\NaGet.Protocol\NaGet.Protocol.csproj" />
   </ItemGroup>
 

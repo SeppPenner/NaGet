@@ -1,0 +1,342 @@
+@page "/packages/{id}/{version}"
+
+@inherits PackageBase
+
+@if (!this.Found)
+{
+    <div>
+        <h2>Oops, package not found...</h2>
+        <p>Could not find package '@this.Package.Id'.</p>
+        <p>You can try searching on <a href="https://www.nuget.org/packages?q=@Uri.EscapeDataString(this.Package.Id)" target="_blank" rel="noopener noreferrer">nuget.org</a> package.</p>
+        <p>Think there's a problem? Consider taking a look at our <a href="https://github.com/SeppPenner/NaGet" target="_blank" rel="noopener noreferrer">documentation</a> or asking for help on our <a href="https://github.com/loic-sharma/BaGet/issues" target="_blank" rel="noopener noreferrer">GitHub project</a></p>
+    </div>
+}
+else
+{
+    <div class="row display-package">
+        <aside class="col-sm-1 package-icon">
+            <img src="@(this.IconUrl ?? "images/default-package-icon-256x256.png")"
+                 class="img-responsive"
+                 onerror="this.src="images/default-package-icon-256x256.png"
+                 alt="The package icon" />
+        </aside>
+
+        <article class="col-sm-8 package-details-main">
+            <div class="package-title">
+                <h1>
+                    @this.Package.Id
+
+                    <small class="text-nowrap">@this.Package.NormalizedVersionString</small>
+                </h1>
+            </div>
+
+            <div class="tabbed-info" x-data="{ tabs: tabs, active: tabs[0] }">
+                <ul class="nav">
+                    <template x-for="tab in tabs" :key="tab.name">
+                        <li x-bind:class="{ active: tab.name === active.name }">
+                            <a href="#" x-text="tab.name" @@click="active = tab"></a>
+                        </li>
+                    </template>
+                </ul>
+
+                <div class="content">
+                    <div class="script" x-text="`${active.prefix} ${active.content}`"></div>
+
+                    <div class="copy-button">
+                        <button class="btn btn-default btn-warning"
+                                type="button"
+                                data-tottle="popover"
+                                data-placement="bottom"
+                                data-content="Copied"
+                                @@click="window.naget.copyTextToClipboard(active.content.join('\n'), $el)">
+                            <i class="ms-Icon ms-Icon--Copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @{
+                //ExpandableSection(
+                //    "Readme",
+                //    expanded: false,
+                //    @<div>
+                //        @if (this.Readme == null)
+                //        {
+                //            <div class="package-description">@this.Package.Description</div>
+                //        }
+                //        else
+                //        {
+                //            <div class="package-readme">@this.Readme</div>
+                //        }
+                //    </div>);
+            }
+
+            @if (!this.IsDotnetTemplate && !this.IsDotnetTool)
+            {
+                @*ExpandableSection("Used By", expanded: false,
+                    @<div class="package-used-by">
+                        @if (!this.UsedBy.Any())
+                        {
+                            <p>No packages depend on @this.Package.Id.</p>
+                        }
+                        else
+                        {
+                            <p>Showing the top 20 packages that depend on @this.Package.Id.</p>
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sm-10">Packages</th>
+                                            <th class="col-sm-2">Downloads</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var package in this.UsedBy)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="/Package", new { package.Id })">@package.Id</a>
+                                                    <div>@package.Description</div>
+                                                </td>
+                                                <td>
+                                                    <i class="ms-Icon ms-Icon--Download" aria-hidden="true"></i>
+                                                    <span>@package.TotalDownloads.ToString("N0")</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>);*@
+            }
+
+            @if (!string.IsNullOrEmpty(this.Package.ReleaseNotes))
+            {
+                @*ExpandableSection("Release Notes", expanded: false,
+                    @<div class="package-release-notes">@this.Package.ReleaseNotes</div>);*@
+            }
+
+            @{
+                //ExpandableSection(
+                //"Dependencies",
+                //expanded: false,
+                //@<div class="dependency-groups">
+                //    @if (!this.DependencyGroups.Any())
+                //    {
+                //        @:This package has no dependencies.
+                //    }
+                //    else
+                //    {
+                //        foreach (var group in this.DependencyGroups)
+                //        {
+                //            <h4>
+                //                <span>@group.Name</span>
+                //            </h4>
+
+                //            <ul class="list-unstyled dependency-group">
+                //                @if (!group.Dependencies.Any())
+                //                {
+                //                    <li>No dependencies.</li>
+                //                }
+                //                else
+                //                {
+                //                    @foreach (var dependency in group.Dependencies)
+                //                    {
+                //                        <li>
+                //                            <a asp-page="Package"
+                //                               asp-route-id="@dependency.PackageId"
+                //                               asp-route-version="@null">
+                //                                @dependency.PackageId
+                //                            </a>
+
+                //                            <span> @dependency.VersionSpec</span>
+                //                        </li>
+                //                    }
+                //                }
+                //            </ul>
+                //        }
+                //    }
+                //</div>);
+            }
+
+            @{
+                //ExpandableSection("Versions", expanded: true,
+                //@<div class="version-list" x-data="{ showAll: false }">
+                //    <table class="table borderless">
+                //        <thead>
+                //            <tr>
+                //                <th>Version</th>
+                //                <th>Downloads</th>
+                //                <th>Last updated</th>
+                //            </tr>
+                //        </thead>
+                //        <tbody class="no-border">
+                //            @for (var i = 0; i < this.Versions.Count; i++)
+                //            {
+                //                var version = this.Versions[i];
+                //                var alwaysShow = Json.Serialize(i < DefaultVisibleVersions);
+
+                //                <tr class="@(version.Selected ? "bg-info" : "")" x-show="showAll || @alwaysShow">
+                //                    <td><a asp-page="Package" asp-route-version="@version.Version">@version.Version.ToNormalizedString()</a></td>
+                //                    <td>@version.Downloads.ToString("N0")</td>
+                //                    <td>@version.LastUpdated.ToShortDateString()</td>
+                //                </tr>
+                //            }
+                //        </tbody>
+                //    </table>
+
+                //    @if (this.Versions.Count > DefaultVisibleVersions)
+                //    {
+                //        <button type="button" class="link-button" @@click="showAll = !showAll">
+                //            <i class="ms-Icon" x-bind:class="{ 'ms-Icon--CalculatorAddition': !showAll, 'ms-Icon--CalculatorSubtract': showAll }"></i>
+                //            <span x-text="showAll ? 'Show less' : 'Show more'"></span>
+                //        </button>
+                //    }
+
+                //</div>);
+            }
+        </article>
+
+        <aside class="col-sm-3 package-details-info">
+            <div>
+                <h2>Info</h2>
+
+                <ul class="list-unstyled ms-Icon-ul">
+                    <li>
+                        <i class="ms-Icon ms-Icon--History" aria-hidden="true"></i>
+                        Last updated @this.LastUpdated.Humanize()
+                    </li>
+
+                    @if (this.Package.ProjectUrlString != null)
+                    {
+                        <li>
+                            <i class="ms-Icon ms-Icon--Globe"></i>
+                            <a href="@this.Package.ProjectUrlString">Project URL</a>
+                        </li>
+                    }
+
+                    @if (this.Package.RepositoryUrlString != null)
+                    {
+                        <li>
+                            <img class="icon" aria-hidden="true" alt="GitHub logo" src="images/github-32x32.png" />
+                            <a href="@this.Package.RepositoryUrlString">Source code</a>
+                        </li>
+                    }
+
+                    @if (this.LicenseUrl != null)
+                    {
+                        <li>
+                            <i class="ms-Icon ms-Icon--Certificate"></i>
+                            <a href="@this.LicenseUrl">License</a>
+                        </li>
+                    }
+
+                    <li>
+                        <i class="ms-Icon ms-Icon--CloudDownload"></i>
+                        <a href="@this.PackageDownloadUrl">Download package</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h2>Statistics</h2>
+
+                <ul class="list-unstyled ms-Icon-ul">
+                    <li>
+                        <i class="ms-Icon ms-Icon--Download"></i>
+                        @this.TotalDownloads.ToString("N0") total downloads
+                    </li>
+
+                    <li>
+                        <i class="ms-Icon ms-Icon--Giftbox"></i>
+                        @this.Package.Downloads.ToString("N0") downloads of current version
+                    </li>
+                </ul>
+            </div>
+
+            @if (this.Package.Authors.Any())
+            {
+                <div>
+                    <h2>Authors</h2>
+
+                    <p>@string.Join(", ", this.Package.Authors)</p>
+                </div>
+            }
+        </aside>
+    </div>
+}
+
+@if (this.Found)
+{
+    @*<script type="text/javascript">
+        let tabs = [
+            @if (this.IsDotnetTemplate)
+            {
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet new --install @this.Package.Id::@this.Package.NormalizedVersionString"],
+                },
+                </text>
+            }
+            else if (this.IsDotnetTool)
+            {
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet tool install --global @this.Package.Id --version @this.Package.NormalizedVersionString"],
+                },
+                </text>
+            }
+            else
+            {
+                <text>
+                {
+                    name: ".NET CLI",
+                    prefix: ">",
+                    content: ["dotnet add package @this.Package.Id --version @this.Package.NormalizedVersionString"],
+                },
+                {
+                    name: "PackageReference",
+                    prefix: "",
+                    content: ["<PackageReference Include=\"@this.Package.Id\" Version=\"@this.Package.NormalizedVersionString\">"]
+                },
+                {
+                    name: "Paket CLI",
+                    prefix: ">",
+                    content: ["paket add @this.Package.Id --version @this.Package.NormalizedVersionString"]
+                },
+                {
+                    name: "Package Manager",
+                    prefix: "PM>",
+                    content: ["Install-Package @this.Package.Id -Version @this.Package.NormalizedVersionString"]
+                }
+                </text>
+            }
+        ];
+    </script>*@
+}
+
+@code {
+
+    private const int DefaultVisibleVersions = 5;
+
+    //private void ExpandableSection(string title, bool expanded, Func<object, IHtmlContent> template)
+    //{
+    //    <div class="expandable-section" x-data="{ expanded: @Json.Serialize(expanded) }">
+    //        <h2>
+    //            <button type="button" class="link-button" @@click="expanded = !expanded">
+    //                <i x-bind:class="{ 'ms-Icon--ChevronDown': expanded, 'ms-Icon--ChevronRight': !expanded }"
+    //                   class="ms-Icon">
+    //                </i>
+    //                <span>@title</span>
+    //            </button>
+    //        </h2>
+
+    //        <div x-show="expanded">@template(null)</div>
+    //    </div>
+    //}
+}

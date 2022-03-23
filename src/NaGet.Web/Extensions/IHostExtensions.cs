@@ -1,8 +1,3 @@
-using NaGet.Core;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace NaGet.Web
 {
     public static class IHostExtensions

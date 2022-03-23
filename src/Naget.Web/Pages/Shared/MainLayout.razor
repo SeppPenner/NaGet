@@ -1,0 +1,70 @@
+@inherits MainLayoutBase
+
+<ErrorBoundary @ref="this.ErrorBoundary">
+    <ChildContent>
+        <header>
+            <nav class="navbar navbar-inverse" role="navigation">
+                <div class="container">
+                    <div class="row">
+                        <div id="navbar" class="col-sm-12">
+                            <ul class="nav navbar-nav" role="tablist">
+                                <li role="presentation">
+                                    <a role="tab" href="/" nav-link>
+                                        <span>@this.Localizer["Packages"]</span>
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="tab" href="/upload" nav-link>
+                                        <span>@this.Localizer["Upload"]</span>
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="tab" href="https://github.com/SeppPenner/NaGet" target="_blank" rel="noopener noreferrer">
+                                        <span>@this.Localizer["Documentation"]</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="container search-container">
+                    <div class="row">
+                        @*<form class="col-sm-12" action="@Url.Page("/Index")" method="get">*@
+                        <form class="col-sm-12" action="/index" method="get">
+                            <div class="input-group">
+                                <input type="text"
+                                       name="q"
+                                       value="@this.SearchQuery"
+                                       class="form-control"
+                                       autoComplete="off"
+                                       placeholder="Search packages..." />
+
+                                <span class="input-group-btn">
+                                    <button type="submit"
+                                            class="btn btn-default"
+                                            title="Search for packages">
+                                        <span class="ms-Icon ms-Icon--Search" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+
+                            @*Todo*@
+                            @*@await RenderSectionAsync("SearchForm", required: false)*@
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section role="main" class="container main-container">
+           @*Todo*@
+           @* @RenderBody()*@
+        </section>
+
+        @*Todo*@
+        @*@await RenderSectionAsync("Scripts", required: false)*@
+    </ChildContent>
+    <ErrorContent>
+        <p class="errorUI">@this.Localizer!["Error"]</p>
+    </ErrorContent>
+</ErrorBoundary>

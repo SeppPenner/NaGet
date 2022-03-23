@@ -1,5 +1,3 @@
-﻿using Humanizer;
-
 namespace NaGet.Web
 {
     public static class RazorExtensions

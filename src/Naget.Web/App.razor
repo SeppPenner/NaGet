@@ -1,0 +1,21 @@
+@inherits AppBase
+
+<CascadingAuthenticationState>
+    <AppStateProvider>
+       <Router AppAssembly="typeof(Program).Assembly" PreferExactMatches="true">
+            <NotFound>
+                <p>@(this.Localizer["NotFoundText"])</p>
+            </NotFound>
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <p>@this.Localizer["UnauthorizedText"]</p>
+                    </NotAuthorized>
+                    <Authorizing>
+                        <h4>@(this.Localizer["AuthorizationInProgress"])</h4>
+                    </Authorizing>
+                </AuthorizeRouteView>
+            </Found>
+        </Router>
+    </AppStateProvider>
+</CascadingAuthenticationState>

@@ -1,8 +1,3 @@
-using NaGet.Core;
-using NaGet.Web;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace NaGet
 {
     public static class IServiceCollectionExtensions

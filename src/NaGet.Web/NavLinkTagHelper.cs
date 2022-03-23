@@ -1,40 +1,35 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+namespace NaGet.Web;
 
-namespace NaGet.Web
+[HtmlTargetElement(Attributes = "nav-link")]
+public class NavLinkTagHelper : TagHelper
 {
-    [HtmlTargetElement(Attributes = "nav-link")]
-    public class NavLinkTagHelper : TagHelper
+    private readonly IHttpContextAccessor? accessor;
+
+    public NavLinkTagHelper(IHttpContextAccessor accessor)
     {
-        private readonly IHttpContextAccessor? accessor;
+        this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+    }
 
-        public NavLinkTagHelper(IHttpContextAccessor accessor)
+    [HtmlAttributeName("asp-page")]
+    public string Page { get; set; } = string.Empty;
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
+    {
+        if (IsActiveLink())
         {
-            this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            output.Attributes.SetAttribute("class", "active");
         }
+    }
 
-        [HtmlAttributeName("asp-page")]
-        public string Page { get; set; } = string.Empty;
+    private bool IsActiveLink()
+    {
+        var endpoint = accessor.HttpContext?.GetEndpoint();
+        var pageDescriptor = endpoint?.Metadata.GetMetadata<PageActionDescriptor>();
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            if (IsActiveLink())
-            {
-                output.Attributes.SetAttribute("class", "active");
-            }
-        }
+        if (pageDescriptor is null) return false;
+        if (pageDescriptor.AreaName is not null) return false;
+        if (pageDescriptor.ViewEnginePath != Page) return false;
 
-        private bool IsActiveLink()
-        {
-            var endpoint = accessor.HttpContext?.GetEndpoint();
-            var pageDescriptor = endpoint?.Metadata.GetMetadata<PageActionDescriptor>();
-
-            if (pageDescriptor is null) return false;
-            if (pageDescriptor.AreaName is not null) return false;
-            if (pageDescriptor.ViewEnginePath != Page) return false;
-
-            return true;
-        }
+        return true;
     }
 }
