@@ -12,13 +12,17 @@ public class PackageBase : ComponentBase
     /// Gets or sets the identifier.
     /// </summary>
     [Parameter]
-    public string Id { get; set; }
+    [EditorRequired]
+    [NotNull]
+    public string? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the version.
     /// </summary>
     [Parameter]
-    public string Version { get; set; }
+    [EditorRequired]
+    [NotNull]
+    public string? Version { get; set; }
 
 
 
