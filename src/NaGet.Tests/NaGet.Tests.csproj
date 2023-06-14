@@ -17,7 +17,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NuGet.Protocol" Version="6.2.2" />
+    <PackageReference Include="NuGet.Protocol" Version="6.2.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.18" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8 " />
   </ItemGroup>
