@@ -73,6 +73,7 @@ public class IndexBase : ComponentBase
         { "divider1", "-" },
         { "header1", ".NET" },
 
+        { "net7.0", ".NET 7.0" },
         { "net6.0", ".NET 6.0" },
         { "net5.0", ".NET 5.0" },
 
