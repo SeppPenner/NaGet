@@ -14,15 +14,10 @@ NaGet is a library and server to host NuGet packages. It is based on [Loic Sharm
 [![Gitter](https://badges.gitter.im/Serilog-Sinks-AmazonS3/community.svg)](https://gitter.im/Serilog-Sinks-AmazonS3/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Available for
-* NetStandard 2.0
-* NetStandard 2.1
-* NetCore 3.1
-* Net 5.0
 * Net 6.0
+* Net 7.0
 
 ## Net Core and Net Framework latest and LTS versions
-* https://dotnet.microsoft.com/download/dotnet-framework
-* https://dotnet.microsoft.com/download/dotnet-core
 * https://dotnet.microsoft.com/download/dotnet
 
 ## Basic usage
