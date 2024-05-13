@@ -12,10 +12,13 @@ NaGet is a library and server to host NuGet packages. It is based on [Loic Sharm
 [![NuGet Downloads](https://img.shields.io/nuget/dt/NaGet.svg)](https://www.nuget.org/packages/NaGet/)
 [![Known Vulnerabilities](https://snyk.io/test/github/SeppPenner/NaGet/badge.svg)](https://snyk.io/test/github/SeppPenner/NaGet)
 [![Gitter](https://badges.gitter.im/Serilog-Sinks-AmazonS3/community.svg)](https://gitter.im/Serilog-Sinks-AmazonS3/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Blogger](https://img.shields.io/badge/Follow_me_on-blogger-orange)](https://franzhuber23.blogspot.de/)
+[![Patreon](https://img.shields.io/badge/Patreon-F96854?logo=patreon&logoColor=white)](https://patreon.com/SeppPennerOpenSourceDevelopment)
+[![PayPal](https://img.shields.io/badge/PayPal-00457C?logo=paypal&logoColor=white)](https://paypal.me/th070795)
 
 ## Available for
 * Net 6.0
-* Net 7.0
+* Net 8.0
 
 ## Net Core and Net Framework latest and LTS versions
 * https://dotnet.microsoft.com/download/dotnet
