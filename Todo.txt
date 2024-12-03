@@ -1,0 +1,120 @@
+Todos checken
+Serilog einbauen
+Async in namen weg!
+: IValidatableObject für Configs?!
+
+
+Todo:
+Naget.Core
+NaGet.Core.Tests
+NaGet.Protocol
+NaGet.Protocol.Tests
+NaGet.Tests
+NaGet.Web
+NaGet.Web.Tests
+
+
+
+Aliyun:
+
+  
+  <PropertyGroup>
+    <PackageTags>NuGet;Alibaba;Cloud</PackageTags>
+    <Description>The libraries to host BaGet on Alibaba Cloud (Aliyun).</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  
+  
+  
+ AWS:
+ 
+   <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet;Amazon;Cloud</PackageTags>
+    <Description>The libraries to host BaGet on AWS.</Description>
+  </PropertyGroup>
+  
+  
+  Azure:
+    <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet;Azure;Cloud</PackageTags>
+    <Description>The libraries to host BaGet on Azure.</Description>
+  </PropertyGroup>
+  
+  
+  MySQL:
+  
+    <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>The libraries to host BaGet on MySQL.</Description>
+  </PropertyGroup>
+  
+  
+  
+  Postgres:
+  
+    <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>The libraries to host BaGet on PostgreSQL.</Description>
+  </PropertyGroup>
+
+
+
+SQLite
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>The libraries to host BaGet on SQLite.</Description>
+  </PropertyGroup>
+  
+  
+  SQLServer
+  
+    <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>The libraries to host BaGet on SQL Server.</Description>
+  </PropertyGroup>
+  
+  
+  Google Cloud
+  
+    <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <PackageTags>NuGet;Google;Cloud</PackageTags>
+    <Description>The libraries to host BaGet on the Google Cloud Platform.</Description>
+  </PropertyGroup>
+  
+  
+  NuGet
+  
+    <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <PackageTags>NuGet;Protocol</PackageTags>
+    <Description>Libraries to interact with NuGet server APIs.</Description>
+  </PropertyGroup>
+  
+  
+  web
+  
+    <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <PackageTags>NuGet</PackageTags>
+    <Description>BaGet's NuGet server implementation</Description>
+    <RootNamespace>BaGet.Web</RootNamespace>
+
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
